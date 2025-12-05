@@ -1,0 +1,12 @@
+# Visual Studio temporary files - Khắc phục lỗi Permission denied
+.vs/
+
+# Thư mục build và binaries (không cần theo dõi trên Git)
+[Bb]in/
+[Oo]bj/
+
+# Các file tạm và cấu hình cục bộ của người dùng
+*.pdb
+*.suo
+*.user
+*.bak

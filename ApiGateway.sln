@@ -5,7 +5,7 @@ VisualStudioVersion = 17.14.36511.14
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ApiGateway", "ApiGateway\ApiGateway.csproj", "{0BBA41E4-3B21-44C4-8BEF-E0035F939F80}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BenhNhanService", "QuanLyBenhNhan\BenhNhanService.csproj", "{9C7D6CA9-6833-4C86-8332-BC2CDC8517DF}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BenhNhanService", "BenhNhanService\BenhNhanService.csproj", "{9C7D6CA9-6833-4C86-8332-BC2CDC8517DF}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IdentityService", "IdentityService\IdentityService.csproj", "{76723AE6-EB28-44F5-9CC8-02984164A9B2}"
 EndProject

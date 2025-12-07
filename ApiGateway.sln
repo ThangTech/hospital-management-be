@@ -1,9 +1,21 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
-VisualStudioVersion = 17.14.36511.14 d17.14
+VisualStudioVersion = 17.14.36511.14
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ApiGateway", "ApiGateway\ApiGateway.csproj", "{0BBA41E4-3B21-44C4-8BEF-E0035F939F80}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BenhNhanService", "QuanLyBenhNhan\BenhNhanService.csproj", "{9C7D6CA9-6833-4C86-8332-BC2CDC8517DF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IdentityService", "IdentityService\IdentityService.csproj", "{76723AE6-EB28-44F5-9CC8-02984164A9B2}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BacSiService", "BacSiService\BacSiService.csproj", "{C9C9144F-9591-498D-8F88-ACD064F68D47}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "YtaService", "YtaService\YtaService.csproj", "{C193F4CB-26C0-4E85-A2B2-1C5CF8C6F623}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ThanhToanService", "ThanhToanService\ThanhToanService.csproj", "{7810FFB2-0E03-4B7C-BD23-EC1FFC3A4C51}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AdminService", "AdminService\AdminService.csproj", "{50F420AF-BF1B-4494-855D-A38C3FC43E29}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +27,30 @@ Global
 		{0BBA41E4-3B21-44C4-8BEF-E0035F939F80}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0BBA41E4-3B21-44C4-8BEF-E0035F939F80}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0BBA41E4-3B21-44C4-8BEF-E0035F939F80}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9C7D6CA9-6833-4C86-8332-BC2CDC8517DF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9C7D6CA9-6833-4C86-8332-BC2CDC8517DF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9C7D6CA9-6833-4C86-8332-BC2CDC8517DF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9C7D6CA9-6833-4C86-8332-BC2CDC8517DF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{76723AE6-EB28-44F5-9CC8-02984164A9B2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{76723AE6-EB28-44F5-9CC8-02984164A9B2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{76723AE6-EB28-44F5-9CC8-02984164A9B2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{76723AE6-EB28-44F5-9CC8-02984164A9B2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C9C9144F-9591-498D-8F88-ACD064F68D47}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C9C9144F-9591-498D-8F88-ACD064F68D47}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C9C9144F-9591-498D-8F88-ACD064F68D47}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C9C9144F-9591-498D-8F88-ACD064F68D47}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C193F4CB-26C0-4E85-A2B2-1C5CF8C6F623}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C193F4CB-26C0-4E85-A2B2-1C5CF8C6F623}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C193F4CB-26C0-4E85-A2B2-1C5CF8C6F623}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C193F4CB-26C0-4E85-A2B2-1C5CF8C6F623}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7810FFB2-0E03-4B7C-BD23-EC1FFC3A4C51}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7810FFB2-0E03-4B7C-BD23-EC1FFC3A4C51}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7810FFB2-0E03-4B7C-BD23-EC1FFC3A4C51}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7810FFB2-0E03-4B7C-BD23-EC1FFC3A4C51}.Release|Any CPU.Build.0 = Release|Any CPU
+		{50F420AF-BF1B-4494-855D-A38C3FC43E29}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{50F420AF-BF1B-4494-855D-A38C3FC43E29}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{50F420AF-BF1B-4494-855D-A38C3FC43E29}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{50F420AF-BF1B-4494-855D-A38C3FC43E29}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

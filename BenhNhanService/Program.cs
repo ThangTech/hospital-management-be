@@ -1,3 +1,7 @@
+using BenhNhanService.BLL.Interfaces;
+using BenhNhanService.BLL;
+using BenhNhanService.DAL.Interfaces;
+using BenhNhanService.DAL;
 using Microsoft.EntityFrameworkCore;
 using QuanLyBenhNhan.Models;
 
@@ -9,6 +13,10 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+builder.Services.AddSingleton<IConfiguration>(builder.Configuration); 
+builder.Services.AddScoped<IBenhNhanRepository, BenhNhanRepository>();
+builder.Services.AddScoped<IBenhNhanBusiness, BenhNhanBusiness>();
 
 builder.Services.AddDbContext<HospitalManageContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultsConnection")));
 var app = builder.Build();

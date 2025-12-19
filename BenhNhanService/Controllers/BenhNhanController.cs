@@ -1,34 +1,45 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using BenhNhanService.BLL.Interfaces;
 using QuanLyBenhNhan.Models;
+using Microsoft.AspNetCore.Mvc;
 
-namespace QuanLyBenhNhan.Controllers
+namespace BenhNhanService.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
     public class BenhNhanController : ControllerBase
     {
-        private readonly HospitalManageContext context;
+        private IBenhNhanBusiness _bus;
 
-        public BenhNhanController(HospitalManageContext context)
+        public BenhNhanController(IBenhNhanBusiness bus)
         {
-            this.context = context;
-        }
-        [HttpGet]
-        public IActionResult GetAllBenhNhan()
-        {
-            var benhnhan = context.BenhNhans.ToList();
-            return Ok(benhnhan);
+            _bus = bus;
         }
 
-        [HttpGet]
-        [Route("{id:guid}")]
+        [HttpGet("get-all")]
+        public IActionResult GetAll()
+        {
+            try
+            {
+                return Ok(_bus.GetListBenhNhan());
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
 
-        public IActionResult GetBenhNhan() { 
-        
-            var benhnhan = context.BenhNhans.FirstOrDefault();
-            return Ok(benhnhan);
-        
+        [HttpPost("create")]
+        public IActionResult Create([FromBody] BenhNhan model)
+        {
+            try
+            {
+                var result = _bus.AddBenhNhan(model);
+                return Ok(new { success = result, message = "Thêm thành công" });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
     }
 }

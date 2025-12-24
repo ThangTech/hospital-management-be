@@ -7,6 +7,7 @@ using System.Data;
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
 using System;
+using BacSiService.DTOs;
 
 namespace BacSiService.DAL.Repositories
 {
@@ -22,50 +23,149 @@ namespace BacSiService.DAL.Repositories
             _connectionString = configuration.GetConnectionString("DefaultsConnection");
         }
 
-        public IEnumerable<BacSi> GetAll()
+        public BacSi? CreateDoctor(DoctorDto doctorDto)
         {
-           
-            if (!string.IsNullOrEmpty(_connectionString))
+            if (string.IsNullOrEmpty(_connectionString))
+                return null;
+
+            using (var conn = new SqlConnection(_connectionString))
+            using (var cmd = new SqlCommand("sp_CreateDoctor", conn))
             {
-                var list = new List<BacSi>();
-                using (var conn = new SqlConnection(_connectionString))
-                using (var cmd = new SqlCommand("sp_GetAllDoctors", conn))
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@HoTen", doctorDto.HoTen ?? (object)DBNull.Value);
+                cmd.Parameters.AddWithValue("@ChuyenKhoa", doctorDto.ChuyenKhoa ?? (object)DBNull.Value);
+                cmd.Parameters.AddWithValue("@ThongTinLienHe", doctorDto.ThongTinLienHe ?? (object)DBNull.Value);
+
+                conn.Open();
+
+                using (var reader = cmd.ExecuteReader())
                 {
-                    cmd.CommandType = CommandType.StoredProcedure;
-
-                    conn.Open();
-                    using (var reader = cmd.ExecuteReader())
+                    if (reader.Read())
                     {
-                        // cache ordinals if columns exist
-                        int idOrd = -1, hoTenOrd = -1, chuyenKhoaOrd = -1, thongTinOrd = -1;
-                        if (reader.FieldCount > 0)
+                        return new BacSi
                         {
-                            for (int i = 0; i < reader.FieldCount; i++)
-                            {
-                                var name = reader.GetName(i);
-                                if (string.Equals(name, "Id", StringComparison.OrdinalIgnoreCase)) idOrd = i;
-                                else if (string.Equals(name, "HoTen", StringComparison.OrdinalIgnoreCase)) hoTenOrd = i;
-                                else if (string.Equals(name, "ChuyenKhoa", StringComparison.OrdinalIgnoreCase)) chuyenKhoaOrd = i;
-                                else if (string.Equals(name, "ThongTinLienHe", StringComparison.OrdinalIgnoreCase)) thongTinOrd = i;
-                            }
-                        }
-
-                        while (reader.Read())
-                        {
-                            var d = new BacSi
-                            {
-                                Id = (idOrd >= 0 && !reader.IsDBNull(idOrd)) ? reader.GetGuid(idOrd) : Guid.Empty,
-                                HoTen = (hoTenOrd >= 0 && !reader.IsDBNull(hoTenOrd)) ? reader.GetString(hoTenOrd) : null,
-                                ChuyenKhoa = (chuyenKhoaOrd >= 0 && !reader.IsDBNull(chuyenKhoaOrd)) ? reader.GetString(chuyenKhoaOrd) : null,
-                                ThongTinLienHe = (thongTinOrd >= 0 && !reader.IsDBNull(thongTinOrd)) ? reader.GetString(thongTinOrd) : null
-                            };
-                            list.Add(d);
-                        }
+                            Id = reader["Id"] == DBNull.Value ? Guid.Empty : (Guid)reader["Id"],
+                            HoTen = reader["HoTen"] as string,
+                            ChuyenKhoa = reader["ChuyenKhoa"] as string,
+                            ThongTinLienHe = reader["ThongTinLienHe"] as string
+                        };
                     }
                 }
-                return list;
             }
-            return new List<BacSi>();
+            return null;
         }
+
+        public IEnumerable<BacSi> GetAll()
+        {
+
+            if (string.IsNullOrEmpty(_connectionString))
+                return new List<BacSi>();
+
+            var list = new List<BacSi>();
+            using (var conn = new SqlConnection(_connectionString))
+            using (var cmd = new SqlCommand("sp_GetAllDoctors", conn))
+            {
+                cmd.CommandType = CommandType.StoredProcedure;
+                conn.Open();
+
+                using (var reader = cmd.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        var doctor = new BacSi
+                        {
+                            Id = reader["Id"] == DBNull.Value ? Guid.Empty : (Guid)reader["Id"],
+                            HoTen = reader["HoTen"] as string,
+                            ChuyenKhoa = reader["ChuyenKhoa"] as string,
+                            ThongTinLienHe = reader["ThongTinLienHe"] as string
+                        };
+                        list.Add(doctor);
+                    }
+                }
+            }
+            return list;
+        }
+
+        public BacSi? GetById(Guid id)
+        {
+            if (string.IsNullOrEmpty(_connectionString))
+                return null;
+
+            using (var conn = new SqlConnection(_connectionString))
+            using (var cmd = new SqlCommand("sp_GetDoctorById", conn))
+            {
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@Id", id);
+
+                conn.Open();
+
+                using (var reader = cmd.ExecuteReader())
+                {
+                    if (reader.Read())
+                    {
+                        return new BacSi
+                        {
+                            Id = reader["Id"] == DBNull.Value ? Guid.Empty : (Guid)reader["Id"],
+                            HoTen = reader["HoTen"] as string,
+                            ChuyenKhoa = reader["ChuyenKhoa"] as string,
+                            ThongTinLienHe = reader["ThongTinLienHe"] as string
+                        };
+                    }
+                }
+            }
+            return null;
+        }
+
+        public BacSi? UpdateDoctor(Guid id, DoctorUpdateDTO doctorUpdateDTO)
+        {
+            if (string.IsNullOrEmpty(_connectionString))
+                return null;
+
+            using (var conn = new SqlConnection(_connectionString))
+            using (var cmd = new SqlCommand("sp_UpdateDoctor", conn))
+            {
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@Id", id);
+                cmd.Parameters.AddWithValue("@HoTen", doctorUpdateDTO.HoTen ?? (object)DBNull.Value);
+                cmd.Parameters.AddWithValue("@ChuyenKhoa", doctorUpdateDTO.ChuyenKhoa ?? (object)DBNull.Value);
+                cmd.Parameters.AddWithValue("@ThongTinLienHe", doctorUpdateDTO.ThongTinLienHe ?? (object)DBNull.Value);
+
+                conn.Open();
+
+                using (var reader = cmd.ExecuteReader())
+                {
+                    if (reader.Read())
+                    {
+                        return new BacSi
+                        {
+                            Id = reader["Id"] == DBNull.Value ? Guid.Empty : (Guid)reader["Id"],
+                            HoTen = reader["HoTen"] as string,
+                            ChuyenKhoa = reader["ChuyenKhoa"] as string,
+                            ThongTinLienHe = reader["ThongTinLienHe"] as string
+                        };
+                    }
+                }
+            }
+            return null;
+        }
+        public bool DeleteDoctor(Guid id)
+        {
+            if (string.IsNullOrEmpty(_connectionString))
+                return false;
+
+            using (var conn = new SqlConnection(_connectionString))
+            using (var cmd = new SqlCommand("sp_DeleteDoctor", conn))
+            {
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@Id", id);
+
+                conn.Open();
+
+                int rows = cmd.ExecuteNonQuery();
+                return rows > 0;
+            }
+        }
+
+
     }
 }

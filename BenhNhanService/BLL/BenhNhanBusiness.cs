@@ -1,34 +1,35 @@
-﻿using System; // Added for Exception
-using System.Collections.Generic; // Added for List<>
+﻿using System;
+using System.Collections.Generic;
 using BenhNhanService.BLL.Interfaces;
 using BenhNhanService.DAL.Interfaces;
 using QuanLyBenhNhan.Models;
 
 namespace BenhNhanService.BLL
 {
-    // FIX: You must declare the class here
     public class BenhNhanBusiness : IBenhNhanBusiness
     {
-        private readonly IBenhNhanRepository _res; // Best practice: use readonly for dependency injection
+        private readonly IBenhNhanRepository _res;
 
-        // Constructor
         public BenhNhanBusiness(IBenhNhanRepository res)
         {
             _res = res;
         }
 
-        public List<BenhNhan> GetListBenhNhan()
+        // Sửa tên hàm GetListBenhNhan -> GetAll để khớp với Interface IBenhNhanBusiness
+        public List<BenhNhan> GetAll()
         {
             return _res.GetAll();
         }
 
-        public bool AddBenhNhan(BenhNhan model)
+        public bool Create(BenhNhan model)
         {
-            // Logic kiểm tra nghiệp vụ
-            if (string.IsNullOrEmpty(model.HoTen))
-                throw new Exception("Tên bệnh nhân không được để trống");
-
+            if (model.Id == Guid.Empty) model.Id = Guid.NewGuid();
             return _res.Create(model);
         }
+
+        // Bây giờ Interface Repository đã có các hàm này rồi nên sẽ hết lỗi đỏ
+        public bool Update(BenhNhan model) => _res.Update(model);
+        public bool Delete(string id) => _res.Delete(id);
+        public BenhNhan GetDatabyID(string id) => _res.GetDatabyID(id);
     }
 }

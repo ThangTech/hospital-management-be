@@ -74,7 +74,7 @@ namespace BenhNhanService.Controllers
 
         // --- 3. DELETE: Hiển thị thông tin người vừa bị xóa ---
         [Route("delete")]
-        [HttpPost]
+        [HttpDelete]
         public IActionResult DeleteBenhNhan([FromBody] Dictionary<string, object> formData)
         {
             try
@@ -132,7 +132,5 @@ namespace BenhNhanService.Controllers
                 SoTheBaoHiem = entity.SoTheBaoHiem
             };
         }
-
-        // ... (Giữ hàm Search của bạn ở đây)
     }
 }

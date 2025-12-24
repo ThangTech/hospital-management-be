@@ -1,0 +1,101 @@
+﻿using BenhNhanService.DAL.Helper;
+using BenhNhanService.DAL.Interfaces;
+using QuanLyBenhNhan.Models;
+using System.Data;
+using System.Data.SqlClient;
+
+namespace BenhNhanService.DAL
+{
+    public class BenhNhanRepository : IBenhNhanRepository
+    {
+        private DatabaseHelper _dbHelper;
+        public BenhNhanRepository(IConfiguration config)
+        {
+            _dbHelper = new DatabaseHelper(config);
+        }
+
+        // --- 1. ĐÂY LÀ HÀM BẠN ĐANG THIẾU (GÂY RA LỖI CS0535) ---
+        public List<BenhNhan> GetAll()
+        {
+            try
+            {
+                var dt = _dbHelper.ExecuteQuery("sp_BenhNhan_GetAll", CommandType.StoredProcedure);
+                var result = new List<BenhNhan>();
+                if (dt != null && dt.Rows.Count > 0)
+                {
+                    foreach (DataRow row in dt.Rows)
+                    {
+                        result.Add(ParseDataRow(row)); // Gọi hàm chuyển đổi dữ liệu dùng chung
+                    }
+                }
+                return result;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+        // --- 2. Hàm Create (Đã chuẩn) ---
+        public bool Create(BenhNhan model)
+        {
+            SqlParameter[] parameters = new SqlParameter[] {
+                new SqlParameter("@Id", model.Id),
+                new SqlParameter("@HoTen", model.HoTen ?? (object)DBNull.Value),
+                new SqlParameter("@NgaySinh", model.NgaySinh.ToDateTime(TimeOnly.MinValue)),
+                new SqlParameter("@GioiTinh", model.GioiTinh ?? (object)DBNull.Value),
+                new SqlParameter("@DiaChi", model.DiaChi ?? (object)DBNull.Value),
+                new SqlParameter("@SoTheBaoHiem", model.SoTheBaoHiem ?? (object)DBNull.Value)
+            };
+            return _dbHelper.ExecuteNonQuery("sp_BenhNhan_Create", parameters, CommandType.StoredProcedure);
+        }
+
+        // --- 3. Hàm Update (Tôi đã viết đầy đủ tham số cho bạn) ---
+        public bool Update(BenhNhan model)
+        {
+            SqlParameter[] parameters = new SqlParameter[] {
+                new SqlParameter("@Id", model.Id),
+                new SqlParameter("@HoTen", model.HoTen ?? (object)DBNull.Value),
+                new SqlParameter("@NgaySinh", model.NgaySinh.ToDateTime(TimeOnly.MinValue)),
+                new SqlParameter("@GioiTinh", model.GioiTinh ?? (object)DBNull.Value),
+                new SqlParameter("@DiaChi", model.DiaChi ?? (object)DBNull.Value),
+                new SqlParameter("@SoTheBaoHiem", model.SoTheBaoHiem ?? (object)DBNull.Value)
+            };
+            return _dbHelper.ExecuteNonQuery("sp_BenhNhan_Update", parameters, CommandType.StoredProcedure);
+        }
+
+        // --- 4. Hàm GetByID (Tôi đã viết logic chuyển đổi dữ liệu thật) ---
+        public BenhNhan GetDatabyID(string id)
+        {
+            var dt = _dbHelper.ExecuteQuery("sp_BenhNhan_GetById", CommandType.StoredProcedure, 
+                new SqlParameter[] { new SqlParameter("@Id", id) });
+            
+            if (dt != null && dt.Rows.Count > 0)
+            {
+                return ParseDataRow(dt.Rows[0]); // Lấy dòng đầu tiên
+            }
+            return null; // Không tìm thấy
+        }
+
+        // --- 5. Hàm Delete (Đã chuẩn) ---
+        public bool Delete(string id)
+        {
+            return _dbHelper.ExecuteNonQuery("sp_BenhNhan_Delete", 
+                new SqlParameter[] { new SqlParameter("@Id", id) }, CommandType.StoredProcedure);
+        }
+
+        // --- Hàm phụ trợ: Chuyển đổi từ DataRow sang Object BenhNhan (Tránh lặp code) ---
+        private BenhNhan ParseDataRow(DataRow row)
+        {
+            return new BenhNhan
+            {
+                Id = Guid.Parse(row["Id"].ToString()),
+                HoTen = row["HoTen"].ToString(),
+                NgaySinh = DateOnly.FromDateTime(Convert.ToDateTime(row["NgaySinh"])),
+                GioiTinh = row["GioiTinh"] != DBNull.Value ? row["GioiTinh"].ToString() : null,
+                DiaChi = row["DiaChi"] != DBNull.Value ? row["DiaChi"].ToString() : null,
+                SoTheBaoHiem = row["SoTheBaoHiem"] != DBNull.Value ? row["SoTheBaoHiem"].ToString() : null
+            };
+        }
+    }
+}

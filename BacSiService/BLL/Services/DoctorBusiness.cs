@@ -4,6 +4,7 @@ using BacSiService.Models;
 using BacSiService.DTOs;
 using System.Collections.Generic;
 using System.Linq;
+using Microsoft.AspNetCore.Http.HttpResults;
 
 namespace BacSiService.BLL.Services
 {
@@ -16,10 +17,34 @@ namespace BacSiService.BLL.Services
             _repository = repository;
         }
 
-        public IEnumerable<BacSi> GetAll()
+        public DoctorDto CreateDoctor(DoctorDto doctorDto)
         {
-            return _repository.GetAll();
+            var doctor = _repository.CreateDoctor(doctorDto);
+
+            if (doctor == null)
+            {
+                return null;
+            }
+
+            return new DoctorDto
+            {
+                Id = doctor.Id,
+                HoTen = doctor.HoTen,
+                ChuyenKhoa = doctor.ChuyenKhoa,
+                ThongTinLienHe = doctor.ThongTinLienHe
+            };
         }
+
+        public bool DeleteDoctor(Guid id)
+        {
+
+            return _repository.DeleteDoctor(id);
+        }
+
+        //public IEnumerable<BacSi> GetAll()
+        //{
+        //    return _repository.GetAll();
+        //}
 
         // Convenience method to return DTOs
         public IEnumerable<DoctorDto> GetAllDtos()
@@ -33,5 +58,42 @@ namespace BacSiService.BLL.Services
                 ThongTinLienHe = d.ThongTinLienHe
             });
         }
+
+        public DoctorDto GetDoctorByID(Guid id)
+        {
+            var doctor = _repository.GetById(id);
+            if( doctor == null)
+            {
+                return null;
+            }
+            return new DoctorDto
+            {
+                Id = doctor.Id,
+                HoTen = doctor.HoTen,
+                ChuyenKhoa = doctor.ChuyenKhoa,
+                ThongTinLienHe = doctor.ThongTinLienHe
+            };
+            
+        }
+
+
+        public DoctorUpdateDTO UpdateDTO(Guid id, DoctorUpdateDTO doctorUpdateDTO)
+        {
+            var updatedDoctor = _repository.UpdateDoctor(id, doctorUpdateDTO);
+
+            if (updatedDoctor == null)
+            {
+                return null;
+            }
+
+            return new DoctorUpdateDTO
+            {
+                HoTen = updatedDoctor.HoTen,
+                ChuyenKhoa = updatedDoctor.ChuyenKhoa,
+                ThongTinLienHe = updatedDoctor.ThongTinLienHe
+            };
+        }
     }
+    
 }
+

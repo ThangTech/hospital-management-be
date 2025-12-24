@@ -22,5 +22,50 @@ namespace BacSiService.Controllers
             var doctors = _doctorBusiness.GetAllDtos();
             return Ok(doctors);
         }
+
+        [HttpGet("doctors/{id}")]
+        public ActionResult<DoctorDto> GetById([FromRoute] Guid id)
+        {
+            var doctor = _doctorBusiness.GetDoctorByID(id);
+            if(doctor == null)
+            {
+                return NotFound();
+            }
+            return Ok(doctor);
+        }
+        [HttpPut("updateDoctors/{id}")]
+
+        public ActionResult<DoctorUpdateDTO> Update([FromRoute] Guid id, [FromBody] DoctorUpdateDTO doctorUpdateDTO)
+        {
+            var doctor = _doctorBusiness.UpdateDTO(id, doctorUpdateDTO);
+            if(doctor == null)
+            {
+                return NotFound();
+            }
+            return Ok(doctor);
+        }
+
+        [HttpPost("createDoctors")]
+        public ActionResult<DoctorDto> Create([FromBody] DoctorDto doctorDTO)
+        {
+            var doctor = _doctorBusiness.CreateDoctor(doctorDTO);
+            if(doctor == null)
+            {
+                return BadRequest();
+            }
+            return CreatedAtAction(nameof(GetById), new {ID = doctor.Id}, doctor);
+        }
+        [HttpDelete("doctors/{id}")]
+        public ActionResult<bool> Delete(Guid id)
+        {
+            var doctor = _doctorBusiness.GetDoctorByID(id);
+            if(doctor == null)
+            {
+                return NotFound();
+            }
+            _doctorBusiness.DeleteDoctor(id);
+            return Ok("Xóa thành công");
+
+        }
     }
 }

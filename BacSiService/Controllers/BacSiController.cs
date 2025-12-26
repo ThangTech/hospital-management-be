@@ -67,5 +67,13 @@ namespace BacSiService.Controllers
             return Ok("Xóa thành công");
 
         }
+
+        [HttpPost("doctors/search")]
+        public ActionResult<PagedResult<DoctorDto>> SearchDoctors([FromBody] SearchRequestDTO request)
+        {
+            var result = _doctorBusiness.SearchDoctors(request);
+            return Ok(result);
+        }
     }
 }
+

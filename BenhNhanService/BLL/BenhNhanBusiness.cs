@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using BenhNhanService.BLL.Interfaces;
 using BenhNhanService.DAL.Interfaces;
 using QuanLyBenhNhan.Models;
+using static BenhNhanService.DTO.BenhNhanSearchDTO;
 
 namespace BenhNhanService.BLL
 {
@@ -31,5 +32,10 @@ namespace BenhNhanService.BLL
         public bool Update(BenhNhan model) => _res.Update(model);
         public bool Delete(string id) => _res.Delete(id);
         public BenhNhan GetDatabyID(string id) => _res.GetDatabyID(id);
+        public List<BenhNhan> Search(BenhNhanSearchModel model, out long total)
+        {
+            // Gọi sang Repository
+            return _res.Search(model, out total);
+        }
     }
 }

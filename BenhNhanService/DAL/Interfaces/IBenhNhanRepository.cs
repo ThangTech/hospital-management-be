@@ -1,4 +1,6 @@
 ﻿using QuanLyBenhNhan.Models;
+using static BenhNhanService.DTO.BenhNhanSearchDTO;
+using BenhNhanService.DTO;
 namespace BenhNhanService.DAL.Interfaces
 {
     public interface IBenhNhanRepository
@@ -9,5 +11,6 @@ namespace BenhNhanService.DAL.Interfaces
         bool Update(BenhNhan model);
         bool Delete(string id);
         BenhNhan GetDatabyID(string id);
+        List<BenhNhan> Search(BenhNhanSearchModel model, out long total);
     }
 }

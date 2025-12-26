@@ -3,6 +3,7 @@ using BenhNhanService.DAL.Interfaces;
 using QuanLyBenhNhan.Models;
 using System.Data;
 using System.Data.SqlClient;
+using static BenhNhanService.DTO.BenhNhanSearchDTO;
 
 namespace BenhNhanService.DAL
 {
@@ -96,6 +97,64 @@ namespace BenhNhanService.DAL
                 DiaChi = row["DiaChi"] != DBNull.Value ? row["DiaChi"].ToString() : null,
                 SoTheBaoHiem = row["SoTheBaoHiem"] != DBNull.Value ? row["SoTheBaoHiem"].ToString() : null
             };
+        }
+
+        private BenhNhan ParseDataRow(SqlDataReader reader)
+        {
+            return new BenhNhan
+            {
+                // SqlDataReader cũng dùng indexer ["TenCot"] giống hệt DataRow
+                Id = Guid.Parse(reader["Id"].ToString()),
+                HoTen = reader["HoTen"].ToString(),
+                NgaySinh = DateOnly.FromDateTime(Convert.ToDateTime(reader["NgaySinh"])),
+                GioiTinh = reader["GioiTinh"] != DBNull.Value ? reader["GioiTinh"].ToString() : null,
+                DiaChi = reader["DiaChi"] != DBNull.Value ? reader["DiaChi"].ToString() : null,
+                SoTheBaoHiem = reader["SoTheBaoHiem"] != DBNull.Value ? reader["SoTheBaoHiem"].ToString() : null
+            };
+        }
+
+        // Đừng quên sửa Interface IBenhNhanRepository trước nhé!
+        public List<BenhNhan> Search(BenhNhanSearchModel model, out long total)
+        {
+            total = 0;
+            try
+            {
+                var result = new List<BenhNhan>();
+                using (SqlConnection conn = new SqlConnection(_dbHelper.ConnectionString)) // Lấy ConnectionString từ Helper
+                {
+                    conn.Open();
+                    using (SqlCommand cmd = new SqlCommand("sp_BenhNhan_Search", conn))
+                    {
+                        cmd.CommandType = CommandType.StoredProcedure;
+
+                        // Truyền tham số từ DTO vào SQL
+                        cmd.Parameters.AddWithValue("@PageIndex", model.PageIndex);
+                        cmd.Parameters.AddWithValue("@PageSize", model.PageSize);
+
+                        // Xử lý null an toàn cho 3 tiêu chí
+                        cmd.Parameters.AddWithValue("@HoTen", (object)model.HoTen ?? DBNull.Value);
+                        cmd.Parameters.AddWithValue("@DiaChi", (object)model.DiaChi ?? DBNull.Value);
+                        cmd.Parameters.AddWithValue("@SoTheBaoHiem", (object)model.SoTheBaoHiem ?? DBNull.Value);
+
+                        // Tham số đầu ra (Output) lấy tổng số dòng
+                        var pTotal = new SqlParameter("@TotalRecord", SqlDbType.Int);
+                        pTotal.Direction = ParameterDirection.Output;
+                        cmd.Parameters.Add(pTotal);
+
+                        using (SqlDataReader reader = cmd.ExecuteReader())
+                        {
+                            while (reader.Read())
+                            {
+                                result.Add(ParseDataRow(reader)); // Hàm convert dùng chung của bạn
+                            }
+                        }
+
+                        if (pTotal.Value != DBNull.Value) total = Convert.ToInt64(pTotal.Value);
+                    }
+                }
+                return result;
+            }
+            catch (Exception) { throw; }
         }
     }
 }

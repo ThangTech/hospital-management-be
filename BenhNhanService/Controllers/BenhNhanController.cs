@@ -2,6 +2,7 @@
 using QuanLyBenhNhan.Models;
 using Microsoft.AspNetCore.Mvc;
 using BenhNhanService.DTO;
+using BenhNhanService.DTO;
 
 namespace BenhNhanService.Controllers
 {
@@ -74,7 +75,7 @@ namespace BenhNhanService.Controllers
 
         // --- 3. DELETE: Hiển thị thông tin người vừa bị xóa ---
         [Route("delete")]
-        [HttpPost]
+        [HttpDelete]
         public IActionResult DeleteBenhNhan([FromBody] Dictionary<string, object> formData)
         {
             try
@@ -118,6 +119,37 @@ namespace BenhNhanService.Controllers
             return Ok(listView);
         }
 
+        [Route("search")]
+        [HttpPost] 
+        public IActionResult Search([FromBody] BenhNhanSearchDTO.BenhNhanSearchModel searchModel)
+        {
+            try
+            {
+                // 1. Gọi Business tìm kiếm
+                long totalRecords = 0;
+                var listEntity = _benhNhanBusiness.Search(searchModel, out totalRecords);
+
+                // 2. Map sang ViewDTO
+                var listView = listEntity.Select(x => MapToViewDTO(x)).ToList();
+
+                // 3. Trả về kết quả phân trang
+                var result = new BenhNhanSearchDTO.PagedResult<BenhNhanViewDTO>
+                {
+                    PageIndex = searchModel.PageIndex,
+                    PageSize = searchModel.PageSize,
+                    TotalRecords = totalRecords,
+                    Items = listView
+                };
+
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+
         // --- HÀM PHỤ TRỢ (PRIVATE) ĐỂ CHUYỂN ĐỔI DỮ LIỆU ---
         // Viết 1 lần dùng cho tất cả các hàm trên cho gọn code
         private BenhNhanViewDTO MapToViewDTO(BenhNhan entity)
@@ -132,7 +164,5 @@ namespace BenhNhanService.Controllers
                 SoTheBaoHiem = entity.SoTheBaoHiem
             };
         }
-
-        // ... (Giữ hàm Search của bạn ở đây)
     }
 }

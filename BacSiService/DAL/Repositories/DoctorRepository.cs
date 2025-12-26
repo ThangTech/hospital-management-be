@@ -8,6 +8,7 @@ using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
 using System;
 using BacSiService.DTOs;
+using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace BacSiService.DAL.Repositories
 {
@@ -164,6 +165,67 @@ namespace BacSiService.DAL.Repositories
                 int rows = cmd.ExecuteNonQuery();
                 return rows > 0;
             }
+        }
+        public PagedResult<BacSi> SearchDoctors(SearchRequestDTO request)
+        {
+            if (string.IsNullOrEmpty(_connectionString))
+                return new PagedResult<BacSi> { Data = new List<BacSi>() };
+
+            var result = new PagedResult<BacSi>
+            {
+                Data = new List<BacSi>(),
+                PageNumber = request.PageNumber,
+                PageSize = request.PageSize
+            };
+
+            using (var conn = new SqlConnection(_connectionString))
+            using (var cmd = new SqlCommand("sp_SearchDoctors", conn))
+            {
+                cmd.CommandType = CommandType.StoredProcedure;
+
+                cmd.Parameters.AddWithValue("@SearchTerm",
+                    string.IsNullOrEmpty(request.SearchTerm) ? (object)DBNull.Value : request.SearchTerm);
+                cmd.Parameters.AddWithValue("@HoTen",
+                    string.IsNullOrEmpty(request.HoTen) ? (object)DBNull.Value : request.HoTen);
+                cmd.Parameters.AddWithValue("@ChuyenKhoa",
+                    string.IsNullOrEmpty(request.ChuyenKhoa) ? (object)DBNull.Value : request.ChuyenKhoa);
+                cmd.Parameters.AddWithValue("@ThongTinLienHe",
+                    string.IsNullOrEmpty(request.ThongTinLienHe) ? (object)DBNull.Value : request.ThongTinLienHe);
+                cmd.Parameters.AddWithValue("@SortBy",
+                    string.IsNullOrEmpty(request.SortBy) ? "HoTen" : request.SortBy);
+                cmd.Parameters.AddWithValue("@SortOrder",
+                    string.IsNullOrEmpty(request.SortOrder) ? "ASC" : request.SortOrder);
+                cmd.Parameters.AddWithValue("@PageNumber", request.PageNumber);
+                cmd.Parameters.AddWithValue("@PageSize", request.PageSize);
+
+                var totalRecordsParam = new SqlParameter("@TotalRecords", SqlDbType.Int)
+                {
+                    Direction = ParameterDirection.Output
+                };
+                cmd.Parameters.Add(totalRecordsParam);
+
+                conn.Open();
+
+                using (var reader = cmd.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        var doctor = new BacSi
+                        {
+                            Id = reader["Id"] == DBNull.Value ? Guid.Empty : (Guid)reader["Id"],
+                            HoTen = reader["HoTen"] as string,
+                            ChuyenKhoa = reader["ChuyenKhoa"] as string,
+                            ThongTinLienHe = reader["ThongTinLienHe"] as string
+                        };
+                        result.Data.Add(doctor);
+                    }
+                }
+
+                result.TotalRecords = (int)totalRecordsParam.Value;
+                result.TotalPages = (int)Math.Ceiling((double)result.TotalRecords / request.PageSize);
+            }
+
+            return result;
         }
 
 

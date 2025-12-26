@@ -76,6 +76,31 @@ namespace BacSiService.BLL.Services
             
         }
 
+        public PagedResult<DoctorDto> SearchDoctors(SearchRequestDTO searchRequestDTO)
+        {
+            var result = _repository.SearchDoctors(searchRequestDTO);
+
+            var dtoList = new List<DoctorDto>();
+            foreach (var d in result.Data)
+            {
+                dtoList.Add(new DoctorDto
+                {
+                    Id = d.Id,
+                    HoTen = d.HoTen,
+                    ChuyenKhoa = d.ChuyenKhoa,
+                    ThongTinLienHe = d.ThongTinLienHe
+                });
+            }
+
+            return new PagedResult<DoctorDto>
+            {
+                Data = dtoList,  // List<DoctorDto>
+                TotalRecords = result.TotalRecords,
+                PageNumber = result.PageNumber,
+                PageSize = result.PageSize,
+                TotalPages = result.TotalPages
+            };
+        }
 
         public DoctorUpdateDTO UpdateDTO(Guid id, DoctorUpdateDTO doctorUpdateDTO)
         {

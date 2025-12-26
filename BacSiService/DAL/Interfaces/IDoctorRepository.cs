@@ -11,5 +11,6 @@ namespace BacSiService.DAL.Interfaces
         BacSi? UpdateDoctor(Guid id, DoctorUpdateDTO doctorUpdateDTO);
         BacSi? CreateDoctor(DoctorDto doctorDto);
         bool DeleteDoctor(Guid id);
+        PagedResult<BacSi> SearchDoctors(SearchRequestDTO searchRequestDTO);
     }
 }

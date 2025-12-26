@@ -13,5 +13,8 @@ namespace BacSiService.BLL.Interfaces
 
         DoctorDto CreateDoctor(DoctorDto doctorDto);
         bool DeleteDoctor(Guid id);
+
+        PagedResult<DoctorDto> SearchDoctors(SearchRequestDTO searchRequestDTO);
+
     }
 }

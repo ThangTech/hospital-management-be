@@ -7,13 +7,12 @@ namespace BacSiService.BLL.Interfaces
 {
     public interface IDoctorBusiness
     {
-        // ===== QU?N LÝ BÁC S? =====
-        IEnumerable<BacSi> GetAll();
-        BacSi? GetById(Guid id);
-        BacSi? CreateDoctor(DoctorDto doctorDto);
-        BacSi? UpdateDoctor(Guid id, DoctorUpdateDTO doctorUpdateDTO);
-        bool DeleteDoctor(Guid id);
-        PagedResult<BacSi> SearchDoctors(SearchRequestDTO request);
+        // Doctor
         IEnumerable<DoctorDto> GetAllDtos();
+        DoctorDto? CreateDoctor(DoctorDto doctorDto);
+        bool DeleteDoctor(Guid id);
+        DoctorDto? GetDoctorByID(Guid id);
+        DoctorUpdateDTO? UpdateDTO(Guid id, DoctorUpdateDTO doctorUpdateDTO);
+        PagedResult<BacSi> SearchDoctors(SearchRequestDTO request);
     }
 }

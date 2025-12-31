@@ -162,6 +162,10 @@ namespace BacSiService.DAL.Repositories
                 conn.Open();
 
                 int rows = cmd.ExecuteNonQuery();
+                if (rows == -1)
+                {
+                    return true;
+                }
                 return rows > 0;
             }
         }
@@ -226,7 +230,5 @@ namespace BacSiService.DAL.Repositories
 
             return result;
         }
-
-
     }
 }

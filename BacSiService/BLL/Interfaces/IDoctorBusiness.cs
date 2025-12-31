@@ -1,20 +1,19 @@
 using BacSiService.Models;
 using BacSiService.DTOs;
+using System;
 using System.Collections.Generic;
 
 namespace BacSiService.BLL.Interfaces
 {
     public interface IDoctorBusiness
     {
-        //IEnumerable<BacSi> GetAll();
-        IEnumerable<DoctorDto> GetAllDtos();
-        DoctorDto GetDoctorByID(Guid id);
-        DoctorUpdateDTO UpdateDTO(Guid id, DoctorUpdateDTO doctorUpdateDTO);
-
-        DoctorDto CreateDoctor(DoctorDto doctorDto);
+        // ===== QU?N LÝ BÁC S? =====
+        IEnumerable<BacSi> GetAll();
+        BacSi? GetById(Guid id);
+        BacSi? CreateDoctor(DoctorDto doctorDto);
+        BacSi? UpdateDoctor(Guid id, DoctorUpdateDTO doctorUpdateDTO);
         bool DeleteDoctor(Guid id);
-
-        PagedResult<DoctorDto> SearchDoctors(SearchRequestDTO searchRequestDTO);
-
+        PagedResult<BacSi> SearchDoctors(SearchRequestDTO request);
+        IEnumerable<DoctorDto> GetAllDtos();
     }
 }

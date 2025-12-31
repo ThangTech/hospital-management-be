@@ -4,7 +4,6 @@ using BacSiService.Models;
 using BacSiService.DTOs;
 using System.Collections.Generic;
 using System.Linq;
-using Microsoft.AspNetCore.Http.HttpResults;
 
 namespace BacSiService.BLL.Services
 {
@@ -17,6 +16,7 @@ namespace BacSiService.BLL.Services
             _repository = repository;
         }
 
+        // CREATE - T?o bác s? m?i
         public DoctorDto CreateDoctor(DoctorDto doctorDto)
         {
             var doctor = _repository.CreateDoctor(doctorDto);
@@ -35,16 +35,26 @@ namespace BacSiService.BLL.Services
             };
         }
 
+        // DELETE - Xóa bác s?
         public bool DeleteDoctor(Guid id)
         {
 
             return _repository.DeleteDoctor(id);
         }
 
-        //public IEnumerable<BacSi> GetAll()
-        //{
-        //    return _repository.GetAll();
-        //}
+        // GET - L?y t?t c? bác s?
+        public IEnumerable<BacSi> GetAll()
+        {
+            return _repository.GetAll();
+        }
+
+        // GET BY ID - L?y 1 bác s? theo ID
+        public BacSi? GetById(Guid id)
+        {
+            if (id == Guid.Empty)
+                return null;
+            return _repository.GetById(id);
+        }
 
         // Convenience method to return DTOs
         public IEnumerable<DoctorDto> GetAllDtos()
@@ -76,32 +86,7 @@ namespace BacSiService.BLL.Services
             
         }
 
-        public PagedResult<DoctorDto> SearchDoctors(SearchRequestDTO searchRequestDTO)
-        {
-            var result = _repository.SearchDoctors(searchRequestDTO);
-
-            var dtoList = new List<DoctorDto>();
-            foreach (var d in result.Data)
-            {
-                dtoList.Add(new DoctorDto
-                {
-                    Id = d.Id,
-                    HoTen = d.HoTen,
-                    ChuyenKhoa = d.ChuyenKhoa,
-                    ThongTinLienHe = d.ThongTinLienHe
-                });
-            }
-
-            return new PagedResult<DoctorDto>
-            {
-                Data = dtoList,  // List<DoctorDto>
-                TotalRecords = result.TotalRecords,
-                PageNumber = result.PageNumber,
-                PageSize = result.PageSize,
-                TotalPages = result.TotalPages
-            };
-        }
-
+        // UPDATE - C?p nh?t thông tin bác s?
         public DoctorUpdateDTO UpdateDTO(Guid id, DoctorUpdateDTO doctorUpdateDTO)
         {
             var updatedDoctor = _repository.UpdateDoctor(id, doctorUpdateDTO);
@@ -117,6 +102,20 @@ namespace BacSiService.BLL.Services
                 ChuyenKhoa = updatedDoctor.ChuyenKhoa,
                 ThongTinLienHe = updatedDoctor.ThongTinLienHe
             };
+        }
+
+        // SEARCH & PAGING - Tìm ki?m bác s? v?i phân trang
+        public PagedResult<BacSi> SearchDoctors(SearchRequestDTO request)
+        {
+            if (request == null)
+                request = new SearchRequestDTO();
+
+            // Validate paging
+            if (request.PageNumber < 1) request.PageNumber = 1;
+            if (request.PageSize < 1) request.PageSize = 10;
+            if (request.PageSize > 100) request.PageSize = 100; // Max 100 records per page
+
+            return _repository.SearchDoctors(request);
         }
     }
     

@@ -18,7 +18,7 @@ builder.Services.AddSwaggerGen();
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 builder.Services.AddDbContext<HospitalManageContext>(options =>
     options.UseSqlServer(connectionString));
-builder.Services.AddCors();
+//builder.Services.AddCors();
 
 // DI for repository and business
 builder.Services.AddScoped<IDoctorRepository, DoctorRepository>();
@@ -38,6 +38,6 @@ app.UseHttpsRedirection();
 app.UseAuthorization();
 
 app.MapControllers();
-app.UseCors();
+//app.UseCors();
 
 app.Run();

@@ -8,7 +8,6 @@ using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
 using System;
 using BacSiService.DTOs;
-using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace BacSiService.DAL.Repositories
 {
@@ -21,7 +20,7 @@ namespace BacSiService.DAL.Repositories
         public DoctorRepository(HospitalManageContext context, IConfiguration configuration)
         {
             _context = context;
-            _connectionString = configuration.GetConnectionString("DefaultsConnection");
+            _connectionString = configuration.GetConnectionString("DefaultConnection") ?? configuration["ConnectionStrings:DefaultConnection"];
         }
 
         public BacSi? CreateDoctor(DoctorDto doctorDto)
@@ -163,6 +162,10 @@ namespace BacSiService.DAL.Repositories
                 conn.Open();
 
                 int rows = cmd.ExecuteNonQuery();
+                if (rows == -1)
+                {
+                    return true;
+                }
                 return rows > 0;
             }
         }
@@ -227,7 +230,5 @@ namespace BacSiService.DAL.Repositories
 
             return result;
         }
-
-
     }
 }

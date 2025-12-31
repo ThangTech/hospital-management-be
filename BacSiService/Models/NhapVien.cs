@@ -19,9 +19,15 @@ public partial class NhapVien
 
     public string? TrangThai { get; set; }
 
+    public Guid? GiuongId { get; set; }
+
     public virtual BenhNhan? BenhNhan { get; set; }
 
     public virtual ICollection<DichVuDieuTri> DichVuDieuTris { get; set; } = new List<DichVuDieuTri>();
+
+    public virtual GiuongBenh? Giuong { get; set; }
+
+    public virtual ICollection<HoSoBenhAn> HoSoBenhAns { get; set; } = new List<HoSoBenhAn>();
 
     public virtual ICollection<HoaDon> HoaDons { get; set; } = new List<HoaDon>();
 

@@ -8,25 +8,36 @@ using BacSiService.Models;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-
 builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-// Register DbContext
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 builder.Services.AddDbContext<HospitalManageContext>(options =>
     options.UseSqlServer(connectionString));
-builder.Services.AddCors();
 
-// DI for repository and business
+// Doctor
 builder.Services.AddScoped<IDoctorRepository, DoctorRepository>();
 builder.Services.AddScoped<IDoctorBusiness, DoctorBusiness>();
 
+// Medical record
+builder.Services.AddScoped<IMedicalRecordRepository, MedicalRecordRepository>();
+builder.Services.AddScoped<IMedicalRecordService, MedicalRecordService>();
+
+// Surgery
+builder.Services.AddScoped<ISurgeryRepository, SurgeryRepository>();
+builder.Services.AddScoped<ISurgeryService, SurgeryService>();
+
+// Lab test
+builder.Services.AddScoped<ILabTestRepository, LabTestRepository>();
+builder.Services.AddScoped<ILabTestService, LabTestService>();
+
+// Patient
+builder.Services.AddScoped<IPatientRepository, PatientRepository>();
+builder.Services.AddScoped<IPatientService, PatientService>();
+
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
@@ -34,10 +45,6 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-
 app.UseAuthorization();
-
 app.MapControllers();
-app.UseCors();
-
 app.Run();

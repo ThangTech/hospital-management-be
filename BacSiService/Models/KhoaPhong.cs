@@ -18,4 +18,6 @@ public partial class KhoaPhong
     public virtual ICollection<GiuongBenh> GiuongBenhs { get; set; } = new List<GiuongBenh>();
 
     public virtual ICollection<NhapVien> NhapViens { get; set; } = new List<NhapVien>();
+
+    public virtual ICollection<Ytum> Yta { get; set; } = new List<Ytum>();
 }

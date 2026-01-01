@@ -9,5 +9,7 @@ namespace KhoaPhongService.BLL.Interfaces
         bool Create(KhoaPhong model);
         bool Update(KhoaPhong model);
         bool Delete(string id);
+        List<KhoaPhong> Search(string keyword);
+
     }
 }

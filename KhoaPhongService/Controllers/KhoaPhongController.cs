@@ -115,7 +115,19 @@ namespace KhoaPhongService.Controllers
                 return StatusCode(500, new { Msg = "Lỗi Database: " + ex.Message });
             }
         }
-
+        [HttpGet("search")]
+        public IActionResult Search([FromQuery] string keyword)
+        {
+            try
+            {
+                var result = _bus.Search(keyword);
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { Msg = "Lỗi hệ thống: " + ex.Message });
+            }
+        }
         [HttpDelete("delete/{id}")]
         public IActionResult Delete(string id)
         {

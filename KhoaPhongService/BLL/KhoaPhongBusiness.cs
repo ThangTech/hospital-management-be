@@ -22,7 +22,10 @@ namespace KhoaPhongService.BLL
         {
             return _repo.Update(model);
         }
-
+        public List<KhoaPhong> Search(string keyword)
+        {
+            return _repo.Search(keyword);
+        }
         public bool Delete(string id)
         {
             var khoa = _repo.GetById(id);

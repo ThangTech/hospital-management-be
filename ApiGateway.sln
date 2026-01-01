@@ -3,19 +3,21 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.14.36511.14
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ApiGateway", "ApiGateway\ApiGateway.csproj", "{0BBA41E4-3B21-44C4-8BEF-E0035F939F80}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ApiGateway", "ApiGateway\ApiGateway.csproj", "{0BBA41E4-3B21-44C4-8BEF-E0035F939F80}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BenhNhanService", "BenhNhanService\BenhNhanService.csproj", "{9C7D6CA9-6833-4C86-8332-BC2CDC8517DF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BenhNhanService", "BenhNhanService\BenhNhanService.csproj", "{9C7D6CA9-6833-4C86-8332-BC2CDC8517DF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IdentityService", "IdentityService\IdentityService.csproj", "{76723AE6-EB28-44F5-9CC8-02984164A9B2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IdentityService", "IdentityService\IdentityService.csproj", "{76723AE6-EB28-44F5-9CC8-02984164A9B2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BacSiService", "BacSiService\BacSiService.csproj", "{C9C9144F-9591-498D-8F88-ACD064F68D47}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BacSiService", "BacSiService\BacSiService.csproj", "{C9C9144F-9591-498D-8F88-ACD064F68D47}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "YtaService", "YtaService\YtaService.csproj", "{C193F4CB-26C0-4E85-A2B2-1C5CF8C6F623}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "YtaService", "YtaService\YtaService.csproj", "{C193F4CB-26C0-4E85-A2B2-1C5CF8C6F623}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AdminService", "AdminService\AdminService.csproj", "{50F420AF-BF1B-4494-855D-A38C3FC43E29}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AdminService", "AdminService\AdminService.csproj", "{50F420AF-BF1B-4494-855D-A38C3FC43E29}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HoaDonService", "HoaDonService\HoaDonService.csproj", "{83C499E7-FB60-4D47-877D-D0B25A511E37}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HoaDonService", "HoaDonService\HoaDonService.csproj", "{83C499E7-FB60-4D47-877D-D0B25A511E37}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KhoaPhongService", "KhoaPhongService\KhoaPhongService.csproj", "{5EB07289-9DE7-4045-BDE1-13A07E762C85}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -51,6 +53,10 @@ Global
 		{83C499E7-FB60-4D47-877D-D0B25A511E37}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{83C499E7-FB60-4D47-877D-D0B25A511E37}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{83C499E7-FB60-4D47-877D-D0B25A511E37}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5EB07289-9DE7-4045-BDE1-13A07E762C85}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5EB07289-9DE7-4045-BDE1-13A07E762C85}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5EB07289-9DE7-4045-BDE1-13A07E762C85}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5EB07289-9DE7-4045-BDE1-13A07E762C85}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

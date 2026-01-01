@@ -1,0 +1,6 @@
+@KhoaPhongService_HostAddress = http://localhost:5178
+
+GET {{KhoaPhongService_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

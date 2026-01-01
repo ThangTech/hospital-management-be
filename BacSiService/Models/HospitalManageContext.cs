@@ -76,6 +76,10 @@ public partial class HospitalManageContext : DbContext
             entity.Property(e => e.ChuyenKhoa).HasMaxLength(255);
             entity.Property(e => e.HoTen).HasMaxLength(255);
             entity.Property(e => e.ThongTinLienHe).HasMaxLength(255);
+
+            entity.HasOne(d => d.Khoa).WithMany(p => p.BacSis)
+                .HasForeignKey(d => d.KhoaId)
+                .HasConstraintName("FK__BacSi__KhoaId__18EBB532");
         });
 
         modelBuilder.Entity<BenhNhan>(entity =>

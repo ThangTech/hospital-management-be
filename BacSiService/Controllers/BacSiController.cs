@@ -87,7 +87,7 @@ namespace BacSiService.Controllers
 
             var dtoPaged = new PagedResult<DoctorDto>
             {
-                Data = resultModel.Data.Select(d => new DoctorDto { Id = d.Id, HoTen = d.HoTen, ChuyenKhoa = d.ChuyenKhoa, ThongTinLienHe = d.ThongTinLienHe }).ToList(),
+                Data = resultModel.Data.Select(d => new DoctorDto { Id = d.Id, HoTen = d.HoTen, ChuyenKhoa = d.ChuyenKhoa, ThongTinLienHe = d.ThongTinLienHe, KhoaId = d.KhoaId }).ToList(),
                 PageNumber = resultModel.PageNumber,
                 PageSize = resultModel.PageSize,
                 TotalPages = resultModel.TotalPages,

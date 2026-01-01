@@ -26,7 +26,8 @@ namespace BacSiService.BLL.Services
                 Id = d.Id,
                 HoTen = d.HoTen,
                 ChuyenKhoa = d.ChuyenKhoa,
-                ThongTinLienHe = d.ThongTinLienHe
+                ThongTinLienHe = d.ThongTinLienHe,
+                KhoaId = d.KhoaId
             });
         }
 
@@ -39,7 +40,8 @@ namespace BacSiService.BLL.Services
                 Id = created.Id,
                 HoTen = created.HoTen,
                 ChuyenKhoa = created.ChuyenKhoa,
-                ThongTinLienHe = created.ThongTinLienHe
+                ThongTinLienHe = created.ThongTinLienHe,
+                KhoaId = created.KhoaId
             };
         }
 
@@ -57,7 +59,8 @@ namespace BacSiService.BLL.Services
                 Id = d.Id,
                 HoTen = d.HoTen,
                 ChuyenKhoa = d.ChuyenKhoa,
-                ThongTinLienHe = d.ThongTinLienHe
+                ThongTinLienHe = d.ThongTinLienHe,
+                KhoaId = d.KhoaId
             };
         }
 
@@ -69,7 +72,8 @@ namespace BacSiService.BLL.Services
             {
                 HoTen = updated.HoTen,
                 ChuyenKhoa = updated.ChuyenKhoa,
-                ThongTinLienHe = updated.ThongTinLienHe
+                ThongTinLienHe = updated.ThongTinLienHe,
+                KhoaId = updated.KhoaId
             };
         }
 

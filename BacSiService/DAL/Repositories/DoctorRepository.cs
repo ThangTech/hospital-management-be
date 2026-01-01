@@ -16,7 +16,6 @@ namespace BacSiService.DAL.Repositories
         private readonly HospitalManageContext? _context;
         private readonly string? _connectionString;
 
-        // Single constructor: accept both DbContext and IConfiguration (both provided by DI)
         public DoctorRepository(HospitalManageContext context, IConfiguration configuration)
         {
             _context = context;
@@ -35,6 +34,7 @@ namespace BacSiService.DAL.Repositories
                 cmd.Parameters.AddWithValue("@HoTen", doctorDto.HoTen ?? (object)DBNull.Value);
                 cmd.Parameters.AddWithValue("@ChuyenKhoa", doctorDto.ChuyenKhoa ?? (object)DBNull.Value);
                 cmd.Parameters.AddWithValue("@ThongTinLienHe", doctorDto.ThongTinLienHe ?? (object)DBNull.Value);
+                cmd.Parameters.AddWithValue("@KhoaId", doctorDto.KhoaId.HasValue ? (object)doctorDto.KhoaId.Value : DBNull.Value);
 
                 conn.Open();
 
@@ -47,7 +47,8 @@ namespace BacSiService.DAL.Repositories
                             Id = reader["Id"] == DBNull.Value ? Guid.Empty : (Guid)reader["Id"],
                             HoTen = reader["HoTen"] as string,
                             ChuyenKhoa = reader["ChuyenKhoa"] as string,
-                            ThongTinLienHe = reader["ThongTinLienHe"] as string
+                            ThongTinLienHe = reader["ThongTinLienHe"] as string,
+                            KhoaId = reader["KhoaId"] == DBNull.Value ? null : (Guid?)reader["KhoaId"]
                         };
                     }
                 }
@@ -57,7 +58,6 @@ namespace BacSiService.DAL.Repositories
 
         public IEnumerable<BacSi> GetAll()
         {
-
             if (string.IsNullOrEmpty(_connectionString))
                 return new List<BacSi>();
 
@@ -77,7 +77,8 @@ namespace BacSiService.DAL.Repositories
                             Id = reader["Id"] == DBNull.Value ? Guid.Empty : (Guid)reader["Id"],
                             HoTen = reader["HoTen"] as string,
                             ChuyenKhoa = reader["ChuyenKhoa"] as string,
-                            ThongTinLienHe = reader["ThongTinLienHe"] as string
+                            ThongTinLienHe = reader["ThongTinLienHe"] as string,
+                            KhoaId = reader["KhoaId"] == DBNull.Value ? null : (Guid?)reader["KhoaId"]
                         };
                         list.Add(doctor);
                     }
@@ -108,7 +109,8 @@ namespace BacSiService.DAL.Repositories
                             Id = reader["Id"] == DBNull.Value ? Guid.Empty : (Guid)reader["Id"],
                             HoTen = reader["HoTen"] as string,
                             ChuyenKhoa = reader["ChuyenKhoa"] as string,
-                            ThongTinLienHe = reader["ThongTinLienHe"] as string
+                            ThongTinLienHe = reader["ThongTinLienHe"] as string,
+                            KhoaId = reader["KhoaId"] == DBNull.Value ? null : (Guid?)reader["KhoaId"]
                         };
                     }
                 }
@@ -129,6 +131,7 @@ namespace BacSiService.DAL.Repositories
                 cmd.Parameters.AddWithValue("@HoTen", doctorUpdateDTO.HoTen ?? (object)DBNull.Value);
                 cmd.Parameters.AddWithValue("@ChuyenKhoa", doctorUpdateDTO.ChuyenKhoa ?? (object)DBNull.Value);
                 cmd.Parameters.AddWithValue("@ThongTinLienHe", doctorUpdateDTO.ThongTinLienHe ?? (object)DBNull.Value);
+                cmd.Parameters.AddWithValue("@KhoaId", doctorUpdateDTO.KhoaId.HasValue ? (object)doctorUpdateDTO.KhoaId.Value : DBNull.Value);
 
                 conn.Open();
 
@@ -141,13 +144,15 @@ namespace BacSiService.DAL.Repositories
                             Id = reader["Id"] == DBNull.Value ? Guid.Empty : (Guid)reader["Id"],
                             HoTen = reader["HoTen"] as string,
                             ChuyenKhoa = reader["ChuyenKhoa"] as string,
-                            ThongTinLienHe = reader["ThongTinLienHe"] as string
+                            ThongTinLienHe = reader["ThongTinLienHe"] as string,
+                            KhoaId = reader["KhoaId"] == DBNull.Value ? null : (Guid?)reader["KhoaId"]
                         };
                     }
                 }
             }
             return null;
         }
+
         public bool DeleteDoctor(Guid id)
         {
             if (string.IsNullOrEmpty(_connectionString))
@@ -169,6 +174,7 @@ namespace BacSiService.DAL.Repositories
                 return rows > 0;
             }
         }
+
         public PagedResult<BacSi> SearchDoctors(SearchRequestDTO request)
         {
             if (string.IsNullOrEmpty(_connectionString))
@@ -194,6 +200,8 @@ namespace BacSiService.DAL.Repositories
                     string.IsNullOrEmpty(request.ChuyenKhoa) ? (object)DBNull.Value : request.ChuyenKhoa);
                 cmd.Parameters.AddWithValue("@ThongTinLienHe",
                     string.IsNullOrEmpty(request.ThongTinLienHe) ? (object)DBNull.Value : request.ThongTinLienHe);
+                cmd.Parameters.AddWithValue("@KhoaId",
+                    request.KhoaId != Guid.Empty ? (object)request.KhoaId : DBNull.Value);
                 cmd.Parameters.AddWithValue("@SortBy",
                     string.IsNullOrEmpty(request.SortBy) ? "HoTen" : request.SortBy);
                 cmd.Parameters.AddWithValue("@SortOrder",
@@ -218,7 +226,8 @@ namespace BacSiService.DAL.Repositories
                             Id = reader["Id"] == DBNull.Value ? Guid.Empty : (Guid)reader["Id"],
                             HoTen = reader["HoTen"] as string,
                             ChuyenKhoa = reader["ChuyenKhoa"] as string,
-                            ThongTinLienHe = reader["ThongTinLienHe"] as string
+                            ThongTinLienHe = reader["ThongTinLienHe"] as string,
+                            KhoaId = reader["KhoaId"] == DBNull.Value ? null : (Guid?)reader["KhoaId"]
                         };
                         result.Data.Add(doctor);
                     }

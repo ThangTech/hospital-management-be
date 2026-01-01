@@ -1,16 +1,15 @@
-using YtaService.BLL;
-using YtaService.BLL.Interfaces;
-using YtaService.DAL;
-using YtaService.DAL.Interfaces;
+using KhoaPhongService.BLL.Interfaces;
+using KhoaPhongService.BLL;
+using KhoaPhongService.DAL.Interfaces;
+using KhoaPhongService.DAL;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// Add services to the container.
+builder.Services.AddScoped<IKhoaPhongRepository, KhoaPhongRepository>();
+builder.Services.AddScoped<IKhoaPhongBusiness, KhoaPhongBusiness>();
+
 builder.Services.AddControllers();
-
-builder.Services.AddScoped<IYtaRepository, YtaRepository>();
-builder.Services.AddScoped<IYtaBusiness, YtaBusiness>();
-
-
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();

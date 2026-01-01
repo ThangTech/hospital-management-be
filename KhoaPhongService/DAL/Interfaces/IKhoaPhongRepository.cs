@@ -10,5 +10,6 @@ namespace KhoaPhongService.DAL.Interfaces
         bool Update(KhoaPhong model);
         bool Delete(string id);
         int CheckDependencies(string id, out string message);
+        List<KhoaPhong> Search(string keyword);
     }
 }

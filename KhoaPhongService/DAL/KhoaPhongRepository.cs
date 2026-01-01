@@ -65,6 +65,23 @@ namespace KhoaPhongService.DAL
                 CommandType.StoredProcedure);
         }
 
+        public List<KhoaPhong> Search(string keyword)
+        {
+            // Nếu keyword null thì gán bằng chuỗi rỗng để tránh lỗi SQL
+            string searchTerm = keyword ?? "";
+
+            var dt = _dbHelper.ExecuteQuery("sp_KhoaPhong_Search", CommandType.StoredProcedure,
+                new SqlParameter[] { new SqlParameter("@Keyword", searchTerm) });
+
+            var result = new List<KhoaPhong>();
+            if (dt != null)
+            {
+                foreach (DataRow row in dt.Rows) result.Add(ParseDataRow(row));
+            }
+            return result;
+        }
+
+
         public int CheckDependencies(string id, out string message)
         {
             message = "";

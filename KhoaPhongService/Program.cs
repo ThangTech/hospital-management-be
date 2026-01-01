@@ -1,6 +1,13 @@
+using KhoaPhongService.BLL.Interfaces;
+using KhoaPhongService.BLL;
+using KhoaPhongService.DAL.Interfaces;
+using KhoaPhongService.DAL;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+builder.Services.AddScoped<IKhoaPhongRepository, KhoaPhongRepository>();
+builder.Services.AddScoped<IKhoaPhongBusiness, KhoaPhongBusiness>();
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle

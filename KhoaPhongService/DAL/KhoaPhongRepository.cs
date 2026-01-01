@@ -36,15 +36,61 @@ namespace KhoaPhongService.DAL
 
         public bool Create(KhoaPhong model)
         {
-            SqlParameter[] p = {
-                new SqlParameter("@Id", model.Id),
-                new SqlParameter("@TenKhoa", model.TenKhoa),
-                new SqlParameter("@LoaiKhoa", model.LoaiKhoa),
-                new SqlParameter("@SoGiuongTieuChuan", model.SoGiuongTieuChuan)
-            };
+                SqlParameter[] p = {
+            new SqlParameter("@Id", model.Id),
+            new SqlParameter("@TenKhoa", model.TenKhoa),
+            new SqlParameter("@LoaiKhoa", model.LoaiKhoa),
+            new SqlParameter("@SoGiuongTieuChuan", model.SoGiuongTieuChuan)
+        };
+
             return _dbHelper.ExecuteNonQuery("sp_KhoaPhong_Create", p, CommandType.StoredProcedure);
         }
 
+        public bool Update(KhoaPhong model)
+        {
+            SqlParameter[] p = {
+            new SqlParameter("@Id", model.Id),
+            new SqlParameter("@TenKhoa", model.TenKhoa),
+            new SqlParameter("@LoaiKhoa", model.LoaiKhoa),
+            new SqlParameter("@SoGiuongTieuChuan", model.SoGiuongTieuChuan)
+            };
+            // Gọi SP Update
+            return _dbHelper.ExecuteNonQuery("sp_KhoaPhong_Update", p, CommandType.StoredProcedure);
+        }
+
+        public bool Delete(string id)
+        {
+            return _dbHelper.ExecuteNonQuery("sp_KhoaPhong_Delete",
+                new SqlParameter[] { new SqlParameter("@Id", id) },
+                CommandType.StoredProcedure);
+        }
+
+        public int CheckDependencies(string id, out string message)
+        {
+            message = "";
+            using (SqlConnection conn = new SqlConnection(_dbHelper.ConnectionString))
+            {
+                conn.Open();
+                using (SqlCommand cmd = new SqlCommand("sp_KhoaPhong_CheckDependencies", conn))
+                {
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("@KhoaId", Guid.Parse(id));
+
+                    // Tham số đầu ra đếm số lượng
+                    var pCount = new SqlParameter("@Count", SqlDbType.Int) { Direction = ParameterDirection.Output };
+                    // Tham số đầu ra lấy thông báo lỗi
+                    var pMsg = new SqlParameter("@Message", SqlDbType.NVarChar, 255) { Direction = ParameterDirection.Output };
+
+                    cmd.Parameters.Add(pCount);
+                    cmd.Parameters.Add(pMsg);
+
+                    cmd.ExecuteNonQuery();
+
+                    if (pMsg.Value != DBNull.Value) message = pMsg.Value.ToString();
+                    return pCount.Value != DBNull.Value ? Convert.ToInt32(pCount.Value) : 0;
+                }
+            }
+        }
         private KhoaPhong ParseDataRow(DataRow row)
         {
             return new KhoaPhong

@@ -7,5 +7,7 @@ namespace KhoaPhongService.BLL.Interfaces
         List<KhoaPhong> GetAll();
         KhoaPhong GetById(string id);
         bool Create(KhoaPhong model);
+        bool Update(KhoaPhong model);
+        bool Delete(string id);
     }
 }

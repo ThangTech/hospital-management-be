@@ -13,7 +13,6 @@ namespace KhoaPhongService.DAL.Helper
             ConnectionString = configuration.GetConnectionString("DefaultConnection");
         }
 
-        // ... (Giữ nguyên các hàm ExecuteQuery và ExecuteNonQuery bên dưới) ...
         public DataTable ExecuteQuery(string query, CommandType cmdType = CommandType.Text, SqlParameter[] parameters = null)
         {
             using (SqlConnection conn = new SqlConnection(ConnectionString))

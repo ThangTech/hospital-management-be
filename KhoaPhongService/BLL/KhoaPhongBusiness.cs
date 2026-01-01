@@ -14,6 +14,29 @@ namespace KhoaPhongService.BLL
 
         public List<KhoaPhong> GetAll() => _repo.GetAll();
         public KhoaPhong GetById(string id) => _repo.GetById(id);
-        public bool Create(KhoaPhong model) => _repo.Create(model);
+        public bool Create(KhoaPhong model)
+        {
+            return _repo.Create(model);
+        }
+        public bool Update(KhoaPhong model)
+        {
+            return _repo.Update(model);
+        }
+
+        public bool Delete(string id)
+        {
+            var khoa = _repo.GetById(id);
+            if (khoa == null) throw new Exception("Khoa không tồn tại");
+
+            string msgDetail = "";
+            int count = _repo.CheckDependencies(id, out msgDetail);
+
+            if (count > 0)
+            {
+                throw new Exception($"Không thể xóa! {msgDetail}");
+            }
+
+            return _repo.Delete(id);
+        }
     }
 }

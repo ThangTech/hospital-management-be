@@ -1,8 +1,8 @@
 ﻿
 using System.Data;
-using System.Data.SqlClient; // Để dùng SqlParameter (Hết lỗi CS1069)
+using System.Data.SqlClient; 
 using YtaService.DAL.Helper;
-using YtaService.DAL.Interfaces; // Để dùng IYtaRepository (Hết lỗi CS0246)
+using YtaService.DAL.Interfaces; 
 using YtaService.DTO;
 using YtaService.Models;
 

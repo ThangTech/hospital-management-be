@@ -5,7 +5,7 @@ namespace BacSiService.DAL.Interfaces
 {
     public interface IMedicalRecordRepository
     {
-        PagedResult<MedicalRecordDto> GetByPatient(Guid? patientId, int pageNumber, int pageSize, string? searchTerm);
+        PagedResult<MedicalRecordDto> GetByAdmission(Guid? patientId, int pageNumber, int pageSize, string? searchTerm);
         MedicalRecordDto? Create(MedicalRecordDto dto, string? auditUser = null);
         MedicalRecordDto? Update(Guid id, MedicalRecordDto dto, string? auditUser = null);
         bool Delete(Guid id, string? auditUser = null);

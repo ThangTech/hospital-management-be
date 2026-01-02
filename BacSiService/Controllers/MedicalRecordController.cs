@@ -19,7 +19,7 @@ namespace BacSiService.Controllers
         [HttpPost("search")]
         public ActionResult<ApiResponse<PagedResult<MedicalRecordDto>>> Search([FromBody] SearchRequestDTO request)
         {
-            var res = _service.GetByPatient(Guid.TryParse(request.SearchTerm, out var pid) ? pid : (Guid?)null,
+            var res = _service.GetByAdmission(Guid.TryParse(request.SearchTerm, out var pid) ? pid : (Guid?)null,
                 request.PageNumber, request.PageSize, request.SearchTerm);
             return Ok(new ApiResponse<PagedResult<MedicalRecordDto>> { Success = true, Data = res, Message = "OK" });
         }

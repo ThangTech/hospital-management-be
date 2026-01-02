@@ -14,9 +14,9 @@ namespace BacSiService.BLL.Services
             _repo = repo;
         }
 
-        public PagedResult<MedicalRecordDto> GetByPatient(Guid? patientId, int pageNumber, int pageSize, string? searchTerm)
+        public PagedResult<MedicalRecordDto> GetByAdmission(Guid? patientId, int pageNumber, int pageSize, string? searchTerm)
         {
-            return _repo.GetByPatient(patientId, pageNumber, pageSize, searchTerm);
+            return _repo.GetByAdmission(patientId, pageNumber, pageSize, searchTerm);
         }
 
         public MedicalRecordDto? Create(MedicalRecordDto dto)

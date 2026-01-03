@@ -18,7 +18,13 @@ namespace BacSiService.DAL.Repositories
 
         public PagedResult<SurgeryScheduleDto> Search(Guid? bacSiId, int pageNumber, int pageSize, string? searchTerm)
         {
-            var result = new PagedResult<SurgeryScheduleDto> { Data = new List<SurgeryScheduleDto>(), PageNumber = pageNumber, PageSize = pageSize };
+            var result = new PagedResult<SurgeryScheduleDto>
+            {
+                Data = new List<SurgeryScheduleDto>(),
+                PageNumber = pageNumber,
+                PageSize = pageSize
+            };
+
             if (string.IsNullOrEmpty(_connectionString)) return result;
 
             using (var conn = new SqlConnection(_connectionString))
@@ -30,7 +36,10 @@ namespace BacSiService.DAL.Repositories
                 cmd.Parameters.AddWithValue("@PageNumber", pageNumber);
                 cmd.Parameters.AddWithValue("@PageSize", pageSize);
 
-                var totalParam = new SqlParameter("@TotalRecords", SqlDbType.Int) { Direction = ParameterDirection.Output };
+                var totalParam = new SqlParameter("@TotalRecords", SqlDbType.Int)
+                {
+                    Direction = ParameterDirection.Output
+                };
                 cmd.Parameters.Add(totalParam);
 
                 conn.Open();
@@ -38,23 +47,62 @@ namespace BacSiService.DAL.Repositories
                 {
                     while (reader.Read())
                     {
-                        var dto = new SurgeryScheduleDto
+                        result.Data.Add(new SurgeryScheduleDto
                         {
-                            Id = reader["Id"] == DBNull.Value ? Guid.Empty : (Guid)reader["Id"],
-                            NhapVienId = reader["NhapVienId"] == DBNull.Value ? (Guid?)null : (Guid)reader["NhapVienId"],
-                            BacSiChinhId = reader["BacSiChinhId"] == DBNull.Value ? (Guid?)null : (Guid)reader["BacSiChinhId"],
+                            Id = (Guid)reader["Id"],
+                            NhapVienId = reader["NhapVienId"] as Guid?,
+                            BacSiChinhId = reader["BacSiChinhId"] as Guid?,
                             LoaiPhauThuat = reader["LoaiPhauThuat"] as string,
                             Ekip = reader["Ekip"] as string,
-                            Ngay = reader["Ngay"] == DBNull.Value ? (DateTime?)null : (DateTime)reader["Ngay"],
+                            Ngay = reader["Ngay"] as DateTime?,
                             PhongMo = reader["PhongMo"] as string,
-                            TrangThai = reader["TrangThai"] as string
-                        };
-                        result.Data.Add(dto);
+                            TrangThai = reader["TrangThai"] as string,
+                            TenBenhNhan = reader["TenBenhNhan"] as string,
+                            NgaySinhBenhNhan = reader["NgaySinhBenhNhan"] as DateTime?,
+                            BenhNhanId = reader["BenhNhanId"] as Guid?
+                        });
                     }
                 }
 
                 result.TotalRecords = (int)(totalParam.Value ?? 0);
                 result.TotalPages = (int)Math.Ceiling((double)result.TotalRecords / pageSize);
+            }
+
+            return result;
+        }
+
+        public List<SurgeryScheduleDto> GetAll()
+        {
+            var result = new List<SurgeryScheduleDto>();
+
+            if (string.IsNullOrEmpty(_connectionString)) return result;
+
+            using (var conn = new SqlConnection(_connectionString))
+            using (var cmd = new SqlCommand("sp_GetAllSurgeries", conn))
+            {
+                cmd.CommandType = CommandType.StoredProcedure;
+
+                conn.Open();
+                using (var reader = cmd.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        result.Add(new SurgeryScheduleDto
+                        {
+                            Id = (Guid)reader["Id"],
+                            NhapVienId = reader["NhapVienId"] as Guid?,
+                            BacSiChinhId = reader["BacSiChinhId"] as Guid?,
+                            LoaiPhauThuat = reader["LoaiPhauThuat"] as string,
+                            Ekip = reader["Ekip"] as string,
+                            Ngay = reader["Ngay"] as DateTime?,
+                            PhongMo = reader["PhongMo"] as string,
+                            TrangThai = reader["TrangThai"] as string,
+                            TenBenhNhan = reader["TenBenhNhan"] as string,
+                            NgaySinhBenhNhan = reader["NgaySinhBenhNhan"] as DateTime?,
+                            BenhNhanId = reader["BenhNhanId"] as Guid?
+                        });
+                    }
+                }
             }
 
             return result;

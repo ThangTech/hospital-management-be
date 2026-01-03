@@ -15,5 +15,9 @@ namespace BacSiService.DTOs
 
         public DateTime? NgayLap { get; set; }
         public Guid? BacSiPhuTrachId { get; set; }
+
+        public string? TenBenhNhan { get; set; }
+        public DateTime? NgaySinhBenhNhan { get; set; }
+        public Guid? BenhNhanId { get; set; }
     }
 }

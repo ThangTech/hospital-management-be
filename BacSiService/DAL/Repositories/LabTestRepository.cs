@@ -18,7 +18,13 @@ namespace BacSiService.DAL.Repositories
 
         public PagedResult<LabTestDto> Search(Guid? nhapVienId, int pageNumber, int pageSize, string? searchTerm)
         {
-            var result = new PagedResult<LabTestDto> { Data = new List<LabTestDto>(), PageNumber = pageNumber, PageSize = pageSize };
+            var result = new PagedResult<LabTestDto>
+            {
+                Data = new List<LabTestDto>(),
+                PageNumber = pageNumber,
+                PageSize = pageSize
+            };
+
             if (string.IsNullOrEmpty(_connectionString)) return result;
 
             using (var conn = new SqlConnection(_connectionString))
@@ -30,7 +36,10 @@ namespace BacSiService.DAL.Repositories
                 cmd.Parameters.AddWithValue("@PageNumber", pageNumber);
                 cmd.Parameters.AddWithValue("@PageSize", pageSize);
 
-                var totalParam = new SqlParameter("@TotalRecords", SqlDbType.Int) { Direction = ParameterDirection.Output };
+                var totalParam = new SqlParameter("@TotalRecords", SqlDbType.Int)
+                {
+                    Direction = ParameterDirection.Output
+                };
                 cmd.Parameters.Add(totalParam);
 
                 conn.Open();
@@ -38,16 +47,19 @@ namespace BacSiService.DAL.Repositories
                 {
                     while (reader.Read())
                     {
-                        var dto = new LabTestDto
+                        result.Data.Add(new LabTestDto
                         {
-                            Id = reader["Id"] == DBNull.Value ? Guid.Empty : (Guid)reader["Id"],
-                            NhapVienId = reader["NhapVienId"] == DBNull.Value ? (Guid?)null : (Guid)reader["NhapVienId"],
-                            BacSiId = reader["BacSiId"] == DBNull.Value ? (Guid?)null : (Guid)reader["BacSiId"],
+                            Id = (Guid)reader["Id"],
+                            NhapVienId = reader["NhapVienId"] as Guid?,
+                            BacSiId = reader["BacSiId"] as Guid?,
                             LoaiXetNghiem = reader["LoaiXetNghiem"] as string,
                             KetQua = reader["KetQua"] as string,
-                            Ngay = reader["Ngay"] == DBNull.Value ? (DateTime?)null : (DateTime)reader["Ngay"]
-                        };
-                        result.Data.Add(dto);
+                            Ngay = reader["Ngay"] as DateTime?,
+                            DonGia = reader["DonGia"] as decimal?,
+                            TenBenhNhan = reader["TenBenhNhan"] as string,
+                            NgaySinhBenhNhan = reader["NgaySinhBenhNhan"] as DateTime?,
+                            BenhNhanId = reader["BenhNhanId"] as Guid?
+                        });
                     }
                 }
 
@@ -57,6 +69,43 @@ namespace BacSiService.DAL.Repositories
 
             return result;
         }
+
+        public List<LabTestDto> GetAll()
+        {
+            var result = new List<LabTestDto>();
+
+            if (string.IsNullOrEmpty(_connectionString)) return result;
+
+            using (var conn = new SqlConnection(_connectionString))
+            using (var cmd = new SqlCommand("sp_GetAllLabTests", conn))
+            {
+                cmd.CommandType = CommandType.StoredProcedure;
+
+                conn.Open();
+                using (var reader = cmd.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        result.Add(new LabTestDto
+                        {
+                            Id = (Guid)reader["Id"],
+                            NhapVienId = reader["NhapVienId"] as Guid?,
+                            BacSiId = reader["BacSiId"] as Guid?,
+                            LoaiXetNghiem = reader["LoaiXetNghiem"] as string,
+                            KetQua = reader["KetQua"] as string,
+                            Ngay = reader["Ngay"] as DateTime?,
+                            DonGia = reader["DonGia"] as decimal?,
+                            TenBenhNhan = reader["TenBenhNhan"] as string,
+                            NgaySinhBenhNhan = reader["NgaySinhBenhNhan"] as DateTime?,
+                            BenhNhanId = reader["BenhNhanId"] as Guid?
+                        });
+                    }
+                }
+            }
+
+            return result;
+        }
+
 
         public LabTestDto? Create(LabTestDto dto, string? auditUser = null)
         {

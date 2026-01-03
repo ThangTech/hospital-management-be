@@ -17,7 +17,43 @@ namespace BacSiService.DAL.Repositories
             _connectionString = configuration.GetConnectionString("DefaultConnection")
                 ?? configuration["ConnectionStrings:DefaultConnection"];
         }
+        public List<MedicalRecordDto> GetAll()
+        {
+            var result = new List<MedicalRecordDto>();
 
+            if (string.IsNullOrEmpty(_connectionString)) return result;
+
+            using (var conn = new SqlConnection(_connectionString))
+            using (var cmd = new SqlCommand("sp_GetAllMedicalRecords", conn))
+            {
+                cmd.CommandType = CommandType.StoredProcedure;
+
+                conn.Open();
+                using (var reader = cmd.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        result.Add(new MedicalRecordDto
+                        {
+                            Id = (Guid)reader["Id"],
+                            NhapVienId = reader["NhapVienId"] as Guid?,
+                            TienSuBenh = reader["TienSuBenh"] as string,
+                            ChanDoanBanDau = reader["ChanDoanBanDau"] as string,
+                            PhuongAnDieuTri = reader["PhuongAnDieuTri"] as string,
+                            KetQuaDieuTri = reader["KetQuaDieuTri"] as string,
+                            ChanDoanRaVien = reader["ChanDoanRaVien"] as string,
+                            NgayLap = reader["NgayLap"] as DateTime?,
+                            BacSiPhuTrachId = reader["BacSiPhuTrachId"] as Guid?,
+                            TenBenhNhan = reader["TenBenhNhan"] as string,
+                            NgaySinhBenhNhan = reader["NgaySinhBenhNhan"] as DateTime?,
+                            BenhNhanId = reader["BenhNhanId"] as Guid?
+                        });
+                    }
+                }
+            }
+
+            return result;
+        }
         public PagedResult<MedicalRecordDto> GetByAdmission(Guid? patientId, int pageNumber, int pageSize, string? searchTerm)
         {
             var result = new PagedResult<MedicalRecordDto>
@@ -59,7 +95,11 @@ namespace BacSiService.DAL.Repositories
                             KetQuaDieuTri = reader["KetQuaDieuTri"] as string,
                             ChanDoanRaVien = reader["ChanDoanRaVien"] as string,
                             NgayLap = reader["NgayLap"] == DBNull.Value ? (DateTime?)null : (DateTime)reader["NgayLap"],
-                            BacSiPhuTrachId = reader["BacSiPhuTrachId"] == DBNull.Value ? (Guid?)null : (Guid)reader["BacSiPhuTrachId"]
+                            BacSiPhuTrachId = reader["BacSiPhuTrachId"] == DBNull.Value ? (Guid?)null : (Guid)reader["BacSiPhuTrachId"],
+
+                            TenBenhNhan = reader["TenBenhNhan"] as string,
+                            NgaySinhBenhNhan = reader["NgaySinhBenhNhan"] == DBNull.Value ? (DateTime?)null : (DateTime)reader["NgaySinhBenhNhan"],
+                            BenhNhanId = reader["BenhNhanId"] == DBNull.Value ? (Guid?)null : (Guid)reader["BenhNhanId"]
                         };
                         result.Data.Add(dto);
                     }

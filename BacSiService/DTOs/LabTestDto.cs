@@ -10,5 +10,10 @@ namespace BacSiService.DTOs
         public string? LoaiXetNghiem { get; set; }
         public string? KetQua { get; set; }
         public DateTime? Ngay { get; set; }
+
+        public decimal? DonGia { get; set; }
+        public string? TenBenhNhan { get; set; }
+        public DateTime? NgaySinhBenhNhan { get; set; }
+        public Guid? BenhNhanId { get; set; }
     }
 }

@@ -13,6 +13,9 @@ public partial class GiuongBenh
 
     public string? TrangThai { get; set; }
 
+    public decimal? GiaTien { get; set; }
+
+    public string TenGiuong { get; set; }
     public virtual KhoaPhong? Khoa { get; set; }
 
     public virtual ICollection<NhapVien> NhapViens { get; set; } = new List<NhapVien>();

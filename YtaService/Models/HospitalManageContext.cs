@@ -47,7 +47,7 @@ public partial class HospitalManageContext : DbContext
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
-        => optionsBuilder.UseSqlServer("Server=.\\SQLEXPRESS;Database=hospital_manage;Trusted_Connection=True;TrustServerCertificate=True;");
+        => optionsBuilder.UseSqlServer("Server=DUYSONW\\SQLEXPRESS;Database=hospital_manage;Trusted_Connection=True;TrustServerCertificate=True;");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -75,6 +75,10 @@ public partial class HospitalManageContext : DbContext
             entity.Property(e => e.ChuyenKhoa).HasMaxLength(255);
             entity.Property(e => e.HoTen).HasMaxLength(255);
             entity.Property(e => e.ThongTinLienHe).HasMaxLength(255);
+
+            entity.HasOne(d => d.Khoa).WithMany(p => p.BacSis)
+                .HasForeignKey(d => d.KhoaId)
+                .HasConstraintName("FK__BacSi__KhoaId__078C1F06");
         });
 
         modelBuilder.Entity<BenhNhan>(entity =>
@@ -137,6 +141,9 @@ public partial class HospitalManageContext : DbContext
             entity.ToTable("GiuongBenh");
 
             entity.Property(e => e.Id).HasDefaultValueSql("(newid())");
+            entity.Property(e => e.GiaTien)
+                .HasDefaultValue(0m)
+                .HasColumnType("decimal(18, 2)");
             entity.Property(e => e.LoaiGiuong).HasMaxLength(50);
             entity.Property(e => e.TrangThai).HasMaxLength(50);
 
@@ -312,7 +319,7 @@ public partial class HospitalManageContext : DbContext
             entity.Property(e => e.HoTen).HasMaxLength(255);
             entity.Property(e => e.SoDienThoai).HasMaxLength(20);
 
-            entity.HasOne(d => d.Khoa).WithMany(p => p.Yta)
+            entity.HasOne(d => d.Khoa).WithMany(p => p.YTa)
                 .HasForeignKey(d => d.KhoaId)
                 .HasConstraintName("FK__YTa__KhoaId__395884C4");
         });

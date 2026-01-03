@@ -34,5 +34,10 @@ namespace BacSiService.BLL.Services
         {
             return _repo.Delete(id);
         }
+
+        public List<MedicalRecordDto> GetAll()
+        {
+            return _repo.GetAll();
+        }
     }
 }

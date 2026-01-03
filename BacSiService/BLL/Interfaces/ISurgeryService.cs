@@ -5,6 +5,7 @@ namespace BacSiService.BLL.Interfaces
 {
     public interface ISurgeryService
     {
+        List<SurgeryScheduleDto> GetAll();
         PagedResult<SurgeryScheduleDto> Search(SearchRequestDTO request);
         SurgeryScheduleDto? Create(SurgeryScheduleDto dto);
         SurgeryScheduleDto? Update(Guid id, SurgeryScheduleDto dto);

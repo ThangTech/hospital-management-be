@@ -18,7 +18,13 @@ namespace BacSiService.DAL.Repositories
 
         public PagedResult<PatientLookupDto> Lookup(string? term, int pageNumber, int pageSize)
         {
-            var result = new PagedResult<PatientLookupDto> { Data = new List<PatientLookupDto>(), PageNumber = pageNumber, PageSize = pageSize };
+            var result = new PagedResult<PatientLookupDto>
+            {
+                Data = new List<PatientLookupDto>(),
+                PageNumber = pageNumber,
+                PageSize = pageSize
+            };
+
             if (string.IsNullOrEmpty(_connectionString)) return result;
 
             using (var conn = new SqlConnection(_connectionString))
@@ -29,7 +35,10 @@ namespace BacSiService.DAL.Repositories
                 cmd.Parameters.AddWithValue("@PageNumber", pageNumber);
                 cmd.Parameters.AddWithValue("@PageSize", pageSize);
 
-                var totalParam = new SqlParameter("@TotalRecords", SqlDbType.Int) { Direction = ParameterDirection.Output };
+                var totalParam = new SqlParameter("@TotalRecords", SqlDbType.Int)
+                {
+                    Direction = ParameterDirection.Output
+                };
                 cmd.Parameters.Add(totalParam);
 
                 conn.Open();
@@ -37,15 +46,20 @@ namespace BacSiService.DAL.Repositories
                 {
                     while (reader.Read())
                     {
-                        var dto = new PatientLookupDto
+                        result.Data.Add(new PatientLookupDto
                         {
-                            Id = reader["Id"] == DBNull.Value ? Guid.Empty : (Guid)reader["Id"],
+                            Id = (Guid)reader["Id"],
                             HoTen = reader["HoTen"] as string,
                             SoTheBaoHiem = reader["SoTheBaoHiem"] as string,
                             DiaChi = reader["DiaChi"] as string,
-                            GioiTinh = reader["GioiTinh"] as string
-                        };
-                        result.Data.Add(dto);
+                            GioiTinh = reader["GioiTinh"] as string,
+                            NhapVienId = reader["NhapVienId"] as Guid?,
+                            NgayNhap = reader["NgayNhap"] as DateTime?,
+                            NgayXuat = reader["NgayXuat"] as DateTime?,
+                            TrangThaiNhapVien = reader["TrangThaiNhapVien"] as string,
+                            KhoaId = reader["KhoaId"] as Guid?,
+                            TenKhoa = reader["TenKhoa"] as string
+                        });
                     }
                 }
 

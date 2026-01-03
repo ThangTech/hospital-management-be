@@ -5,6 +5,7 @@ namespace BacSiService.BLL.Interfaces
 {
     public interface IMedicalRecordService
     {
+        List<MedicalRecordDto> GetAll();
         PagedResult<MedicalRecordDto> GetByAdmission(Guid? patientId, int pageNumber, int pageSize, string? searchTerm);
         MedicalRecordDto? Create(MedicalRecordDto dto);
         MedicalRecordDto? Update(Guid id, MedicalRecordDto dto);

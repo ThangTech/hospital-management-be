@@ -23,8 +23,14 @@ namespace BacSiService.BLL.Services
             return _repo.Search(nhapVienId, pageNumber, pageSize, request.SearchTerm);
         }
 
+
         public LabTestDto? Create(LabTestDto dto) => _repo.Create(dto);
         public LabTestDto? Update(Guid id, LabTestDto dto) => _repo.Update(id, dto);
         public bool Delete(Guid id) => _repo.Delete(id);
+
+        public List<LabTestDto> GetAll()
+        {
+            return _repo.GetAll();
+        }
     }
 }

@@ -1,4 +1,4 @@
-using BacSiService.BLL.Interfaces;
+﻿using BacSiService.BLL.Interfaces;
 using BacSiService.DTOs;
 using Microsoft.AspNetCore.Mvc;
 
@@ -14,7 +14,19 @@ namespace BacSiService.Controllers
         {
             _service = service;
         }
-
+        [HttpGet("get-all-surgery")]
+        public IActionResult GetAll()
+        {
+            try
+            {
+                var result = _service.GetAll();
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = "Lỗi: " + ex.Message });
+            }
+        }
         [HttpPost("search")]
         public ActionResult<ApiResponse<PagedResult<SurgeryScheduleDto>>> Search([FromBody] SearchRequestDTO request)
         {

@@ -9,5 +9,12 @@ namespace BacSiService.DTOs
         public string? SoTheBaoHiem { get; set; }
         public string? DiaChi { get; set; }
         public string? GioiTinh { get; set; }
+        public Guid? NhapVienId { get; set; }
+        public DateTime? NgayNhap { get; set; }
+        public DateTime? NgayXuat { get; set; }
+        public string? TrangThaiNhapVien { get; set; }
+
+        public Guid? KhoaId { get; set; }
+        public string? TenKhoa { get; set; }
     }
 }

@@ -1,4 +1,4 @@
-using BacSiService.BLL.Interfaces;
+﻿using BacSiService.BLL.Interfaces;
 using BacSiService.DTOs;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -14,6 +14,19 @@ namespace BacSiService.Controllers
         public LabTestController(ILabTestService service)
         {
             _service = service;
+        }
+        [HttpGet("get-all-labtest")]
+        public IActionResult GetAll()
+        {
+            try
+            {
+                var result = _service.GetAll();
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = "Lỗi: " + ex.Message });
+            }
         }
 
         [HttpPost("search")]

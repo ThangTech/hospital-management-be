@@ -17,7 +17,12 @@ public partial class BenhNhan
 
     public string? SoTheBaoHiem { get; set; }
 
+    [System.Text.Json.Serialization.JsonIgnore]
     public virtual ICollection<HoaDon> HoaDons { get; set; } = new List<HoaDon>();
 
+    [System.Text.Json.Serialization.JsonIgnore]
+    public virtual ICollection<HoSoBenhAn> HoSoBenhAns { get; set; } = new List<HoSoBenhAn>();
+
+    [System.Text.Json.Serialization.JsonIgnore]
     public virtual ICollection<NhapVien> NhapViens { get; set; } = new List<NhapVien>();
 }

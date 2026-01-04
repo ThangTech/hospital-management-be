@@ -9,5 +9,7 @@ namespace YtaService.BLL.Interfaces
         List<GiuongBenh> GetAllGiuong();
         void CreateGiuong(GiuongBenhCreateDTO dto);
         GiuongBenhDetailDTO GetById(Guid id);
+        string UpdateGiuong(GiuongUpdateDTO giuong);
+        string DeleteGiuong(Guid id);
     }
 }

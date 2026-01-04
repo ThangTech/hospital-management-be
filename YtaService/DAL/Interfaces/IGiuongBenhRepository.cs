@@ -9,5 +9,7 @@ namespace YtaService.DAL.Interfaces
         List<GiuongBenh> GetAll();
         void Create(GiuongBenh giuong);
         GiuongBenhDetailDTO GetById(Guid id);
+        bool UpdateGiuong(GiuongUpdateDTO giuong);
+        int DeleteGiuong(Guid id); 
     }
 }

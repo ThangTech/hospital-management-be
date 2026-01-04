@@ -6,15 +6,23 @@ using YtaService.DAL.Helper;
 using YtaService.DAL.Interfaces;
 using YtaService.Models;
 using YtaService.DTO;
+using Microsoft.Extensions.Configuration;
 
 namespace YtaService.DAL
 {
     public class GiuongBenhRepository : IGiuongBenhRepository
     {
         private readonly GiuongBenhDatabaseHelper _dbHelper;
+        private readonly string _connectionString;
 
-        public GiuongBenhRepository(GiuongBenhDatabaseHelper dbHelper)
+        // --- SỬA TẠI ĐÂY: GỘP 2 CONSTRUCTOR THÀNH 1 ---
+        // Hàm này nhận cả IConfiguration (cho hàm Update) và DatabaseHelper (cho hàm GetAll)
+        public GiuongBenhRepository(IConfiguration configuration, GiuongBenhDatabaseHelper dbHelper)
         {
+            // 1. Lấy connection string để dùng cho hàm UpdateGiuong
+            _connectionString = configuration.GetConnectionString("DefaultConnection");
+
+            // 2. Lấy dbHelper để dùng cho hàm GetAll, Create...
             _dbHelper = dbHelper;
         }
 
@@ -137,6 +145,64 @@ namespace YtaService.DAL
                     cmd.Parameters.AddWithValue("@GiaTien", giuong.GiaTien);
                     cmd.Parameters.AddWithValue("@TrangThai", giuong.TrangThai ?? (object)DBNull.Value);
                     cmd.ExecuteNonQuery();
+                }
+            }
+        }
+
+        public bool UpdateGiuong(GiuongUpdateDTO giuong)
+        {
+            using (SqlConnection conn = new SqlConnection(_connectionString))
+            {
+                try
+                {
+                    // Tên Stored Procedure
+                    SqlCommand cmd = new SqlCommand("sp_Giuong_Update", conn);
+                    cmd.CommandType = CommandType.StoredProcedure;
+
+                    // Truyền tham số (GUID và các kiểu dữ liệu khác)
+                    cmd.Parameters.Add("@Id", SqlDbType.UniqueIdentifier).Value = giuong.Id;
+                    cmd.Parameters.Add("@KhoaId", SqlDbType.UniqueIdentifier).Value = giuong.KhoaId;
+
+                    // Với NVarChar, nên chỉ định rõ kiểu để tránh lỗi font tiếng Việt
+                    cmd.Parameters.Add("@LoaiGiuong", SqlDbType.NVarChar).Value = giuong.LoaiGiuong ?? (object)DBNull.Value;
+                    cmd.Parameters.Add("@TrangThai", SqlDbType.NVarChar).Value = giuong.TrangThai ?? (object)DBNull.Value;
+                    cmd.Parameters.Add("@TenGiuong", SqlDbType.NVarChar).Value = giuong.TenGiuong ?? (object)DBNull.Value;
+
+                    cmd.Parameters.Add("@GiaTien", SqlDbType.Decimal).Value = giuong.GiaTien;
+
+                    conn.Open();
+                    int result = cmd.ExecuteNonQuery();
+                    return result > 0; // Trả về true nếu sửa thành công
+                }
+                catch (Exception ex)
+                {
+                    // Ghi log hoặc ném lỗi để Controller bắt được
+                    throw new Exception("Lỗi Database: " + ex.Message);
+                }
+            }
+        }
+
+        public int DeleteGiuong(Guid id)
+        {
+            // Dùng _connectionString (đã có từ Constructor gộp)
+            using (SqlConnection conn = new SqlConnection(_connectionString))
+            {
+                try
+                {
+                    SqlCommand cmd = new SqlCommand("sp_Giuong_Delete", conn);
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Parameters.Add("@Id", SqlDbType.UniqueIdentifier).Value = id;
+
+                    conn.Open();
+                    // Dùng ExecuteScalar vì SP trả về 1 dòng kết quả (SELECT Result)
+                    object result = cmd.ExecuteScalar();
+
+                    return Convert.ToInt32(result);
+                }
+                catch (Exception ex)
+                {
+                    // Lỗi hệ thống khác
+                    throw new Exception("Lỗi xóa giường: " + ex.Message);
                 }
             }
         }

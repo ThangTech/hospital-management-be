@@ -61,5 +61,48 @@ namespace YtaService.Controllers
                 return BadRequest(new { Error = ex.Message });
             }
         }
+        [HttpPut("update-giuong")]
+        public IActionResult UpdateGiuong([FromBody] GiuongUpdateDTO request)
+        {
+            try
+            {
+                var result = _business.UpdateGiuong(request);
+
+                if (result == "Cập nhật thành công.")
+                {
+                    return Ok(new { message = result });
+                }
+                else
+                {
+                    return BadRequest(new { message = result });
+                }
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = ex.Message });
+            }
+        }
+
+        [HttpDelete("delete-giuong/{id}")]
+        public IActionResult DeleteGiuong(Guid id)
+        {
+            try
+            {
+                var result = _business.DeleteGiuong(id);
+
+                if (result == "Xóa thành công.")
+                {
+                    return Ok(new { message = result });
+                }
+                else
+                {
+                    return BadRequest(new { message = result });
+                }
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = ex.Message });
+            }
+        }
     }
 }

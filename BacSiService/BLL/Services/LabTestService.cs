@@ -14,6 +14,11 @@ namespace BacSiService.BLL.Services
             _repo = repo;
         }
 
+        public List<LabTestDto> GetAll()
+        {
+            return _repo.GetAll();
+        }
+
         public PagedResult<LabTestDto> Search(SearchRequestDTO request)
         {
             var pageNumber = request.PageNumber < 1 ? 1 : request.PageNumber;
@@ -23,14 +28,19 @@ namespace BacSiService.BLL.Services
             return _repo.Search(nhapVienId, pageNumber, pageSize, request.SearchTerm);
         }
 
-
-        public LabTestDto? Create(LabTestDto dto) => _repo.Create(dto);
-        public LabTestDto? Update(Guid id, LabTestDto dto) => _repo.Update(id, dto);
-        public bool Delete(Guid id) => _repo.Delete(id);
-
-        public List<LabTestDto> GetAll()
+        public LabTestDto? Create(LabTestDto dto, Guid? nguoiDungId = null, string? auditUser = null)
         {
-            return _repo.GetAll();
+            return _repo.Create(dto, nguoiDungId, auditUser);
+        }
+
+        public LabTestDto? Update(Guid id, LabTestDto dto, Guid? nguoiDungId = null, string? auditUser = null)
+        {
+            return _repo.Update(id, dto, nguoiDungId, auditUser);
+        }
+
+        public bool Delete(Guid id, Guid? nguoiDungId = null, string? auditUser = null)
+        {
+            return _repo.Delete(id, nguoiDungId, auditUser);
         }
     }
 }

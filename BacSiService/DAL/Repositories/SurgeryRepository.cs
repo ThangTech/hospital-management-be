@@ -11,9 +11,32 @@ namespace BacSiService.DAL.Repositories
     public class SurgeryRepository : ISurgeryRepository
     {
         private readonly string? _connectionString;
+
         public SurgeryRepository(IConfiguration configuration)
         {
-            _connectionString = configuration.GetConnectionString("DefaultConnection") ?? configuration["ConnectionStrings:DefaultConnection"];
+            _connectionString = configuration.GetConnectionString("DefaultConnection") 
+                ?? configuration["ConnectionStrings:DefaultConnection"];
+        }
+
+        public List<SurgeryScheduleDto> GetAll()
+        {
+            var result = new List<SurgeryScheduleDto>();
+            if (string.IsNullOrEmpty(_connectionString)) return result;
+
+            using (var conn = new SqlConnection(_connectionString))
+            using (var cmd = new SqlCommand("sp_GetAllSurgeries", conn))
+            {
+                cmd.CommandType = CommandType.StoredProcedure;
+                conn.Open();
+                using (var reader = cmd.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        result.Add(MapToDto(reader));
+                    }
+                }
+            }
+            return result;
         }
 
         public PagedResult<SurgeryScheduleDto> Search(Guid? bacSiId, int pageNumber, int pageSize, string? searchTerm)
@@ -36,10 +59,7 @@ namespace BacSiService.DAL.Repositories
                 cmd.Parameters.AddWithValue("@PageNumber", pageNumber);
                 cmd.Parameters.AddWithValue("@PageSize", pageSize);
 
-                var totalParam = new SqlParameter("@TotalRecords", SqlDbType.Int)
-                {
-                    Direction = ParameterDirection.Output
-                };
+                var totalParam = new SqlParameter("@TotalRecords", SqlDbType.Int) { Direction = ParameterDirection.Output };
                 cmd.Parameters.Add(totalParam);
 
                 conn.Open();
@@ -47,70 +67,20 @@ namespace BacSiService.DAL.Repositories
                 {
                     while (reader.Read())
                     {
-                        result.Data.Add(new SurgeryScheduleDto
-                        {
-                            Id = (Guid)reader["Id"],
-                            NhapVienId = reader["NhapVienId"] as Guid?,
-                            BacSiChinhId = reader["BacSiChinhId"] as Guid?,
-                            LoaiPhauThuat = reader["LoaiPhauThuat"] as string,
-                            Ekip = reader["Ekip"] as string,
-                            Ngay = reader["Ngay"] as DateTime?,
-                            PhongMo = reader["PhongMo"] as string,
-                            TrangThai = reader["TrangThai"] as string,
-                            TenBenhNhan = reader["TenBenhNhan"] as string,
-                            NgaySinhBenhNhan = reader["NgaySinhBenhNhan"] as DateTime?,
-                            BenhNhanId = reader["BenhNhanId"] as Guid?
-                        });
+                        result.Data.Add(MapToDto(reader));
                     }
                 }
 
                 result.TotalRecords = (int)(totalParam.Value ?? 0);
                 result.TotalPages = (int)Math.Ceiling((double)result.TotalRecords / pageSize);
             }
-
             return result;
         }
 
-        public List<SurgeryScheduleDto> GetAll()
-        {
-            var result = new List<SurgeryScheduleDto>();
-
-            if (string.IsNullOrEmpty(_connectionString)) return result;
-
-            using (var conn = new SqlConnection(_connectionString))
-            using (var cmd = new SqlCommand("sp_GetAllSurgeries", conn))
-            {
-                cmd.CommandType = CommandType.StoredProcedure;
-
-                conn.Open();
-                using (var reader = cmd.ExecuteReader())
-                {
-                    while (reader.Read())
-                    {
-                        result.Add(new SurgeryScheduleDto
-                        {
-                            Id = (Guid)reader["Id"],
-                            NhapVienId = reader["NhapVienId"] as Guid?,
-                            BacSiChinhId = reader["BacSiChinhId"] as Guid?,
-                            LoaiPhauThuat = reader["LoaiPhauThuat"] as string,
-                            Ekip = reader["Ekip"] as string,
-                            Ngay = reader["Ngay"] as DateTime?,
-                            PhongMo = reader["PhongMo"] as string,
-                            TrangThai = reader["TrangThai"] as string,
-                            TenBenhNhan = reader["TenBenhNhan"] as string,
-                            NgaySinhBenhNhan = reader["NgaySinhBenhNhan"] as DateTime?,
-                            BenhNhanId = reader["BenhNhanId"] as Guid?
-                        });
-                    }
-                }
-            }
-
-            return result;
-        }
-
-        public SurgeryScheduleDto? Create(SurgeryScheduleDto dto, string? auditUser = null)
+        public SurgeryScheduleDto? Create(SurgeryScheduleDto dto, Guid? nguoiDungId = null, string? auditUser = null)
         {
             if (string.IsNullOrEmpty(_connectionString)) return null;
+
             using (var conn = new SqlConnection(_connectionString))
             using (var cmd = new SqlCommand("sp_CreateSurgery", conn))
             {
@@ -122,6 +92,7 @@ namespace BacSiService.DAL.Repositories
                 cmd.Parameters.AddWithValue("@Ngay", dto.Ngay ?? (object)DBNull.Value);
                 cmd.Parameters.AddWithValue("@PhongMo", dto.PhongMo ?? (object)DBNull.Value);
                 cmd.Parameters.AddWithValue("@TrangThai", dto.TrangThai ?? (object)DBNull.Value);
+                cmd.Parameters.AddWithValue("@NguoiDungId", nguoiDungId ?? (object)DBNull.Value);
                 cmd.Parameters.AddWithValue("@AuditUser", auditUser ?? (object)DBNull.Value);
 
                 conn.Open();
@@ -129,26 +100,17 @@ namespace BacSiService.DAL.Repositories
                 {
                     if (reader.Read())
                     {
-                        return new SurgeryScheduleDto
-                        {
-                            Id = reader["Id"] == DBNull.Value ? Guid.Empty : (Guid)reader["Id"],
-                            NhapVienId = reader["NhapVienId"] == DBNull.Value ? (Guid?)null : (Guid)reader["NhapVienId"],
-                            BacSiChinhId = reader["BacSiChinhId"] == DBNull.Value ? (Guid?)null : (Guid)reader["BacSiChinhId"],
-                            LoaiPhauThuat = reader["LoaiPhauThuat"] as string,
-                            Ekip = reader["Ekip"] as string,
-                            Ngay = reader["Ngay"] == DBNull.Value ? (DateTime?)null : (DateTime)reader["Ngay"],
-                            PhongMo = reader["PhongMo"] as string,
-                            TrangThai = reader["TrangThai"] as string
-                        };
+                        return MapToDto(reader);
                     }
                 }
             }
             return null;
         }
 
-        public SurgeryScheduleDto? Update(Guid id, SurgeryScheduleDto dto, string? auditUser = null)
+        public SurgeryScheduleDto? Update(Guid id, SurgeryScheduleDto dto, Guid? nguoiDungId = null, string? auditUser = null)
         {
             if (string.IsNullOrEmpty(_connectionString)) return null;
+
             using (var conn = new SqlConnection(_connectionString))
             using (var cmd = new SqlCommand("sp_UpdateSurgery", conn))
             {
@@ -159,6 +121,7 @@ namespace BacSiService.DAL.Repositories
                 cmd.Parameters.AddWithValue("@Ngay", dto.Ngay ?? (object)DBNull.Value);
                 cmd.Parameters.AddWithValue("@PhongMo", dto.PhongMo ?? (object)DBNull.Value);
                 cmd.Parameters.AddWithValue("@TrangThai", dto.TrangThai ?? (object)DBNull.Value);
+                cmd.Parameters.AddWithValue("@NguoiDungId", nguoiDungId ?? (object)DBNull.Value);
                 cmd.Parameters.AddWithValue("@AuditUser", auditUser ?? (object)DBNull.Value);
 
                 conn.Open();
@@ -166,37 +129,43 @@ namespace BacSiService.DAL.Repositories
                 {
                     if (reader.Read())
                     {
-                        return new SurgeryScheduleDto
-                        {
-                            Id = reader["Id"] == DBNull.Value ? Guid.Empty : (Guid)reader["Id"],
-                            NhapVienId = reader["NhapVienId"] == DBNull.Value ? (Guid?)null : (Guid)reader["NhapVienId"],
-                            BacSiChinhId = reader["BacSiChinhId"] == DBNull.Value ? (Guid?)null : (Guid)reader["BacSiChinhId"],
-                            LoaiPhauThuat = reader["LoaiPhauThuat"] as string,
-                            Ekip = reader["Ekip"] as string,
-                            Ngay = reader["Ngay"] == DBNull.Value ? (DateTime?)null : (DateTime)reader["Ngay"],
-                            PhongMo = reader["PhongMo"] as string,
-                            TrangThai = reader["TrangThai"] as string
-                        };
+                        return MapToDto(reader);
                     }
                 }
             }
             return null;
         }
 
-        public bool Delete(Guid id, string? auditUser = null)
+        public bool Delete(Guid id, Guid? nguoiDungId = null, string? auditUser = null)
         {
             if (string.IsNullOrEmpty(_connectionString)) return false;
+
             using (var conn = new SqlConnection(_connectionString))
             using (var cmd = new SqlCommand("sp_DeleteSurgery", conn))
             {
                 cmd.CommandType = CommandType.StoredProcedure;
                 cmd.Parameters.AddWithValue("@Id", id);
+                cmd.Parameters.AddWithValue("@NguoiDungId", nguoiDungId ?? (object)DBNull.Value);
                 cmd.Parameters.AddWithValue("@AuditUser", auditUser ?? (object)DBNull.Value);
                 conn.Open();
                 int rows = cmd.ExecuteNonQuery();
-                if (rows == -1) return true;
-                return rows > 0;
+                return rows > 0 || rows == -1;
             }
+        }
+
+        private static SurgeryScheduleDto MapToDto(SqlDataReader reader)
+        {
+            return new SurgeryScheduleDto
+            {
+                Id = reader["Id"] == DBNull.Value ? Guid.Empty : (Guid)reader["Id"],
+                NhapVienId = reader["NhapVienId"] == DBNull.Value ? (Guid?)null : (Guid)reader["NhapVienId"],
+                BacSiChinhId = reader["BacSiChinhId"] == DBNull.Value ? (Guid?)null : (Guid)reader["BacSiChinhId"],
+                LoaiPhauThuat = reader["LoaiPhauThuat"] as string,
+                Ekip = reader["Ekip"] as string,
+                Ngay = reader["Ngay"] == DBNull.Value ? (DateTime?)null : (DateTime)reader["Ngay"],
+                PhongMo = reader["PhongMo"] as string,
+                TrangThai = reader["TrangThai"] as string
+            };
         }
     }
 }

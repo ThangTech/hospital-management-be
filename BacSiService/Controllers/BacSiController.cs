@@ -1,6 +1,7 @@
 ﻿using BacSiService.BLL.Interfaces;
 using BacSiService.DTOs;
 using BacSiService.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -10,6 +11,7 @@ namespace BacSiService.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize] // Yêu cầu đăng nhập cho tất cả endpoints
     public class BacSiController : ControllerBase
     {
         private readonly IDoctorBusiness _doctorBusiness;
@@ -19,9 +21,12 @@ namespace BacSiService.Controllers
             _doctorBusiness = doctorBusiness;
         }
 
-        // LIST - explicit path to avoid collision with GET by id
-        // GET api/bacsi/doctors
+        /// <summary>
+        /// Lấy danh sách tất cả bác sĩ
+        /// Quyền: Admin, BacSi
+        /// </summary>
         [HttpGet("doctors")]
+        [Authorize(Roles = "Admin,BacSi")]
         public ActionResult<ApiResponse<IEnumerable<DoctorDto>>> GetAll()
         {
             var dtos = _doctorBusiness.GetAllDtos();
@@ -33,9 +38,12 @@ namespace BacSiService.Controllers
             });
         }
 
-        // GET by GUID id - route constraint prevents non-GUID strings being bound
-        // GET api/bacsi/{id}
+        /// <summary>
+        /// Lấy thông tin bác sĩ theo ID
+        /// Quyền: Admin, BacSi
+        /// </summary>
         [HttpGet("{id:guid}")]
+        [Authorize(Roles = "Admin,BacSi")]
         public ActionResult<ApiResponse<DoctorDto>> GetById(Guid id)
         {
             var doc = _doctorBusiness.GetDoctorByID(id);
@@ -45,9 +53,12 @@ namespace BacSiService.Controllers
             return Ok(new ApiResponse<DoctorDto> { Success = true, Data = doc, Message = "OK" });
         }
 
-        // CREATE
-        // POST api/bacsi
+        /// <summary>
+        /// Thêm bác sĩ mới
+        /// Quyền: Chỉ Admin
+        /// </summary>
         [HttpPost]
+        [Authorize(Roles = "Admin")]
         public ActionResult<ApiResponse<DoctorDto>> Create(DoctorDto dto)
         {
             var doc = _doctorBusiness.CreateDoctor(dto);
@@ -57,9 +68,12 @@ namespace BacSiService.Controllers
             return Ok(new ApiResponse<DoctorDto> { Success = true, Data = doc, Message = "Created" });
         }
 
-        // UPDATE
-        // PUT api/bacsi/{id}
+        /// <summary>
+        /// Cập nhật thông tin bác sĩ
+        /// Quyền: Admin hoặc BacSi (sửa thông tin của mình)
+        /// </summary>
         [HttpPut("{id:guid}")]
+        [Authorize(Roles = "Admin,BacSi")]
         public ActionResult<ApiResponse<DoctorUpdateDTO>> Update(Guid id, DoctorUpdateDTO dto)
         {
             var doc = _doctorBusiness.UpdateDTO(id, dto);
@@ -69,18 +83,24 @@ namespace BacSiService.Controllers
             return Ok(new ApiResponse<DoctorUpdateDTO> { Success = true, Data = doc, Message = "Updated" });
         }
 
-        // DELETE
-        // DELETE api/bacsi/{id}
+        /// <summary>
+        /// Xóa bác sĩ
+        /// Quyền: Chỉ Admin
+        /// </summary>
         [HttpDelete("{id:guid}")]
+        [Authorize(Roles = "Admin")]
         public ActionResult<ApiResponse> Delete(Guid id)
         {
             var ok = _doctorBusiness.DeleteDoctor(id);
             return Ok(new ApiResponse { Success = ok, Message = ok ? "Deleted" : "Delete failed" });
         }
 
-        // SEARCH doctors - prefer POST
-        // POST api/bacsi/search
+        /// <summary>
+        /// Tìm kiếm bác sĩ
+        /// Quyền: Admin, BacSi
+        /// </summary>
         [HttpPost("search")]
+        [Authorize(Roles = "Admin,BacSi")]
         public ActionResult<ApiResponse<PagedResult<DoctorDto>>> Search(SearchRequestDTO request)
         {
             var resultModel = _doctorBusiness.SearchDoctors(request);
@@ -98,4 +118,3 @@ namespace BacSiService.Controllers
         }
     }
 }
-

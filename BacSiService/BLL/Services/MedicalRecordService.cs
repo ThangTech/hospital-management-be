@@ -14,30 +14,29 @@ namespace BacSiService.BLL.Services
             _repo = repo;
         }
 
+        public List<MedicalRecordDto> GetAll()
+        {
+            return _repo.GetAll();
+        }
+
         public PagedResult<MedicalRecordDto> GetByAdmission(Guid? patientId, int pageNumber, int pageSize, string? searchTerm)
         {
             return _repo.GetByAdmission(patientId, pageNumber, pageSize, searchTerm);
         }
 
-        public MedicalRecordDto? Create(MedicalRecordDto dto)
+        public MedicalRecordDto? Create(MedicalRecordDto dto, Guid? nguoiDungId = null, string? auditUser = null)
         {
-            // minimal validation
-            return _repo.Create(dto);
+            return _repo.Create(dto, nguoiDungId, auditUser);
         }
 
-        public MedicalRecordDto? Update(Guid id, MedicalRecordDto dto)
+        public MedicalRecordDto? Update(Guid id, MedicalRecordDto dto, Guid? nguoiDungId = null, string? auditUser = null)
         {
-            return _repo.Update(id, dto);
+            return _repo.Update(id, dto, nguoiDungId, auditUser);
         }
 
-        public bool Delete(Guid id)
+        public bool Delete(Guid id, Guid? nguoiDungId = null, string? auditUser = null)
         {
-            return _repo.Delete(id);
-        }
-
-        public List<MedicalRecordDto> GetAll()
-        {
-            return _repo.GetAll();
+            return _repo.Delete(id, nguoiDungId, auditUser);
         }
     }
 }

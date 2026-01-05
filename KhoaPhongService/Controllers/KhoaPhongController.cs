@@ -1,6 +1,7 @@
 ﻿using KhoaPhongService.BLL.Interfaces;
 using KhoaPhongService.DTO;
 using KhoaPhongService.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Data.SqlClient;
 
@@ -8,6 +9,7 @@ namespace KhoaPhongService.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize] // Yêu cầu đăng nhập cho tất cả endpoints
     public class KhoaPhongController : ControllerBase
     {
         private readonly IKhoaPhongBusiness _bus;
@@ -17,7 +19,12 @@ namespace KhoaPhongService.Controllers
             _bus = bus;
         }
 
+        /// <summary>
+        /// Lấy tất cả khoa phòng
+        /// Quyền: Admin, BacSi, YTa
+        /// </summary>
         [HttpGet("get-all")]
+        [Authorize(Roles = "Admin,BacSi,YTa")]
         public IActionResult GetAll()
         {
             var data = _bus.GetAll();
@@ -33,11 +40,16 @@ namespace KhoaPhongService.Controllers
             return Ok(viewData);
         }
 
+        /// <summary>
+        /// Lấy khoa phòng theo ID
+        /// Quyền: Admin, BacSi, YTa
+        /// </summary>
         [HttpGet("get-by-id/{id}")]
+        [Authorize(Roles = "Admin,BacSi,YTa")]
         public IActionResult GetById(string id)
         {
             var x = _bus.GetById(id);
-            if (x == null) return NotFound("Không tìm th?y");
+            if (x == null) return NotFound("Không tìm thấy");
 
             var viewDto = new KhoaPhongViewDTO
             {
@@ -49,7 +61,12 @@ namespace KhoaPhongService.Controllers
             return Ok(viewDto);
         }
 
+        /// <summary>
+        /// Thêm khoa phòng mới
+        /// Quyền: Admin, YTa
+        /// </summary>
         [HttpPost("create")]
+        [Authorize(Roles = "Admin,YTa")]
         public IActionResult Create([FromBody] KhoaPhongCreateDTO model)
         {
             try
@@ -71,7 +88,6 @@ namespace KhoaPhongService.Controllers
             }
             catch (System.Data.SqlClient.SqlException ex)
             {
-                
                 if (ex.Number == 50001)
                 {
                     return BadRequest(new { Msg = ex.Message }); 
@@ -85,7 +101,12 @@ namespace KhoaPhongService.Controllers
             }
         }
 
+        /// <summary>
+        /// Cập nhật khoa phòng
+        /// Quyền: Admin, YTa
+        /// </summary>
         [HttpPut("update")]
+        [Authorize(Roles = "Admin,YTa")]
         public IActionResult Update([FromBody] KhoaPhongUpdateDTO model)
         {
             try
@@ -107,7 +128,6 @@ namespace KhoaPhongService.Controllers
             }
             catch (SqlException ex) 
             {
-
                 if (ex.Number == 50002)
                 {
                     return BadRequest(new { Msg = ex.Message });
@@ -115,7 +135,13 @@ namespace KhoaPhongService.Controllers
                 return StatusCode(500, new { Msg = "Lỗi Database: " + ex.Message });
             }
         }
+
+        /// <summary>
+        /// Tìm kiếm khoa phòng
+        /// Quyền: Admin, BacSi, YTa
+        /// </summary>
         [HttpGet("search")]
+        [Authorize(Roles = "Admin,BacSi,YTa")]
         public IActionResult Search([FromQuery] string keyword)
         {
             try
@@ -128,7 +154,13 @@ namespace KhoaPhongService.Controllers
                 return StatusCode(500, new { Msg = "Lỗi hệ thống: " + ex.Message });
             }
         }
+
+        /// <summary>
+        /// Xóa khoa phòng
+        /// Quyền: Chỉ Admin
+        /// </summary>
         [HttpDelete("delete/{id}")]
+        [Authorize(Roles = "Admin")]
         public IActionResult Delete(string id)
         {
             try

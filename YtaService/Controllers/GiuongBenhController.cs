@@ -1,11 +1,17 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using YtaService.BLL.Interfaces;
 using YtaService.DTO;
 
 namespace YtaService.Controllers
 {
+    /// <summary>
+    /// Controller quản lý Giường bệnh
+    /// Quyền: Admin, YTa
+    /// </summary>
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize] // Yêu cầu đăng nhập
     public class GiuongBenhController : ControllerBase
     {
         private readonly IGiuongBenhBusiness _business;
@@ -15,14 +21,16 @@ namespace YtaService.Controllers
             _business = business;
         }
 
-        // 1. GET ALL
-        // Viết gộp thế này Swagger sẽ hiểu ngay là: api/GiuongBenh/get-all
+        /// <summary>
+        /// Lấy tất cả giường bệnh
+        /// Quyền: Admin, YTa
+        /// </summary>
         [HttpGet("get-all")]
+        [Authorize(Roles = "Admin,YTa")]
         public IActionResult GetAll()
         {
             var listGiuong = _business.GetAllGiuong();
 
-            // Projection: Chỉ lấy dữ liệu cần thiết
             var result = listGiuong.Select(g => new
             {
                 id = g.Id,
@@ -36,9 +44,12 @@ namespace YtaService.Controllers
             return Ok(result);
         }
 
-        // 2. GET BY ID
-        // Viết gộp: api/GiuongBenh/get-by-id/{id}
+        /// <summary>
+        /// Lấy giường bệnh theo ID
+        /// Quyền: Admin, YTa
+        /// </summary>
         [HttpGet("get-by-id/{id}")]
+        [Authorize(Roles = "Admin,YTa")]
         public IActionResult GetById(Guid id)
         {
             var data = _business.GetById(id);
@@ -46,9 +57,12 @@ namespace YtaService.Controllers
             return Ok(data);
         }
 
-        // 3. CREATE
-        // Viết gộp: api/GiuongBenh/create
+        /// <summary>
+        /// Thêm giường bệnh mới
+        /// Quyền: Admin, YTa
+        /// </summary>
         [HttpPost("create")]
+        [Authorize(Roles = "Admin,YTa")]
         public IActionResult Create([FromBody] GiuongBenhCreateDTO dto)
         {
             try
@@ -61,7 +75,13 @@ namespace YtaService.Controllers
                 return BadRequest(new { Error = ex.Message });
             }
         }
+
+        /// <summary>
+        /// Cập nhật giường bệnh
+        /// Quyền: Admin, YTa
+        /// </summary>
         [HttpPut("update-giuong")]
+        [Authorize(Roles = "Admin,YTa")]
         public IActionResult UpdateGiuong([FromBody] GiuongUpdateDTO request)
         {
             try
@@ -83,7 +103,12 @@ namespace YtaService.Controllers
             }
         }
 
+        /// <summary>
+        /// Xóa giường bệnh
+        /// Quyền: Chỉ Admin
+        /// </summary>
         [HttpDelete("delete-giuong/{id}")]
+        [Authorize(Roles = "Admin")]
         public IActionResult DeleteGiuong(Guid id)
         {
             try

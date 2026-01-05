@@ -3,20 +3,20 @@ using YtaService.BLL.Interfaces;
 using YtaService.DAL;
 using YtaService.DAL.Interfaces;
 using YtaService.DAL.Helper;
-using System.Text.Json.Serialization; // <--- 1. QUAN TRỌNG: Thêm thư viện này
+using System.Text.Json.Serialization;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
+using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-
-// --- 2. QUAN TRỌNG: SỬA ĐOẠN NÀY ---
-// Thay vì chỉ AddControllers(), ta thêm AddJsonOptions để cắt vòng lặp
 builder.Services.AddControllers().AddJsonOptions(x =>
 {
     x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
     x.JsonSerializerOptions.WriteIndented = true;
 });
-// -----------------------------------
 
 // 1. Đăng ký DatabaseHelper
 builder.Services.AddScoped<DatabaseHelper>();
@@ -30,9 +30,53 @@ builder.Services.AddScoped<IGiuongBenhRepository, GiuongBenhRepository>();
 builder.Services.AddScoped<IYtaBusiness, YtaBusiness>();
 builder.Services.AddScoped<IGiuongBenhBusiness, GiuongBenhBusiness>();
 
-// Config Swagger
+// ===== JWT AUTHENTICATION =====
+var jwtSettings = builder.Configuration.GetSection("JwtSettings");
+var secretKey = jwtSettings["SecretKey"] ?? "YourSuperSecretKeyHere_MustBeAtLeast32Characters!";
+
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(options =>
+    {
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuer = true,
+            ValidateAudience = true,
+            ValidateLifetime = true,
+            ValidateIssuerSigningKey = true,
+            ValidIssuer = jwtSettings["Issuer"],
+            ValidAudience = jwtSettings["Audience"],
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey)),
+            ClockSkew = TimeSpan.Zero
+        };
+    });
+
+builder.Services.AddAuthorization();
+
+// Config Swagger với JWT
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(options =>
+{
+    options.SwaggerDoc("v1", new OpenApiInfo { Title = "YTa Service API", Version = "v1" });
+    options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+    {
+        Name = "Authorization",
+        Type = SecuritySchemeType.Http,
+        Scheme = "bearer",
+        BearerFormat = "JWT",
+        In = ParameterLocation.Header,
+        Description = "Nhập JWT token từ IdentityService"
+    });
+    options.AddSecurityRequirement(new OpenApiSecurityRequirement
+    {
+        {
+            new OpenApiSecurityScheme
+            {
+                Reference = new OpenApiReference { Type = ReferenceType.SecurityScheme, Id = "Bearer" }
+            },
+            Array.Empty<string>()
+        }
+    });
+});
 
 var app = builder.Build();
 
@@ -45,6 +89,8 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+// Authentication PHẢI đặt trước Authorization
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();

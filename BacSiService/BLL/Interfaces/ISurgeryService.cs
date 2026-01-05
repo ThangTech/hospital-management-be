@@ -7,8 +7,8 @@ namespace BacSiService.BLL.Interfaces
     {
         List<SurgeryScheduleDto> GetAll();
         PagedResult<SurgeryScheduleDto> Search(SearchRequestDTO request);
-        SurgeryScheduleDto? Create(SurgeryScheduleDto dto);
-        SurgeryScheduleDto? Update(Guid id, SurgeryScheduleDto dto);
-        bool Delete(Guid id);
+        SurgeryScheduleDto? Create(SurgeryScheduleDto dto, Guid? nguoiDungId = null, string? auditUser = null);
+        SurgeryScheduleDto? Update(Guid id, SurgeryScheduleDto dto, Guid? nguoiDungId = null, string? auditUser = null);
+        bool Delete(Guid id, Guid? nguoiDungId = null, string? auditUser = null);
     }
 }

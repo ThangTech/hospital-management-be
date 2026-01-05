@@ -1,4 +1,5 @@
 using BacSiService.DTOs;
+using System;
 
 namespace BacSiService.BLL.Interfaces
 {
@@ -6,8 +7,8 @@ namespace BacSiService.BLL.Interfaces
     {
         List<LabTestDto> GetAll();
         PagedResult<LabTestDto> Search(SearchRequestDTO request);
-        LabTestDto? Create(LabTestDto dto);
-        LabTestDto? Update(System.Guid id, LabTestDto dto);
-        bool Delete(System.Guid id);
+        LabTestDto? Create(LabTestDto dto, Guid? nguoiDungId = null, string? auditUser = null);
+        LabTestDto? Update(Guid id, LabTestDto dto, Guid? nguoiDungId = null, string? auditUser = null);
+        bool Delete(Guid id, Guid? nguoiDungId = null, string? auditUser = null);
     }
 }

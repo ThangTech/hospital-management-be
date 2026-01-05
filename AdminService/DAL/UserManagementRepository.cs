@@ -1,5 +1,6 @@
 using AdminService.DTOs;
 using Microsoft.Data.SqlClient;
+using System.Data;
 using System.Security.Cryptography;
 using System.Text;
 
@@ -26,49 +27,30 @@ public class UserManagementRepository : IUserManagementRepository
         if (string.IsNullOrEmpty(_connectionString)) return result;
 
         using var conn = new SqlConnection(_connectionString);
+        using var cmd = new SqlCommand("sp_SearchNguoiDung", conn);
+        cmd.CommandType = CommandType.StoredProcedure;
 
-        var whereClause = "WHERE 1=1";
-        if (!string.IsNullOrEmpty(search.TenDangNhap))
-            whereClause += " AND TenDangNhap LIKE @TenDangNhap";
-        if (!string.IsNullOrEmpty(search.VaiTro))
-            whereClause += " AND VaiTro = @VaiTro";
+        cmd.Parameters.AddWithValue("@TenDangNhap", (object?)search.TenDangNhap ?? DBNull.Value);
+        cmd.Parameters.AddWithValue("@VaiTro", (object?)search.VaiTro ?? DBNull.Value);
+        cmd.Parameters.AddWithValue("@PageNumber", search.PageNumber);
+        cmd.Parameters.AddWithValue("@PageSize", search.PageSize);
 
-        // Count
-        var countSql = $"SELECT COUNT(*) FROM NguoiDung {whereClause}";
-        using (var countCmd = new SqlCommand(countSql, conn))
+        var totalRecordsParam = new SqlParameter("@TotalRecords", SqlDbType.Int)
         {
-            if (!string.IsNullOrEmpty(search.TenDangNhap))
-                countCmd.Parameters.AddWithValue("@TenDangNhap", $"%{search.TenDangNhap}%");
-            if (!string.IsNullOrEmpty(search.VaiTro))
-                countCmd.Parameters.AddWithValue("@VaiTro", search.VaiTro);
+            Direction = ParameterDirection.Output
+        };
+        cmd.Parameters.Add(totalRecordsParam);
 
-            conn.Open();
-            result.TotalRecords = (int)countCmd.ExecuteScalar();
-            result.TotalPages = (int)Math.Ceiling((double)result.TotalRecords / search.PageSize);
+        conn.Open();
+        using var reader = cmd.ExecuteReader();
+        while (reader.Read())
+        {
+            result.Data.Add(MapToUserDTO(reader));
         }
 
-        // Data
-        var offset = (search.PageNumber - 1) * search.PageSize;
-        var dataSql = $@"
-            SELECT Id, TenDangNhap, VaiTro FROM NguoiDung {whereClause}
-            ORDER BY TenDangNhap
-            OFFSET @Offset ROWS FETCH NEXT @PageSize ROWS ONLY";
-
-        using (var dataCmd = new SqlCommand(dataSql, conn))
-        {
-            if (!string.IsNullOrEmpty(search.TenDangNhap))
-                dataCmd.Parameters.AddWithValue("@TenDangNhap", $"%{search.TenDangNhap}%");
-            if (!string.IsNullOrEmpty(search.VaiTro))
-                dataCmd.Parameters.AddWithValue("@VaiTro", search.VaiTro);
-            dataCmd.Parameters.AddWithValue("@Offset", offset);
-            dataCmd.Parameters.AddWithValue("@PageSize", search.PageSize);
-
-            using var reader = dataCmd.ExecuteReader();
-            while (reader.Read())
-            {
-                result.Data.Add(MapToUserDTO(reader));
-            }
-        }
+        reader.Close();
+        result.TotalRecords = (int)totalRecordsParam.Value;
+        result.TotalPages = (int)Math.Ceiling((double)result.TotalRecords / search.PageSize);
 
         return result;
     }
@@ -78,7 +60,8 @@ public class UserManagementRepository : IUserManagementRepository
         if (string.IsNullOrEmpty(_connectionString)) return null;
 
         using var conn = new SqlConnection(_connectionString);
-        using var cmd = new SqlCommand("SELECT Id, TenDangNhap, VaiTro FROM NguoiDung WHERE Id = @Id", conn);
+        using var cmd = new SqlCommand("sp_GetNguoiDungById", conn);
+        cmd.CommandType = CommandType.StoredProcedure;
         cmd.Parameters.AddWithValue("@Id", id);
 
         conn.Open();
@@ -94,7 +77,8 @@ public class UserManagementRepository : IUserManagementRepository
         if (string.IsNullOrEmpty(_connectionString)) return null;
 
         using var conn = new SqlConnection(_connectionString);
-        using var cmd = new SqlCommand("SELECT Id, TenDangNhap, VaiTro FROM NguoiDung WHERE TenDangNhap = @TenDangNhap", conn);
+        using var cmd = new SqlCommand("sp_GetNguoiDungByTenDangNhap", conn);
+        cmd.CommandType = CommandType.StoredProcedure;
         cmd.Parameters.AddWithValue("@TenDangNhap", tenDangNhap);
 
         conn.Open();
@@ -110,11 +94,20 @@ public class UserManagementRepository : IUserManagementRepository
         if (string.IsNullOrEmpty(_connectionString)) return false;
 
         using var conn = new SqlConnection(_connectionString);
-        using var cmd = new SqlCommand("SELECT COUNT(1) FROM NguoiDung WHERE TenDangNhap = @TenDangNhap", conn);
+        using var cmd = new SqlCommand("sp_CheckNguoiDungExists", conn);
+        cmd.CommandType = CommandType.StoredProcedure;
         cmd.Parameters.AddWithValue("@TenDangNhap", tenDangNhap);
 
+        var existsParam = new SqlParameter("@Exists", SqlDbType.Bit)
+        {
+            Direction = ParameterDirection.Output
+        };
+        cmd.Parameters.Add(existsParam);
+
         conn.Open();
-        return (int)cmd.ExecuteScalar() > 0;
+        cmd.ExecuteNonQuery();
+
+        return (bool)existsParam.Value;
     }
 
     public UserDTO Create(CreateUserDTO dto)
@@ -126,9 +119,8 @@ public class UserManagementRepository : IUserManagementRepository
         var hashedPassword = HashPassword(dto.MatKhau);
 
         using var conn = new SqlConnection(_connectionString);
-        using var cmd = new SqlCommand(@"
-            INSERT INTO NguoiDung (Id, TenDangNhap, MatKhauHash, VaiTro)
-            VALUES (@Id, @TenDangNhap, @MatKhauHash, @VaiTro)", conn);
+        using var cmd = new SqlCommand("sp_CreateNguoiDung", conn);
+        cmd.CommandType = CommandType.StoredProcedure;
 
         cmd.Parameters.AddWithValue("@Id", id);
         cmd.Parameters.AddWithValue("@TenDangNhap", dto.TenDangNhap);
@@ -136,7 +128,9 @@ public class UserManagementRepository : IUserManagementRepository
         cmd.Parameters.AddWithValue("@VaiTro", dto.VaiTro);
 
         conn.Open();
-        cmd.ExecuteNonQuery();
+        using var reader = cmd.ExecuteReader();
+        if (reader.Read())
+            return MapToUserDTO(reader);
 
         return new UserDTO { Id = id, TenDangNhap = dto.TenDangNhap, VaiTro = dto.VaiTro };
     }
@@ -146,19 +140,17 @@ public class UserManagementRepository : IUserManagementRepository
         if (string.IsNullOrEmpty(_connectionString)) return null;
 
         using var conn = new SqlConnection(_connectionString);
-        using var cmd = new SqlCommand(@"
-            UPDATE NguoiDung SET TenDangNhap = @TenDangNhap, VaiTro = @VaiTro 
-            WHERE Id = @Id", conn);
+        using var cmd = new SqlCommand("sp_UpdateNguoiDung", conn);
+        cmd.CommandType = CommandType.StoredProcedure;
 
         cmd.Parameters.AddWithValue("@Id", dto.Id);
-        cmd.Parameters.AddWithValue("@TenDangNhap", dto.TenDangNhap ?? (object)DBNull.Value);
-        cmd.Parameters.AddWithValue("@VaiTro", dto.VaiTro ?? (object)DBNull.Value);
+        cmd.Parameters.AddWithValue("@TenDangNhap", (object?)dto.TenDangNhap ?? DBNull.Value);
+        cmd.Parameters.AddWithValue("@VaiTro", (object?)dto.VaiTro ?? DBNull.Value);
 
         conn.Open();
-        var rows = cmd.ExecuteNonQuery();
-        
-        if (rows > 0)
-            return GetById(dto.Id);
+        using var reader = cmd.ExecuteReader();
+        if (reader.Read())
+            return MapToUserDTO(reader);
 
         return null;
     }
@@ -168,11 +160,20 @@ public class UserManagementRepository : IUserManagementRepository
         if (string.IsNullOrEmpty(_connectionString)) return false;
 
         using var conn = new SqlConnection(_connectionString);
-        using var cmd = new SqlCommand("DELETE FROM NguoiDung WHERE Id = @Id", conn);
+        using var cmd = new SqlCommand("sp_DeleteNguoiDung", conn);
+        cmd.CommandType = CommandType.StoredProcedure;
         cmd.Parameters.AddWithValue("@Id", id);
 
+        var rowsAffectedParam = new SqlParameter("@RowsAffected", SqlDbType.Int)
+        {
+            Direction = ParameterDirection.Output
+        };
+        cmd.Parameters.Add(rowsAffectedParam);
+
         conn.Open();
-        return cmd.ExecuteNonQuery() > 0;
+        cmd.ExecuteNonQuery();
+
+        return (int)rowsAffectedParam.Value > 0;
     }
 
     public bool ResetPassword(Guid userId, string newPassword)
@@ -182,12 +183,21 @@ public class UserManagementRepository : IUserManagementRepository
         var hashedPassword = HashPassword(newPassword);
 
         using var conn = new SqlConnection(_connectionString);
-        using var cmd = new SqlCommand("UPDATE NguoiDung SET MatKhauHash = @MatKhauHash WHERE Id = @Id", conn);
+        using var cmd = new SqlCommand("sp_ResetPassword", conn);
+        cmd.CommandType = CommandType.StoredProcedure;
         cmd.Parameters.AddWithValue("@Id", userId);
         cmd.Parameters.AddWithValue("@MatKhauHash", hashedPassword);
 
+        var rowsAffectedParam = new SqlParameter("@RowsAffected", SqlDbType.Int)
+        {
+            Direction = ParameterDirection.Output
+        };
+        cmd.Parameters.Add(rowsAffectedParam);
+
         conn.Open();
-        return cmd.ExecuteNonQuery() > 0;
+        cmd.ExecuteNonQuery();
+
+        return (int)rowsAffectedParam.Value > 0;
     }
 
     public List<UserDTO> GetAll()
@@ -196,7 +206,8 @@ public class UserManagementRepository : IUserManagementRepository
         if (string.IsNullOrEmpty(_connectionString)) return result;
 
         using var conn = new SqlConnection(_connectionString);
-        using var cmd = new SqlCommand("SELECT Id, TenDangNhap, VaiTro FROM NguoiDung ORDER BY TenDangNhap", conn);
+        using var cmd = new SqlCommand("sp_GetAllNguoiDung", conn);
+        cmd.CommandType = CommandType.StoredProcedure;
 
         conn.Open();
         using var reader = cmd.ExecuteReader();

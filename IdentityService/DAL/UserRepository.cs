@@ -5,7 +5,7 @@ using Microsoft.Data.SqlClient;
 namespace IdentityService.DAL;
 
 /// <summary>
-/// Repository quản lý NguoiDung sử dụng ADO.NET
+/// Repository quản lý NguoiDung sử dụng Stored Procedures
 /// </summary>
 public class UserRepository : IUserRepository
 {
@@ -22,10 +22,9 @@ public class UserRepository : IUserRepository
     /// </summary>
     public async Task<NguoiDung?> GetByIdAsync(Guid id)
     {
-        const string sql = "SELECT Id, TenDangNhap, MatKhauHash, VaiTro FROM NguoiDung WHERE Id = @Id";
-
         using var connection = new SqlConnection(_connectionString);
-        using var command = new SqlCommand(sql, connection);
+        using var command = new SqlCommand("sp_GetNguoiDungByIdFull", connection);
+        command.CommandType = CommandType.StoredProcedure;
         command.Parameters.AddWithValue("@Id", id);
 
         await connection.OpenAsync();
@@ -44,10 +43,9 @@ public class UserRepository : IUserRepository
     /// </summary>
     public async Task<NguoiDung?> GetByTenDangNhapAsync(string tenDangNhap)
     {
-        const string sql = "SELECT Id, TenDangNhap, MatKhauHash, VaiTro FROM NguoiDung WHERE TenDangNhap = @TenDangNhap";
-
         using var connection = new SqlConnection(_connectionString);
-        using var command = new SqlCommand(sql, connection);
+        using var command = new SqlCommand("sp_GetNguoiDungByTenDangNhapFull", connection);
+        command.CommandType = CommandType.StoredProcedure;
         command.Parameters.AddWithValue("@TenDangNhap", tenDangNhap);
 
         await connection.OpenAsync();
@@ -66,16 +64,21 @@ public class UserRepository : IUserRepository
     /// </summary>
     public async Task<bool> ExistsAsync(string tenDangNhap)
     {
-        const string sql = "SELECT COUNT(1) FROM NguoiDung WHERE TenDangNhap = @TenDangNhap";
-
         using var connection = new SqlConnection(_connectionString);
-        using var command = new SqlCommand(sql, connection);
+        using var command = new SqlCommand("sp_CheckNguoiDungExists", connection);
+        command.CommandType = CommandType.StoredProcedure;
         command.Parameters.AddWithValue("@TenDangNhap", tenDangNhap);
 
-        await connection.OpenAsync();
-        var count = (int)(await command.ExecuteScalarAsync() ?? 0);
+        var existsParam = new SqlParameter("@Exists", SqlDbType.Bit)
+        {
+            Direction = ParameterDirection.Output
+        };
+        command.Parameters.Add(existsParam);
 
-        return count > 0;
+        await connection.OpenAsync();
+        await command.ExecuteNonQueryAsync();
+
+        return (bool)existsParam.Value;
     }
 
     /// <summary>
@@ -83,15 +86,11 @@ public class UserRepository : IUserRepository
     /// </summary>
     public async Task<NguoiDung> CreateAsync(NguoiDung nguoiDung)
     {
-        const string sql = @"
-            INSERT INTO NguoiDung (Id, TenDangNhap, MatKhauHash, VaiTro)
-            OUTPUT INSERTED.Id, INSERTED.TenDangNhap, INSERTED.MatKhauHash, INSERTED.VaiTro
-            VALUES (@Id, @TenDangNhap, @MatKhauHash, @VaiTro)";
-
         nguoiDung.Id = Guid.NewGuid();
 
         using var connection = new SqlConnection(_connectionString);
-        using var command = new SqlCommand(sql, connection);
+        using var command = new SqlCommand("sp_CreateNguoiDungFull", connection);
+        command.CommandType = CommandType.StoredProcedure;
         
         command.Parameters.AddWithValue("@Id", nguoiDung.Id);
         command.Parameters.AddWithValue("@TenDangNhap", nguoiDung.TenDangNhap ?? (object)DBNull.Value);
@@ -114,15 +113,9 @@ public class UserRepository : IUserRepository
     /// </summary>
     public async Task<NguoiDung> UpdateAsync(NguoiDung nguoiDung)
     {
-        const string sql = @"
-            UPDATE NguoiDung 
-            SET TenDangNhap = @TenDangNhap, 
-                MatKhauHash = @MatKhauHash, 
-                VaiTro = @VaiTro
-            WHERE Id = @Id";
-
         using var connection = new SqlConnection(_connectionString);
-        using var command = new SqlCommand(sql, connection);
+        using var command = new SqlCommand("sp_UpdateNguoiDungFull", connection);
+        command.CommandType = CommandType.StoredProcedure;
         
         command.Parameters.AddWithValue("@Id", nguoiDung.Id);
         command.Parameters.AddWithValue("@TenDangNhap", nguoiDung.TenDangNhap ?? (object)DBNull.Value);
@@ -130,7 +123,12 @@ public class UserRepository : IUserRepository
         command.Parameters.AddWithValue("@VaiTro", nguoiDung.VaiTro ?? (object)DBNull.Value);
 
         await connection.OpenAsync();
-        await command.ExecuteNonQueryAsync();
+        using var reader = await command.ExecuteReaderAsync();
+
+        if (await reader.ReadAsync())
+        {
+            return MapToNguoiDung(reader);
+        }
 
         return nguoiDung;
     }
@@ -140,11 +138,11 @@ public class UserRepository : IUserRepository
     /// </summary>
     public async Task<IEnumerable<NguoiDung>> GetAllAsync()
     {
-        const string sql = "SELECT Id, TenDangNhap, MatKhauHash, VaiTro FROM NguoiDung";
         var users = new List<NguoiDung>();
 
         using var connection = new SqlConnection(_connectionString);
-        using var command = new SqlCommand(sql, connection);
+        using var command = new SqlCommand("sp_GetAllNguoiDungFull", connection);
+        command.CommandType = CommandType.StoredProcedure;
 
         await connection.OpenAsync();
         using var reader = await command.ExecuteReaderAsync();

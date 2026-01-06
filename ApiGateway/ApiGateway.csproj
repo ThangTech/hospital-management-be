@@ -26,7 +26,6 @@
     <ProjectReference Include="..\BacSiService\BacSiService.csproj" />
     <ProjectReference Include="..\BenhNhanService\BenhNhanService.csproj" />
     <ProjectReference Include="..\IdentityService\IdentityService.csproj" />
-    <ProjectReference Include="..\ThanhToanService\ThanhToanService.csproj" />
     <ProjectReference Include="..\YtaService\YtaService.csproj" />
   </ItemGroup>
 

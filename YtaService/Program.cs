@@ -34,6 +34,25 @@ builder.Services.AddScoped<IGiuongBenhBusiness, GiuongBenhBusiness>();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+
+
+// Đăng ký Repository và Business
+builder.Services.AddScoped<IHoSoBenhAnRepository, HoSoBenhAnRepository>();
+builder.Services.AddScoped<IHoSoBenhAnBusiness, HoSoBenhAnBusiness>();
+
+
+// Đăng ký cho module Nhập Viện
+builder.Services.AddScoped<INhapVienRepository, NhapVienRepository>();
+builder.Services.AddScoped<INhapVienBusiness, NhapVienBusiness>();
+
+// Đăng ký cho module Xuất Viện
+builder.Services.AddScoped<IXuatVienRepository, XuatVienRepository>();
+builder.Services.AddScoped<IXuatVienBusiness, XuatVienBusiness>();
+
+// Đăng ký cho module Hóa Đơn
+builder.Services.AddScoped<IHoaDonRepository, HoaDonRepository>();
+builder.Services.AddScoped<IHoaDonBusiness, HoaDonBusiness>();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

@@ -1,4 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using YtaService.BLL.Interfaces;
 using YtaService.DTO;
 
@@ -17,7 +20,7 @@ namespace YtaService.Controllers
 
         // 1. GET ALL
         // Viết gộp thế này Swagger sẽ hiểu ngay là: api/GiuongBenh/get-all
-        [HttpGet("get-all")]
+        [HttpGet("danh-sach")]
         public IActionResult GetAll()
         {
             var listGiuong = _business.GetAllGiuong();
@@ -38,7 +41,7 @@ namespace YtaService.Controllers
 
         // 2. GET BY ID
         // Viết gộp: api/GiuongBenh/get-by-id/{id}
-        [HttpGet("get-by-id/{id}")]
+        [HttpGet("chi-tiet/{id}")]
         public IActionResult GetById(Guid id)
         {
             var data = _business.GetById(id);
@@ -48,7 +51,7 @@ namespace YtaService.Controllers
 
         // 3. CREATE
         // Viết gộp: api/GiuongBenh/create
-        [HttpPost("create")]
+        [HttpPost("tao-moi")]
         public IActionResult Create([FromBody] GiuongBenhCreateDTO dto)
         {
             try
@@ -61,7 +64,7 @@ namespace YtaService.Controllers
                 return BadRequest(new { Error = ex.Message });
             }
         }
-        [HttpPut("update-giuong")]
+        [HttpPut("cap-nhat")]
         public IActionResult UpdateGiuong([FromBody] GiuongUpdateDTO request)
         {
             try
@@ -83,7 +86,7 @@ namespace YtaService.Controllers
             }
         }
 
-        [HttpDelete("delete-giuong/{id}")]
+        [HttpDelete("xoa/{id}")]
         public IActionResult DeleteGiuong(Guid id)
         {
             try

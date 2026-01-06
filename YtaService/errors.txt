@@ -1,0 +1,27 @@
+  Determining projects to restore...
+  All projects are up-to-date for restore.
+C:\Users\phanson\BTL_PMHDV_2\YtaService\BLL\GiuongBenhBusiness.cs(39,30): error CS1003: Syntax error, ',' expected [C:\Users\phanson\BTL_PMHDV_2\YtaService\YtaService.csproj]
+C:\Users\phanson\BTL_PMHDV_2\YtaService\DAL\GiuongBenhRepository.cs(54,70): error CS1003: Syntax error, ':' expected [C:\Users\phanson\BTL_PMHDV_2\YtaService\YtaService.csproj]
+C:\Users\phanson\BTL_PMHDV_2\YtaService\DAL\GiuongBenhRepository.cs(54,78): error CS1002: ; expected [C:\Users\phanson\BTL_PMHDV_2\YtaService\YtaService.csproj]
+C:\Users\phanson\BTL_PMHDV_2\YtaService\Models\HospitalManageContext.cs(49,10): warning CS1030: #warning: 'To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.' [C:\Users\phanson\BTL_PMHDV_2\YtaService\YtaService.csproj]
+C:\Users\phanson\BTL_PMHDV_2\YtaService\DAL\GiuongBenhRepository.cs(54,78): error CS1513: } expected [C:\Users\phanson\BTL_PMHDV_2\YtaService\YtaService.csproj]
+C:\Users\phanson\BTL_PMHDV_2\YtaService\DAL\GiuongBenhRepository.cs(220,54): error CS1003: Syntax error, ':' expected [C:\Users\phanson\BTL_PMHDV_2\YtaService\YtaService.csproj]
+C:\Users\phanson\BTL_PMHDV_2\YtaService\DAL\GiuongBenhRepository.cs(220,62): error CS1002: ; expected [C:\Users\phanson\BTL_PMHDV_2\YtaService\YtaService.csproj]
+C:\Users\phanson\BTL_PMHDV_2\YtaService\DAL\GiuongBenhRepository.cs(220,62): error CS1513: } expected [C:\Users\phanson\BTL_PMHDV_2\YtaService\YtaService.csproj]
+
+Build FAILED.
+
+C:\Users\phanson\BTL_PMHDV_2\YtaService\Models\HospitalManageContext.cs(49,10): warning CS1030: #warning: 'To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.' [C:\Users\phanson\BTL_PMHDV_2\YtaService\YtaService.csproj]
+C:\Users\phanson\BTL_PMHDV_2\YtaService\BLL\GiuongBenhBusiness.cs(39,30): error CS1003: Syntax error, ',' expected [C:\Users\phanson\BTL_PMHDV_2\YtaService\YtaService.csproj]
+C:\Users\phanson\BTL_PMHDV_2\YtaService\DAL\GiuongBenhRepository.cs(54,70): error CS1003: Syntax error, ':' expected [C:\Users\phanson\BTL_PMHDV_2\YtaService\YtaService.csproj]
+C:\Users\phanson\BTL_PMHDV_2\YtaService\DAL\GiuongBenhRepository.cs(54,78): error CS1002: ; expected [C:\Users\phanson\BTL_PMHDV_2\YtaService\YtaService.csproj]
+C:\Users\phanson\BTL_PMHDV_2\YtaService\DAL\GiuongBenhRepository.cs(54,78): error CS1513: } expected [C:\Users\phanson\BTL_PMHDV_2\YtaService\YtaService.csproj]
+C:\Users\phanson\BTL_PMHDV_2\YtaService\DAL\GiuongBenhRepository.cs(220,54): error CS1003: Syntax error, ':' expected [C:\Users\phanson\BTL_PMHDV_2\YtaService\YtaService.csproj]
+C:\Users\phanson\BTL_PMHDV_2\YtaService\DAL\GiuongBenhRepository.cs(220,62): error CS1002: ; expected [C:\Users\phanson\BTL_PMHDV_2\YtaService\YtaService.csproj]
+C:\Users\phanson\BTL_PMHDV_2\YtaService\DAL\GiuongBenhRepository.cs(220,62): error CS1513: } expected [C:\Users\phanson\BTL_PMHDV_2\YtaService\YtaService.csproj]
+    1 Warning(s)
+    7 Error(s)
+
+Time Elapsed 00:00:02.99
+
+Workload updates are available. Run `dotnet workload list` for more information.

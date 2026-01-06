@@ -1,4 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using YtaService.BLL.Interfaces;
 using YtaService.DTO;
 using YtaService.Models;
@@ -17,7 +20,7 @@ namespace YtaService.Controllers
         }
 
         // 1. Search
-        [Route("search")]
+        [Route("tim-kiem")]
         [HttpPost]
         public IActionResult Search([FromBody] YTaSearchDTO model)
         {
@@ -55,7 +58,7 @@ namespace YtaService.Controllers
         }
 
         // 2. Create
-        [Route("create")]
+        [Route("tao-moi")]
         [HttpPost]
         public IActionResult Create([FromBody] YtaCreateDTO model)
         {
@@ -85,7 +88,7 @@ namespace YtaService.Controllers
         }
 
         // 6. Get All
-        [Route("get-all")]
+        [Route("danh-sach")]
         [HttpGet]
         public IActionResult GetAll()
         {
@@ -114,7 +117,7 @@ namespace YtaService.Controllers
         }
 
         // 3. Update
-        [Route("update")]
+        [Route("cap-nhat")]
         [HttpPut]
         // [SỬA LỖI]: Đổi YTaUpdateDTO thành YtaUpdateDTO (chữ t thường) để khớp với file DTO
         public IActionResult Update([FromBody] YTaUpdateDTO model)
@@ -145,7 +148,7 @@ namespace YtaService.Controllers
         }
 
         // 4. Delete
-        [Route("delete/{id}")]
+        [Route("xoa/{id}")]
         [HttpDelete]
         public IActionResult Delete(string id)
         {
@@ -154,7 +157,7 @@ namespace YtaService.Controllers
         }
 
         // 5. GetById
-        [Route("get-by-id/{id}")]
+        [Route("chi-tiet/{id}")]
         [HttpGet]
         public IActionResult GetById(string id)
         {

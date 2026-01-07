@@ -1,3 +1,7 @@
+﻿using Microsoft.AspNetCore.Mvc;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using YtaService.BLL.Interfaces;
@@ -21,6 +25,9 @@ namespace YtaService.Controllers
             _business = business;
         }
 
+        // 1. GET ALL
+        // Viết gộp thế này Swagger sẽ hiểu ngay là: api/GiuongBenh/get-all
+        [HttpGet("danh-sach")]
         /// <summary>
         /// Lấy tất cả giường bệnh
         /// Quyền: Admin, YTa
@@ -44,6 +51,9 @@ namespace YtaService.Controllers
             return Ok(result);
         }
 
+        // 2. GET BY ID
+        // Viết gộp: api/GiuongBenh/get-by-id/{id}
+        [HttpGet("chi-tiet/{id}")]
         /// <summary>
         /// Lấy giường bệnh theo ID
         /// Quyền: Admin, YTa
@@ -57,6 +67,9 @@ namespace YtaService.Controllers
             return Ok(data);
         }
 
+        // 3. CREATE
+        // Viết gộp: api/GiuongBenh/create
+        [HttpPost("tao-moi")]
         /// <summary>
         /// Thêm giường bệnh mới
         /// Quyền: Admin, YTa
@@ -75,6 +88,7 @@ namespace YtaService.Controllers
                 return BadRequest(new { Error = ex.Message });
             }
         }
+        [HttpPut("cap-nhat")]
 
         /// <summary>
         /// Cập nhật giường bệnh
@@ -103,6 +117,7 @@ namespace YtaService.Controllers
             }
         }
 
+        [HttpDelete("xoa/{id}")]
         /// <summary>
         /// Xóa giường bệnh
         /// Quyền: Chỉ Admin

@@ -12,6 +12,15 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Controllers\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\AdminService\AdminService.csproj" />
+    <ProjectReference Include="..\BacSiService\BacSiService.csproj" />
+    <ProjectReference Include="..\BenhNhanService\BenhNhanService.csproj" />
+    <ProjectReference Include="..\IdentityService\IdentityService.csproj" />
+    <ProjectReference Include="..\YtaService\YtaService.csproj" />
     <None Update="ocelot.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

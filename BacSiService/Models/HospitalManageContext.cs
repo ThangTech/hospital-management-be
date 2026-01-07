@@ -15,6 +15,8 @@ public partial class HospitalManageContext : DbContext
     {
     }
 
+    public virtual DbSet<AuditHoSoBenhAn> AuditHoSoBenhAns { get; set; }
+
     public virtual DbSet<BacSi> BacSis { get; set; }
 
     public virtual DbSet<BenhNhan> BenhNhans { get; set; }
@@ -24,6 +26,8 @@ public partial class HospitalManageContext : DbContext
     public virtual DbSet<DieuDuong> DieuDuongs { get; set; }
 
     public virtual DbSet<GiuongBenh> GiuongBenhs { get; set; }
+
+    public virtual DbSet<HoSoBenhAn> HoSoBenhAns { get; set; }
 
     public virtual DbSet<HoaDon> HoaDons { get; set; }
 
@@ -39,15 +43,32 @@ public partial class HospitalManageContext : DbContext
 
     public virtual DbSet<XetNghiem> XetNghiems { get; set; }
 
+    public virtual DbSet<Ytum> Yta { get; set; }
+
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
-        => optionsBuilder.UseSqlServer("Server=.\\SQLEXPRESS;Database=hospital_manage;Trusted_Connection=True;TrustServerCertificate=True;");
+        => optionsBuilder.UseSqlServer("Server=DESKTOP-5J0CNUJ;Database=hospital_manage;Trusted_Connection=true;TrustServerCertificate=true");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        modelBuilder.Entity<AuditHoSoBenhAn>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK__Audit_Ho__3214EC076B06607A");
+
+            entity.ToTable("Audit_HoSoBenhAn");
+
+            entity.Property(e => e.Id).ValueGeneratedNever();
+            entity.Property(e => e.HanhDong).HasMaxLength(50);
+            entity.Property(e => e.KetQuaCu).HasMaxLength(255);
+            entity.Property(e => e.NguoiSua).HasMaxLength(100);
+            entity.Property(e => e.ThoiGianSua)
+                .HasDefaultValueSql("(getdate())")
+                .HasColumnType("datetime");
+        });
+
         modelBuilder.Entity<BacSi>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__BacSi__3214EC076ECFECD8");
+            entity.HasKey(e => e.Id).HasName("PK__BacSi__3214EC071E76A6E3");
 
             entity.ToTable("BacSi");
 
@@ -55,11 +76,15 @@ public partial class HospitalManageContext : DbContext
             entity.Property(e => e.ChuyenKhoa).HasMaxLength(255);
             entity.Property(e => e.HoTen).HasMaxLength(255);
             entity.Property(e => e.ThongTinLienHe).HasMaxLength(255);
+
+            entity.HasOne(d => d.Khoa).WithMany(p => p.BacSis)
+                .HasForeignKey(d => d.KhoaId)
+                .HasConstraintName("FK__BacSi__KhoaId__18EBB532");
         });
 
         modelBuilder.Entity<BenhNhan>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__BenhNhan__3214EC07102EB262");
+            entity.HasKey(e => e.Id).HasName("PK__BenhNhan__3214EC07F4E03AD6");
 
             entity.ToTable("BenhNhan");
 
@@ -72,30 +97,33 @@ public partial class HospitalManageContext : DbContext
 
         modelBuilder.Entity<DichVuDieuTri>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__DichVuDi__3214EC077990FB25");
+            entity.HasKey(e => e.Id).HasName("PK__DichVuDi__3214EC073E5FAAE2");
 
             entity.ToTable("DichVuDieuTri");
 
             entity.Property(e => e.Id).HasDefaultValueSql("(newid())");
+            entity.Property(e => e.DonGia)
+                .HasDefaultValue(0m)
+                .HasColumnType("decimal(18, 2)");
             entity.Property(e => e.LoaiDichVu).HasMaxLength(255);
             entity.Property(e => e.Ngay).HasColumnType("datetime");
 
             entity.HasOne(d => d.BacSi).WithMany(p => p.DichVuDieuTris)
                 .HasForeignKey(d => d.BacSiId)
-                .HasConstraintName("FK__DichVuDie__BacSi__60A75C0F");
+                .HasConstraintName("FK__DichVuDie__BacSi__4E88ABD4");
 
             entity.HasOne(d => d.DieuDuong).WithMany(p => p.DichVuDieuTris)
                 .HasForeignKey(d => d.DieuDuongId)
-                .HasConstraintName("FK__DichVuDie__DieuD__619B8048");
+                .HasConstraintName("FK__DichVuDie__DieuD__4F7CD00D");
 
             entity.HasOne(d => d.NhapVien).WithMany(p => p.DichVuDieuTris)
                 .HasForeignKey(d => d.NhapVienId)
-                .HasConstraintName("FK__DichVuDie__NhapV__5FB337D6");
+                .HasConstraintName("FK__DichVuDie__NhapV__4D94879B");
         });
 
         modelBuilder.Entity<DieuDuong>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__DieuDuon__3214EC0705DC3D6F");
+            entity.HasKey(e => e.Id).HasName("PK__DieuDuon__3214EC0713C0AF5E");
 
             entity.ToTable("DieuDuong");
 
@@ -104,12 +132,12 @@ public partial class HospitalManageContext : DbContext
 
             entity.HasOne(d => d.Khoa).WithMany(p => p.DieuDuongs)
                 .HasForeignKey(d => d.KhoaId)
-                .HasConstraintName("FK__DieuDuong__KhoaI__5BE2A6F2");
+                .HasConstraintName("FK__DieuDuong__KhoaI__49C3F6B7");
         });
 
         modelBuilder.Entity<GiuongBenh>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__GiuongBe__3214EC0748D28875");
+            entity.HasKey(e => e.Id).HasName("PK__GiuongBe__3214EC07273EFCE6");
 
             entity.ToTable("GiuongBenh");
 
@@ -119,12 +147,33 @@ public partial class HospitalManageContext : DbContext
 
             entity.HasOne(d => d.Khoa).WithMany(p => p.GiuongBenhs)
                 .HasForeignKey(d => d.KhoaId)
-                .HasConstraintName("FK__GiuongBen__KhoaI__5535A963");
+                .HasConstraintName("FK__GiuongBen__KhoaI__4316F928");
+        });
+
+        modelBuilder.Entity<HoSoBenhAn>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK__HoSoBenh__3214EC072A2C202D");
+
+            entity.ToTable("HoSoBenhAn");
+
+            entity.Property(e => e.Id).HasDefaultValueSql("(newid())");
+            entity.Property(e => e.KetQuaDieuTri).HasMaxLength(255);
+            entity.Property(e => e.NgayLap)
+                .HasDefaultValueSql("(getdate())")
+                .HasColumnType("datetime");
+
+            entity.HasOne(d => d.BacSiPhuTrach).WithMany(p => p.HoSoBenhAns)
+                .HasForeignKey(d => d.BacSiPhuTrachId)
+                .HasConstraintName("FK__HoSoBenhA__BacSi__114A936A");
+
+            entity.HasOne(d => d.NhapVien).WithMany(p => p.HoSoBenhAns)
+                .HasForeignKey(d => d.NhapVienId)
+                .HasConstraintName("FK__HoSoBenhA__NhapV__0F624AF8");
         });
 
         modelBuilder.Entity<HoaDon>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__HoaDon__3214EC07E2B19015");
+            entity.HasKey(e => e.Id).HasName("PK__HoaDon__3214EC07DD321398");
 
             entity.ToTable("HoaDon");
 
@@ -137,16 +186,16 @@ public partial class HospitalManageContext : DbContext
 
             entity.HasOne(d => d.BenhNhan).WithMany(p => p.HoaDons)
                 .HasForeignKey(d => d.BenhNhanId)
-                .HasConstraintName("FK__HoaDon__BenhNhan__6EF57B66");
+                .HasConstraintName("FK__HoaDon__BenhNhan__5CD6CB2B");
 
             entity.HasOne(d => d.NhapVien).WithMany(p => p.HoaDons)
                 .HasForeignKey(d => d.NhapVienId)
-                .HasConstraintName("FK__HoaDon__NhapVien__6FE99F9F");
+                .HasConstraintName("FK__HoaDon__NhapVien__5DCAEF64");
         });
 
         modelBuilder.Entity<KhoaPhong>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__KhoaPhon__3214EC07A3838C17");
+            entity.HasKey(e => e.Id).HasName("PK__KhoaPhon__3214EC0748E6D88E");
 
             entity.ToTable("KhoaPhong");
 
@@ -157,7 +206,7 @@ public partial class HospitalManageContext : DbContext
 
         modelBuilder.Entity<NguoiDung>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__NguoiDun__3214EC0795EFE33B");
+            entity.HasKey(e => e.Id).HasName("PK__NguoiDun__3214EC07F3177F77");
 
             entity.ToTable("NguoiDung");
 
@@ -169,7 +218,7 @@ public partial class HospitalManageContext : DbContext
 
         modelBuilder.Entity<NhapVien>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__NhapVien__3214EC075DF4DCEC");
+            entity.HasKey(e => e.Id).HasName("PK__NhapVien__3214EC0711B22FA1");
 
             entity.ToTable("NhapVien");
 
@@ -181,16 +230,20 @@ public partial class HospitalManageContext : DbContext
 
             entity.HasOne(d => d.BenhNhan).WithMany(p => p.NhapViens)
                 .HasForeignKey(d => d.BenhNhanId)
-                .HasConstraintName("FK__NhapVien__BenhNh__5070F446");
+                .HasConstraintName("FK__NhapVien__BenhNh__3E52440B");
+
+            entity.HasOne(d => d.Giuong).WithMany(p => p.NhapViens)
+                .HasForeignKey(d => d.GiuongId)
+                .HasConstraintName("FK__NhapVien__Giuong__08B54D69");
 
             entity.HasOne(d => d.Khoa).WithMany(p => p.NhapViens)
                 .HasForeignKey(d => d.KhoaId)
-                .HasConstraintName("FK__NhapVien__KhoaId__5165187F");
+                .HasConstraintName("FK__NhapVien__KhoaId__3F466844");
         });
 
         modelBuilder.Entity<NhatKyHeThong>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__NhatKyHe__3214EC07872CD94F");
+            entity.HasKey(e => e.Id).HasName("PK__NhatKyHe__3214EC07411B8B2B");
 
             entity.ToTable("NhatKyHeThong");
 
@@ -201,16 +254,19 @@ public partial class HospitalManageContext : DbContext
 
             entity.HasOne(d => d.NguoiDung).WithMany(p => p.NhatKyHeThongs)
                 .HasForeignKey(d => d.NguoiDungId)
-                .HasConstraintName("FK__NhatKyHeT__Nguoi__76969D2E");
+                .HasConstraintName("FK__NhatKyHeT__Nguoi__6477ECF3");
         });
 
         modelBuilder.Entity<PhauThuat>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__PhauThua__3214EC078B30B490");
+            entity.HasKey(e => e.Id).HasName("PK__PhauThua__3214EC0732D72AE8");
 
             entity.ToTable("PhauThuat");
 
             entity.Property(e => e.Id).HasDefaultValueSql("(newid())");
+            entity.Property(e => e.ChiPhi)
+                .HasDefaultValue(0m)
+                .HasColumnType("decimal(18, 2)");
             entity.Property(e => e.Ekip).HasMaxLength(255);
             entity.Property(e => e.LoaiPhauThuat).HasMaxLength(255);
             entity.Property(e => e.Ngay).HasColumnType("datetime");
@@ -219,31 +275,51 @@ public partial class HospitalManageContext : DbContext
 
             entity.HasOne(d => d.BacSiChinh).WithMany(p => p.PhauThuats)
                 .HasForeignKey(d => d.BacSiChinhId)
-                .HasConstraintName("FK__PhauThuat__BacSi__6B24EA82");
+                .HasConstraintName("FK__PhauThuat__BacSi__59063A47");
 
             entity.HasOne(d => d.NhapVien).WithMany(p => p.PhauThuats)
                 .HasForeignKey(d => d.NhapVienId)
-                .HasConstraintName("FK__PhauThuat__NhapV__6A30C649");
+                .HasConstraintName("FK__PhauThuat__NhapV__5812160E");
         });
 
         modelBuilder.Entity<XetNghiem>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__XetNghie__3214EC07A4DA46E7");
+            entity.HasKey(e => e.Id).HasName("PK__XetNghie__3214EC076C819C26");
 
             entity.ToTable("XetNghiem");
 
             entity.Property(e => e.Id).HasDefaultValueSql("(newid())");
+            entity.Property(e => e.DonGia)
+                .HasDefaultValue(0m)
+                .HasColumnType("decimal(18, 2)");
             entity.Property(e => e.KetQua).HasMaxLength(255);
             entity.Property(e => e.LoaiXetNghiem).HasMaxLength(255);
             entity.Property(e => e.Ngay).HasColumnType("datetime");
 
             entity.HasOne(d => d.BacSi).WithMany(p => p.XetNghiems)
                 .HasForeignKey(d => d.BacSiId)
-                .HasConstraintName("FK__XetNghiem__BacSi__66603565");
+                .HasConstraintName("FK__XetNghiem__BacSi__5441852A");
 
             entity.HasOne(d => d.NhapVien).WithMany(p => p.XetNghiems)
                 .HasForeignKey(d => d.NhapVienId)
-                .HasConstraintName("FK__XetNghiem__NhapV__656C112C");
+                .HasConstraintName("FK__XetNghiem__NhapV__534D60F1");
+        });
+
+        modelBuilder.Entity<Ytum>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK__YTa__3214EC0714762B6F");
+
+            entity.ToTable("YTa");
+
+            entity.Property(e => e.Id).HasDefaultValueSql("(newid())");
+            entity.Property(e => e.ChungChiHanhNghe).HasMaxLength(50);
+            entity.Property(e => e.GioiTinh).HasMaxLength(10);
+            entity.Property(e => e.HoTen).HasMaxLength(255);
+            entity.Property(e => e.SoDienThoai).HasMaxLength(20);
+
+            entity.HasOne(d => d.Khoa).WithMany(p => p.Yta)
+                .HasForeignKey(d => d.KhoaId)
+                .HasConstraintName("FK__YTa__KhoaId__151B244E");
         });
 
         OnModelCreatingPartial(modelBuilder);

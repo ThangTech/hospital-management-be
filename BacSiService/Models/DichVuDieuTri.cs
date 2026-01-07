@@ -19,6 +19,8 @@ public partial class DichVuDieuTri
 
     public Guid? DieuDuongId { get; set; }
 
+    public decimal? DonGia { get; set; }
+
     public virtual BacSi? BacSi { get; set; }
 
     public virtual DieuDuong? DieuDuong { get; set; }

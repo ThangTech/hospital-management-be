@@ -2,6 +2,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using YtaService.BLL.Interfaces;
 using YtaService.DTO;
 using YtaService.Models;
@@ -10,6 +12,7 @@ namespace YtaService.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize] // Yêu cầu đăng nhập cho tất cả endpoints
     public class YtaController : ControllerBase
     {
         private readonly IYtaBusiness _business;
@@ -21,7 +24,13 @@ namespace YtaService.Controllers
 
         // 1. Search
         [Route("tim-kiem")]
+        /// <summary>
+        /// Tìm kiếm Y tá
+        /// Quyền: Admin, YTa
+        /// </summary>
+        [Route("search")]
         [HttpPost]
+        [Authorize(Roles = "Admin,YTa")]
         public IActionResult Search([FromBody] YTaSearchDTO model)
         {
             try
@@ -29,7 +38,6 @@ namespace YtaService.Controllers
                 long total = 0;
                 var data = _business.Search(model, out total);
 
-                // Map Entity -> ViewDTO
                 var viewData = data.Select(x => new YTaViewDTO
                 {
                     Id = x.Id,
@@ -59,7 +67,13 @@ namespace YtaService.Controllers
 
         // 2. Create
         [Route("tao-moi")]
+        /// <summary>
+        /// Thêm Y tá mới
+        /// Quyền: Chỉ Admin
+        /// </summary>
+        [Route("create")]
         [HttpPost]
+        [Authorize(Roles = "Admin")]
         public IActionResult Create([FromBody] YtaCreateDTO model)
         {
             try
@@ -89,14 +103,19 @@ namespace YtaService.Controllers
 
         // 6. Get All
         [Route("danh-sach")]
+        /// <summary>
+        /// Lấy tất cả Y tá
+        /// Quyền: Admin, YTa
+        /// </summary>
+        [Route("get-all")]
         [HttpGet]
+        [Authorize(Roles = "Admin,YTa")]
         public IActionResult GetAll()
         {
             try
             {
                 var data = _business.GetAll();
 
-                // Map sang ViewDTO để ẩn các thông tin không cần thiết (nếu có)
                 var viewData = data.Select(x => new YTaViewDTO
                 {
                     Id = x.Id,
@@ -118,8 +137,13 @@ namespace YtaService.Controllers
 
         // 3. Update
         [Route("cap-nhat")]
+        /// <summary>
+        /// Cập nhật Y tá
+        /// Quyền: Admin hoặc YTa (sửa thông tin của mình)
+        /// </summary>
+        [Route("update")]
         [HttpPut]
-        // [SỬA LỖI]: Đổi YTaUpdateDTO thành YtaUpdateDTO (chữ t thường) để khớp với file DTO
+        [Authorize(Roles = "Admin,YTa")]
         public IActionResult Update([FromBody] YTaUpdateDTO model)
         {
             try
@@ -149,7 +173,13 @@ namespace YtaService.Controllers
 
         // 4. Delete
         [Route("xoa/{id}")]
+        /// <summary>
+        /// Xóa Y tá
+        /// Quyền: Chỉ Admin
+        /// </summary>
+        [Route("delete/{id}")]
         [HttpDelete]
+        [Authorize(Roles = "Admin")]
         public IActionResult Delete(string id)
         {
             if (_business.Delete(id)) return Ok(new { Message = "Xóa thành công" });
@@ -158,13 +188,18 @@ namespace YtaService.Controllers
 
         // 5. GetById
         [Route("chi-tiet/{id}")]
+        /// <summary>
+        /// Lấy Y tá theo ID
+        /// Quyền: Admin, YTa
+        /// </summary>
+        [Route("get-by-id/{id}")]
         [HttpGet]
+        [Authorize(Roles = "Admin,YTa")]
         public IActionResult GetById(string id)
         {
             var data = _business.GetById(id);
             if (data == null) return NotFound("Không tìm thấy");
 
-            // Map sang ViewDTO
             var viewDto = new YTaViewDTO
             {
                 Id = data.Id,

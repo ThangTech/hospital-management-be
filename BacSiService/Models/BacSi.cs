@@ -13,7 +13,13 @@ public partial class BacSi
 
     public string? ThongTinLienHe { get; set; }
 
+    public Guid? KhoaId { get; set; }
+
     public virtual ICollection<DichVuDieuTri> DichVuDieuTris { get; set; } = new List<DichVuDieuTri>();
+
+    public virtual ICollection<HoSoBenhAn> HoSoBenhAns { get; set; } = new List<HoSoBenhAn>();
+
+    public virtual KhoaPhong? Khoa { get; set; }
 
     public virtual ICollection<PhauThuat> PhauThuats { get; set; } = new List<PhauThuat>();
 

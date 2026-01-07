@@ -17,6 +17,8 @@ public partial class XetNghiem
 
     public Guid? BacSiId { get; set; }
 
+    public decimal? DonGia { get; set; }
+
     public virtual BacSi? BacSi { get; set; }
 
     public virtual NhapVien? NhapVien { get; set; }

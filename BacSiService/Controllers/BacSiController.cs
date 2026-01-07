@@ -1,12 +1,17 @@
 ﻿using BacSiService.BLL.Interfaces;
 using BacSiService.DTOs;
+using BacSiService.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace BacSiService.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize] // Yêu cầu đăng nhập cho tất cả endpoints
     public class BacSiController : ControllerBase
     {
         private readonly IDoctorBusiness _doctorBusiness;
@@ -16,64 +21,100 @@ namespace BacSiService.Controllers
             _doctorBusiness = doctorBusiness;
         }
 
+        /// <summary>
+        /// Lấy danh sách tất cả bác sĩ
+        /// Quyền: Admin, BacSi
+        /// </summary>
         [HttpGet("doctors")]
-        public ActionResult<IEnumerable<DoctorDto>> GetAll()
+        [Authorize(Roles = "Admin,BacSi")]
+        public ActionResult<ApiResponse<IEnumerable<DoctorDto>>> GetAll()
         {
-            var doctors = _doctorBusiness.GetAllDtos();
-            return Ok(doctors);
-        }
-
-        [HttpGet("doctors/{id}")]
-        public ActionResult<DoctorDto> GetById([FromRoute] Guid id)
-        {
-            var doctor = _doctorBusiness.GetDoctorByID(id);
-            if(doctor == null)
+            var dtos = _doctorBusiness.GetAllDtos();
+            return Ok(new ApiResponse<IEnumerable<DoctorDto>>
             {
-                return NotFound();
-            }
-            return Ok(doctor);
+                Success = true,
+                Data = dtos,
+                Message = "OK"
+            });
         }
-        [HttpPut("updateDoctors/{id}")]
 
-        public ActionResult<DoctorUpdateDTO> Update([FromRoute] Guid id, [FromBody] DoctorUpdateDTO doctorUpdateDTO)
+        /// <summary>
+        /// Lấy thông tin bác sĩ theo ID
+        /// Quyền: Admin, BacSi
+        /// </summary>
+        [HttpGet("{id:guid}")]
+        [Authorize(Roles = "Admin,BacSi")]
+        public ActionResult<ApiResponse<DoctorDto>> GetById(Guid id)
         {
-            var doctor = _doctorBusiness.UpdateDTO(id, doctorUpdateDTO);
-            if(doctor == null)
+            var doc = _doctorBusiness.GetDoctorByID(id);
+            if (doc == null)
+                return NotFound(new ApiResponse { Success = false, Message = "Not found" });
+
+            return Ok(new ApiResponse<DoctorDto> { Success = true, Data = doc, Message = "OK" });
+        }
+
+        /// <summary>
+        /// Thêm bác sĩ mới
+        /// Quyền: Chỉ Admin
+        /// </summary>
+        [HttpPost]
+        [Authorize(Roles = "Admin")]
+        public ActionResult<ApiResponse<DoctorDto>> Create(DoctorDto dto)
+        {
+            var doc = _doctorBusiness.CreateDoctor(dto);
+            if (doc == null)
+                return BadRequest(new ApiResponse { Success = false, Message = "Create failed" });
+
+            return Ok(new ApiResponse<DoctorDto> { Success = true, Data = doc, Message = "Created" });
+        }
+
+        /// <summary>
+        /// Cập nhật thông tin bác sĩ
+        /// Quyền: Admin hoặc BacSi (sửa thông tin của mình)
+        /// </summary>
+        [HttpPut("{id:guid}")]
+        [Authorize(Roles = "Admin,BacSi")]
+        public ActionResult<ApiResponse<DoctorUpdateDTO>> Update(Guid id, DoctorUpdateDTO dto)
+        {
+            var doc = _doctorBusiness.UpdateDTO(id, dto);
+            if (doc == null)
+                return BadRequest(new ApiResponse { Success = false, Message = "Update failed" });
+
+            return Ok(new ApiResponse<DoctorUpdateDTO> { Success = true, Data = doc, Message = "Updated" });
+        }
+
+        /// <summary>
+        /// Xóa bác sĩ
+        /// Quyền: Chỉ Admin
+        /// </summary>
+        [HttpDelete("{id:guid}")]
+        [Authorize(Roles = "Admin")]
+        public ActionResult<ApiResponse> Delete(Guid id)
+        {
+            var ok = _doctorBusiness.DeleteDoctor(id);
+            return Ok(new ApiResponse { Success = ok, Message = ok ? "Deleted" : "Delete failed" });
+        }
+
+        /// <summary>
+        /// Tìm kiếm bác sĩ
+        /// Quyền: Admin, BacSi
+        /// </summary>
+        [HttpPost("search")]
+        [Authorize(Roles = "Admin,BacSi")]
+        public ActionResult<ApiResponse<PagedResult<DoctorDto>>> Search(SearchRequestDTO request)
+        {
+            var resultModel = _doctorBusiness.SearchDoctors(request);
+
+            var dtoPaged = new PagedResult<DoctorDto>
             {
-                return NotFound();
-            }
-            return Ok(doctor);
-        }
+                Data = resultModel.Data.Select(d => new DoctorDto { Id = d.Id, HoTen = d.HoTen, ChuyenKhoa = d.ChuyenKhoa, ThongTinLienHe = d.ThongTinLienHe, KhoaId = d.KhoaId }).ToList(),
+                PageNumber = resultModel.PageNumber,
+                PageSize = resultModel.PageSize,
+                TotalPages = resultModel.TotalPages,
+                TotalRecords = resultModel.TotalRecords
+            };
 
-        [HttpPost("createDoctors")]
-        public ActionResult<DoctorDto> Create([FromBody] DoctorDto doctorDTO)
-        {
-            var doctor = _doctorBusiness.CreateDoctor(doctorDTO);
-            if(doctor == null)
-            {
-                return BadRequest();
-            }
-            return CreatedAtAction(nameof(GetById), new {ID = doctor.Id}, doctor);
-        }
-        [HttpDelete("doctors/{id}")]
-        public ActionResult<bool> Delete(Guid id)
-        {
-            var doctor = _doctorBusiness.GetDoctorByID(id);
-            if(doctor == null)
-            {
-                return NotFound();
-            }
-            _doctorBusiness.DeleteDoctor(id);
-            return Ok("Xóa thành công");
-
-        }
-
-        [HttpPost("doctors/search")]
-        public ActionResult<PagedResult<DoctorDto>> SearchDoctors([FromBody] SearchRequestDTO request)
-        {
-            var result = _doctorBusiness.SearchDoctors(request);
-            return Ok(result);
+            return Ok(new ApiResponse<PagedResult<DoctorDto>> { Success = true, Data = dtoPaged, Message = "OK" });
         }
     }
 }
-

@@ -21,6 +21,8 @@ public partial class PhauThuat
 
     public string? TrangThai { get; set; }
 
+    public decimal? ChiPhi { get; set; }
+
     public virtual BacSi? BacSiChinh { get; set; }
 
     public virtual NhapVien? NhapVien { get; set; }

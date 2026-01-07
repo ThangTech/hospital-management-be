@@ -37,9 +37,12 @@ BEGIN
     
     SELECT 
         hd.*,
-        bn.HoTen
+        bn.HoTen,
+        nv.NgayNhap,
+        nv.NgayXuat
     FROM HoaDon hd
     JOIN BenhNhan bn ON hd.BenhNhanId = bn.Id
+    LEFT JOIN NhapVien nv ON hd.NhapVienId = nv.Id
     WHERE (@BenhNhanId IS NULL OR hd.BenhNhanId = @BenhNhanId)
       AND (@NhapVienId IS NULL OR hd.NhapVienId = @NhapVienId)
     ORDER BY hd.Ngay DESC
@@ -55,9 +58,12 @@ BEGIN
     
     SELECT 
         hd.*,
-        bn.HoTen
+        bn.HoTen,
+        nv.NgayNhap,
+        nv.NgayXuat
     FROM HoaDon hd
     JOIN BenhNhan bn ON hd.BenhNhanId = bn.Id
+    LEFT JOIN NhapVien nv ON hd.NhapVienId = nv.Id
     WHERE hd.Id = @Id
 END
 GO

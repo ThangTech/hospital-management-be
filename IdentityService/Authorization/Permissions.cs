@@ -128,12 +128,11 @@ public static class RolePermissions
             Permissions.XetNghiem_Xem
         },
         
-        // KẾ TOÁN - Quản lý hóa đơn, thống kê
+        // KẾ TOÁN - Quản lý hóa đơn
         [Roles.KeToan] = new List<string>
         {
             Permissions.BenhNhan_Xem,
-            Permissions.HoaDon_Xem, Permissions.HoaDon_Them, Permissions.HoaDon_Sua,
-            Permissions.ThongKe_Xem
+            Permissions.HoaDon_Xem, Permissions.HoaDon_Them, Permissions.HoaDon_Sua
         },
         
         // BỆNH NHÂN - Chỉ xem thông tin cá nhân

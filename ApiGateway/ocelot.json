@@ -28,6 +28,15 @@
       ]
     },
     {
+      "UpstreamPathTemplate": "/gateway/api/report/{everything}",
+      "UpstreamHttpMethod": [ "POST" ],
+      "DownstreamPathTemplate": "/api/report/{everything}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        { "Host": "localhost", "Port": 5270 }
+      ]
+    },
+    {
       "UpstreamPathTemplate": "/gateway/api/usermanagement",
       "UpstreamHttpMethod": [ "GET", "POST" ],
       "DownstreamPathTemplate": "/api/usermanagement",

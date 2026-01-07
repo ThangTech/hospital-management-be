@@ -8,10 +8,12 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Microsoft.OpenApi.Models;
+using QuestPDF.Infrastructure;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
+// QuestPDF License (Community)
+QuestPDF.Settings.License = LicenseType.Community;
 builder.Services.AddControllers().AddJsonOptions(x =>
 {
     x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
@@ -96,6 +98,7 @@ builder.Services.AddScoped<IXuatVienBusiness, XuatVienBusiness>();
 // Đăng ký cho module Hóa Đơn
 builder.Services.AddScoped<IHoaDonRepository, HoaDonRepository>();
 builder.Services.AddScoped<IHoaDonBusiness, HoaDonBusiness>();
+builder.Services.AddScoped<IHoaDonReportBusiness, HoaDonReportBusiness>();
 
 var app = builder.Build();
 

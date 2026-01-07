@@ -1,21 +1,22 @@
 ﻿using BenhNhanService.BLL.Interfaces;
 using QuanLyBenhNhan.Models;
 using Microsoft.AspNetCore.Mvc;
-using BenhNhanService.DTO;
+using Microsoft.AspNetCore.Authorization;
 using BenhNhanService.DTO;
 
 namespace BenhNhanService.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class BenhNhanController : ControllerBase
     {
         private IBenhNhanBusiness _benhNhanBusiness;
         public BenhNhanController(IBenhNhanBusiness bus) { _benhNhanBusiness = bus; }
 
-        // --- 1. CREATE: Trả về ViewDTO sau khi thêm ---
-        [Route("create-benh-nhan")]
-        [HttpPost]
+        // --- 1. CREATE: Thêm bệnh nhân mới ---
+        [HttpPost("create")]
+        [Authorize(Roles = "Admin,YTa")]
         public IActionResult CreateItem([FromBody] BenhNhanCreateDTO modelDto)
         {
             try
@@ -40,10 +41,9 @@ namespace BenhNhanService.Controllers
             catch (Exception ex) { return BadRequest(ex.Message); }
         }
 
-        // --- 2. UPDATE: Trả về ViewDTO sau khi sửa ---
-        // Lưu ý: Tôi giữ nguyên logic ID bất biến như bạn yêu cầu
-        [Route("update-benh-nhan")]
-        [HttpPut]
+        // --- 2. UPDATE: Cập nhật thông tin bệnh nhân ---
+        [HttpPut("update")]
+        [Authorize(Roles = "Admin,YTa")]
         public IActionResult UpdateItem([FromBody] BenhNhanUpdateDTO modelDto)
         {
             try
@@ -73,14 +73,13 @@ namespace BenhNhanService.Controllers
             catch (Exception ex) { return BadRequest(ex.Message); }
         }
 
-        // --- 3. DELETE: Hiển thị thông tin người vừa bị xóa ---
-        [Route("delete")]
-        [HttpDelete]
-        public IActionResult DeleteBenhNhan([FromBody] Dictionary<string, object> formData)
+        // --- 3. DELETE: Xóa bệnh nhân theo ID (có kiểm tra ràng buộc) ---
+        [HttpDelete("delete/{id}")]
+        [Authorize(Roles = "Admin")]
+        public IActionResult DeleteBenhNhan(string id)
         {
             try
             {
-                string id = formData.ContainsKey("id") ? formData["id"].ToString() : "";
 
                 // Bước 1: Lấy thông tin bệnh nhân TRƯỚC khi xóa
                 var itemToDelete = _benhNhanBusiness.GetDatabyID(id);
@@ -98,8 +97,8 @@ namespace BenhNhanService.Controllers
         }
 
         // --- 4. GET BY ID: Trả về ViewDTO ---
-        [Route("get-by-id/{id}")]
-        [HttpGet]
+        [HttpGet("get-by-id/{id}")]
+        [Authorize(Roles = "Admin,YTa,BacSi,KeToan")]
         public IActionResult GetDatabyID(string id)
         {
             var data = _benhNhanBusiness.GetDatabyID(id);
@@ -109,8 +108,8 @@ namespace BenhNhanService.Controllers
         }
 
         // --- 5. GET ALL: Trả về List<ViewDTO> ---
-        [Route("get-all")]
-        [HttpGet]
+        [HttpGet("get-all")]
+        [Authorize(Roles = "Admin,YTa,BacSi,KeToan")]
         public IActionResult GetAll()
         {
             var listEntity = _benhNhanBusiness.GetAll();
@@ -119,8 +118,8 @@ namespace BenhNhanService.Controllers
             return Ok(listView);
         }
 
-        [Route("search")]
-        [HttpPost] 
+        [HttpPost("search")]
+        [Authorize(Roles = "Admin,YTa,BacSi,KeToan")]
         public IActionResult Search([FromBody] BenhNhanSearchDTO.BenhNhanSearchModel searchModel)
         {
             try

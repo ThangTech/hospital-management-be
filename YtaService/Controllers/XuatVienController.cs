@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 using System;
 using YtaService.BLL.Interfaces;
 using YtaService.DTO;
@@ -7,6 +8,7 @@ namespace YtaService.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class XuatVienController : ControllerBase
     {
         private readonly IXuatVienBusiness _bus;
@@ -18,6 +20,7 @@ namespace YtaService.Controllers
 
         // PUT: api/XuatVien/process
         [HttpPut("xac-nhan")]
+        [Authorize(Roles = "Admin,YTa")]
         public IActionResult XuatVien([FromBody] XuatVienDTO model)
         {
             try
@@ -41,6 +44,7 @@ namespace YtaService.Controllers
 
         // GET: api/XuatVien/ready-for-discharge
         [HttpGet("danh-sach-cho")]
+        [Authorize(Roles = "Admin,YTa,BacSi,KeToan")]
         public IActionResult GetReadyForDischarge()
         {
             try
@@ -56,6 +60,7 @@ namespace YtaService.Controllers
 
         // GET: api/XuatVien/history
         [HttpGet("lich-su")]
+        [Authorize(Roles = "Admin,YTa,BacSi,KeToan")]
         public IActionResult GetHistory()
         {
             try
@@ -71,6 +76,7 @@ namespace YtaService.Controllers
 
         // GET: api/XuatVien/preview/{id}
         [HttpGet("kiem-tra-dieu-kien/{id}")]
+        [Authorize(Roles = "Admin,YTa,BacSi,KeToan")]
         public IActionResult GetPreview(Guid id)
         {
             try

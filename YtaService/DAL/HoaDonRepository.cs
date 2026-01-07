@@ -70,6 +70,8 @@ namespace YtaService.DAL
                                 BaoHiemChiTra = reader["BaoHiemChiTra"] != DBNull.Value ? (decimal)reader["BaoHiemChiTra"] : 0,
                                 BenhNhanThanhToan = reader["BenhNhanThanhToan"] != DBNull.Value ? (decimal)reader["BenhNhanThanhToan"] : 0,
                                 Ngay = reader["Ngay"] as DateTime?,
+                                NgayNhapVien = reader["NgayNhap"] as DateTime?,
+                                NgayXuatVien = reader["NgayXuat"] as DateTime?,
                                 TrangThai = reader["TrangThai"].ToString()
                             });
                         }
@@ -104,6 +106,8 @@ namespace YtaService.DAL
                                 BaoHiemChiTra = reader["BaoHiemChiTra"] != DBNull.Value ? (decimal)reader["BaoHiemChiTra"] : 0,
                                 BenhNhanThanhToan = reader["BenhNhanThanhToan"] != DBNull.Value ? (decimal)reader["BenhNhanThanhToan"] : 0,
                                 Ngay = reader["Ngay"] as DateTime?,
+                                NgayNhapVien = reader["NgayNhap"] as DateTime?,
+                                NgayXuatVien = reader["NgayXuat"] as DateTime?,
                                 TrangThai = reader["TrangThai"].ToString()
                             };
                         }

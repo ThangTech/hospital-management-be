@@ -27,6 +27,10 @@ builder.Services.AddSwaggerGen(c =>
 // Add Ocelot
 builder.Services.AddOcelot(builder.Configuration);
 
+// Thêm cấu hình Ocelot
+builder.Configuration.AddJsonFile("ocelot.json", optional: false, reloadOnChange: true);
+builder.Services.AddOcelot(builder.Configuration);
+
 var app = builder.Build();
 
 // Swagger UI
@@ -43,6 +47,9 @@ if (app.Environment.IsDevelopment())
 app.UseCors("AllowAll");
 
 // Use Ocelot
+await app.UseOcelot();
+
+// Sử dụng Ocelot Middleware
 await app.UseOcelot();
 
 app.Run();

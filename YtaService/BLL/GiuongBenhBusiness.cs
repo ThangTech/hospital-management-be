@@ -36,7 +36,7 @@ namespace YtaService.BLL
                 TenGiuong = dto.TenGiuong,
                 LoaiGiuong = dto.LoaiGiuong,
                 GiaTien = dto.GiaTien,
-                TrangThai = "Available"
+                TrangThai = "Trống"
             };
 
             _repo.Create(giuong);
@@ -79,7 +79,7 @@ namespace YtaService.BLL
                 case -1:
                     return "Lỗi: Không tìm thấy giường này trong hệ thống.";
                 case -2:
-                    return "Lỗi: Giường ĐANG CÓ NGƯỜI nằm (Trạng thái không phải Available/Trống).";
+                    return "Lỗi: Giường ĐANG CÓ NGƯỜI nằm (Trạng thái không phải Trống).";
                 case -3:
                     return "Lỗi: Giường này đã có lịch sử nhập viện. Không thể xóa (Hãy dùng chức năng ẩn/ngưng hoạt động).";
                 default:

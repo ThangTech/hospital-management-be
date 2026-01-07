@@ -1,3 +1,7 @@
+﻿using Microsoft.AspNetCore.Mvc;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using YtaService.BLL.Interfaces;
@@ -18,6 +22,8 @@ namespace YtaService.Controllers
             _business = business;
         }
 
+        // 1. Search
+        [Route("tim-kiem")]
         /// <summary>
         /// Tìm kiếm Y tá
         /// Quyền: Admin, YTa
@@ -59,6 +65,8 @@ namespace YtaService.Controllers
             }
         }
 
+        // 2. Create
+        [Route("tao-moi")]
         /// <summary>
         /// Thêm Y tá mới
         /// Quyền: Chỉ Admin
@@ -93,6 +101,8 @@ namespace YtaService.Controllers
             }
         }
 
+        // 6. Get All
+        [Route("danh-sach")]
         /// <summary>
         /// Lấy tất cả Y tá
         /// Quyền: Admin, YTa
@@ -125,6 +135,8 @@ namespace YtaService.Controllers
             }
         }
 
+        // 3. Update
+        [Route("cap-nhat")]
         /// <summary>
         /// Cập nhật Y tá
         /// Quyền: Admin hoặc YTa (sửa thông tin của mình)
@@ -159,6 +171,8 @@ namespace YtaService.Controllers
             }
         }
 
+        // 4. Delete
+        [Route("xoa/{id}")]
         /// <summary>
         /// Xóa Y tá
         /// Quyền: Chỉ Admin
@@ -172,6 +186,8 @@ namespace YtaService.Controllers
             return BadRequest("Xóa thất bại");
         }
 
+        // 5. GetById
+        [Route("chi-tiet/{id}")]
         /// <summary>
         /// Lấy Y tá theo ID
         /// Quyền: Admin, YTa

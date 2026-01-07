@@ -1,0 +1,7 @@
+   1:7>C:\Users\phanson\BTL_PMHDV_2\YtaService\BLL\GiuongBenhBusiness.cs(39,30): error CS1003: Syntax error, ',' expected [C:\Users\phanson\BTL_PMHDV_2\YtaService\YtaService.csproj]
+   1:7>C:\Users\phanson\BTL_PMHDV_2\YtaService\DAL\GiuongBenhRepository.cs(54,70): error CS1003: Syntax error, ':' expected [C:\Users\phanson\BTL_PMHDV_2\YtaService\YtaService.csproj]
+   1:7>C:\Users\phanson\BTL_PMHDV_2\YtaService\DAL\GiuongBenhRepository.cs(54,78): error CS1002: ; expected [C:\Users\phanson\BTL_PMHDV_2\YtaService\YtaService.csproj]
+   1:7>C:\Users\phanson\BTL_PMHDV_2\YtaService\DAL\GiuongBenhRepository.cs(54,78): error CS1513: } expected [C:\Users\phanson\BTL_PMHDV_2\YtaService\YtaService.csproj]
+   1:7>C:\Users\phanson\BTL_PMHDV_2\YtaService\DAL\GiuongBenhRepository.cs(220,54): error CS1003: Syntax error, ':' expected [C:\Users\phanson\BTL_PMHDV_2\YtaService\YtaService.csproj]
+   1:7>C:\Users\phanson\BTL_PMHDV_2\YtaService\DAL\GiuongBenhRepository.cs(220,62): error CS1002: ; expected [C:\Users\phanson\BTL_PMHDV_2\YtaService\YtaService.csproj]
+   1:7>C:\Users\phanson\BTL_PMHDV_2\YtaService\DAL\GiuongBenhRepository.cs(220,62): error CS1513: } expected [C:\Users\phanson\BTL_PMHDV_2\YtaService\YtaService.csproj]

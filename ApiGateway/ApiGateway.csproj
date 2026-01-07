@@ -12,6 +12,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Controllers\" />
+  </ItemGroup>
+
+  <ItemGroup>
     <None Update="ocelot.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

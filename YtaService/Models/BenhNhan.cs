@@ -16,6 +16,7 @@ public partial class BenhNhan
     public string? DiaChi { get; set; }
 
     public string? SoTheBaoHiem { get; set; }
+    public decimal? MucHuong { get; set; } // Mức hưởng BHYT (0.8, 0.95, 1.0)
 
     [System.Text.Json.Serialization.JsonIgnore]
     public virtual ICollection<HoaDon> HoaDons { get; set; } = new List<HoaDon>();

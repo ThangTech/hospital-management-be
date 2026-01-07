@@ -1,0 +1,25 @@
+  Determining projects to restore...
+  Skipping project "C:\Users\phanson\BTL_PMHDV_2\ThanhToanService\ThanhToanService.csproj" because it was not found.
+  Skipping project "C:\Users\phanson\BTL_PMHDV_2\ThanhToanService\ThanhToanService.csproj" because it was not found.
+  Restored C:\Users\phanson\BTL_PMHDV_2\ApiGateway\ApiGateway.csproj (in 1,06 sec).
+  5 of 6 projects are up-to-date for restore.
+  AdminService -> C:\Users\phanson\BTL_PMHDV_2\AdminService\bin\Debug\net8.0\AdminService.dll
+  IdentityService -> C:\Users\phanson\BTL_PMHDV_2\IdentityService\bin\Debug\net8.0\IdentityService.dll
+  BenhNhanService -> C:\Users\phanson\BTL_PMHDV_2\BenhNhanService\bin\Debug\net8.0\BenhNhanService.dll
+  YtaService -> C:\Users\phanson\BTL_PMHDV_2\YtaService\bin\Debug\net8.0\YtaService.dll
+  BacSiService -> C:\Users\phanson\BTL_PMHDV_2\BacSiService\bin\Debug\net8.0\BacSiService.dll
+C:\Program Files\dotnet\sdk\8.0.400\Microsoft.Common.CurrentVersion.targets(2176,5): warning : The referenced project '..\ThanhToanService\ThanhToanService.csproj' does not exist. [C:\Users\phanson\BTL_PMHDV_2\ApiGateway\ApiGateway.csproj]
+C:\Users\phanson\BTL_PMHDV_2\ApiGateway\Program.cs(12,18): error CS1061: 'IServiceCollection' does not contain a definition for 'AddOcelot' and no accessible extension method 'AddOcelot' accepting a first argument of type 'IServiceCollection' could be found (are you missing a using directive or an assembly reference?) [C:\Users\phanson\BTL_PMHDV_2\ApiGateway\ApiGateway.csproj]
+C:\Users\phanson\BTL_PMHDV_2\ApiGateway\Program.cs(30,11): error CS1061: 'WebApplication' does not contain a definition for 'UseOcelot' and no accessible extension method 'UseOcelot' accepting a first argument of type 'WebApplication' could be found (are you missing a using directive or an assembly reference?) [C:\Users\phanson\BTL_PMHDV_2\ApiGateway\ApiGateway.csproj]
+
+Build FAILED.
+
+C:\Program Files\dotnet\sdk\8.0.400\Microsoft.Common.CurrentVersion.targets(2176,5): warning : The referenced project '..\ThanhToanService\ThanhToanService.csproj' does not exist. [C:\Users\phanson\BTL_PMHDV_2\ApiGateway\ApiGateway.csproj]
+C:\Users\phanson\BTL_PMHDV_2\ApiGateway\Program.cs(12,18): error CS1061: 'IServiceCollection' does not contain a definition for 'AddOcelot' and no accessible extension method 'AddOcelot' accepting a first argument of type 'IServiceCollection' could be found (are you missing a using directive or an assembly reference?) [C:\Users\phanson\BTL_PMHDV_2\ApiGateway\ApiGateway.csproj]
+C:\Users\phanson\BTL_PMHDV_2\ApiGateway\Program.cs(30,11): error CS1061: 'WebApplication' does not contain a definition for 'UseOcelot' and no accessible extension method 'UseOcelot' accepting a first argument of type 'WebApplication' could be found (are you missing a using directive or an assembly reference?) [C:\Users\phanson\BTL_PMHDV_2\ApiGateway\ApiGateway.csproj]
+    1 Warning(s)
+    2 Error(s)
+
+Time Elapsed 00:00:06.55
+
+Workload updates are available. Run `dotnet workload list` for more information.

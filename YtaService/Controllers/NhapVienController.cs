@@ -1,5 +1,6 @@
 ﻿using System;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 using YtaService.BLL.Interfaces;
 using YtaService.DTO;
 
@@ -7,6 +8,7 @@ namespace YtaService.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class NhapVienController : ControllerBase
     {
         private readonly INhapVienBusiness _bus;
@@ -17,6 +19,7 @@ namespace YtaService.Controllers
         }
 
         [HttpGet("danh-sach")]
+        [Authorize(Roles = "Admin,YTa,BacSi,KeToan")]
         public IActionResult GetAll()
         {
             try
@@ -32,6 +35,7 @@ namespace YtaService.Controllers
         }
 
         [HttpGet("chi-tiet/{id}")]
+        [Authorize(Roles = "Admin,YTa,BacSi,KeToan")]
         public IActionResult GetById(Guid id)
         {
             try
@@ -48,6 +52,7 @@ namespace YtaService.Controllers
         }
         // 2. CREATE (NHẬP VIỆN)
         [HttpPost("nhap-vien-moi")]
+        [Authorize(Roles = "Admin,YTa")]
         public IActionResult Create([FromBody] NhapVienCreateDTO model)
         {
             try
@@ -66,6 +71,7 @@ namespace YtaService.Controllers
 
         // 3. UPDATE (CẬP NHẬT NHẬP VIỆN)
         [HttpPut("cap-nhat")]
+        [Authorize(Roles = "Admin,YTa")]
         public IActionResult Update([FromBody] NhapVienUpdateDTO model)
         {
             try
@@ -89,6 +95,7 @@ namespace YtaService.Controllers
 
         // 4. DELETE (XÓA NHẬP VIỆN)
         [HttpDelete("xoa/{id}")]
+        [Authorize(Roles = "Admin,YTa")]
         public IActionResult Delete(Guid id)
         {
             try
@@ -112,6 +119,7 @@ namespace YtaService.Controllers
 
         // 5. CHUYỂN GIƯỜNG
         [HttpPut("chuyen-giuong")]
+        [Authorize(Roles = "Admin,YTa")]
         public IActionResult ChuyenGiuong([FromBody] ChuyenGiuongDTO model)
         {
             try
@@ -135,6 +143,7 @@ namespace YtaService.Controllers
 
         // 6. TÌM KIẾM NHẬP VIỆN
         [HttpPost("tim-kiem")]
+        [Authorize(Roles = "Admin,YTa,BacSi,KeToan")]
         public IActionResult Search([FromBody] NhapVienSearchDTO model)
         {
             try

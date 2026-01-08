@@ -19,20 +19,32 @@ BEGIN
         RETURN 0 -- Không tìm thấy phiếu nhập viện
     END
 
-    -- 2. Lấy mức hưởng bảo hiểm của bệnh nhân
-    DECLARE @MucHuong DECIMAL(3,2), @SoTheBHYT NVARCHAR(50)
-    SELECT @MucHuong = ISNULL(MucHuong, 0), @SoTheBHYT = SoTheBaoHiem 
+    -- 2. Lấy thông tin BHYT chuyên sâu
+    DECLARE @MucHuong DECIMAL(3,2), @SoTheBHYT NVARCHAR(50), @HanThe DATE, @IsDungTuyen BIT
+    SELECT 
+        @MucHuong = ISNULL(MucHuong, 0), 
+        @SoTheBHYT = SoTheBaoHiem,
+        @HanThe = HanTheBHYT
     FROM BenhNhan WHERE Id = @BenhNhanId
 
-    -- 3. Logic tính toán BHYT chi trả
+    SELECT @IsDungTuyen = ISNULL(IsDungTuyen, 1) FROM NhapVien WHERE Id = @NhapVienId
+
+    -- 3. Logic tính toán BHYT chi trả (Khoa học)
     DECLARE @FinBaoHiem DECIMAL(18,2) = @BaoHiemChiTra_Manual
     
-    IF @FinBaoHiem IS NULL -- Nếu không nhập thủ công thì tự tính
+    IF @FinBaoHiem IS NULL -- Tự động tính toán
     BEGIN
-        IF @SoTheBHYT IS NOT NULL AND @MucHuong > 0
-            SET @FinBaoHiem = @TongTien * @MucHuong
+        -- Kiểm tra thẻ còn hạn và có số thẻ
+        IF @SoTheBHYT IS NOT NULL AND @HanThe >= GETDATE()
+        BEGIN
+            -- Nếu đúng tuyến hưởng 100% của mức hưởng, trái tuyến chỉ hưởng 40% (ví dụ)
+            IF @IsDungTuyen = 1
+                SET @FinBaoHiem = @TongTien * @MucHuong
+            ELSE
+                SET @FinBaoHiem = @TongTien * @MucHuong * 0.4 
+        END
         ELSE
-            SET @FinBaoHiem = 0
+            SET @FinBaoHiem = 0 -- Hết hạn hoặc không có thẻ
     END
 
     -- 4. Chèn hóa đơn

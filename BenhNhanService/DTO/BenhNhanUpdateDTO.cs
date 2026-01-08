@@ -10,6 +10,8 @@ namespace BenhNhanService.DTO
         public string GioiTinh { get; set; }
         public string DiaChi { get; set; }
         public string SoTheBaoHiem { get; set; }
+        public decimal? MucHuong { get; set; }
+        public DateTime? HanTheBHYT { get; set; }
     }
     public class BenhNhanUpdateDTO
     {
@@ -20,5 +22,7 @@ namespace BenhNhanService.DTO
         public string GioiTinh { get; set; }
         public string DiaChi { get; set; }
         public string SoTheBaoHiem { get; set; }
+        public decimal? MucHuong { get; set; }
+        public DateTime? HanTheBHYT { get; set; }
     }
 }

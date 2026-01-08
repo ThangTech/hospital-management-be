@@ -12,11 +12,13 @@ namespace BenhNhanService.BLL
     {
         private readonly IBenhNhanRepository _res;
         private readonly HospitalManageContext _context;
+        private readonly IBHYTBusiness _bhytBus;
 
-        public BenhNhanBusiness(IBenhNhanRepository res, HospitalManageContext context)
+        public BenhNhanBusiness(IBenhNhanRepository res, HospitalManageContext context, IBHYTBusiness bhytBus)
         {
             _res = res;
             _context = context;
+            _bhytBus = bhytBus;
         }
 
         // Sửa tên hàm GetListBenhNhan -> GetAll để khớp với Interface IBenhNhanBusiness
@@ -28,11 +30,34 @@ namespace BenhNhanService.BLL
         public bool Create(BenhNhan model)
         {
             if (model.Id == Guid.Empty) model.Id = Guid.NewGuid();
+            
+            if (!string.IsNullOrEmpty(model.SoTheBaoHiem))
+            {
+                var check = _bhytBus.CheckValidity(model.SoTheBaoHiem);
+                if (check.HopLe)
+                {
+                    model.MucHuong = check.MucHuong;
+                    model.HanTheBHYT = check.HanThe; // Tự động cập nhật hạn thẻ
+                }
+            }
+
             return _res.Create(model);
         }
 
-        // Bây giờ Interface Repository đã có các hàm này rồi nên sẽ hết lỗi đỏ
-        public bool Update(BenhNhan model) => _res.Update(model);
+        public bool Update(BenhNhan model)
+        {
+             // TỰ ĐỘNG: Cập nhật lại mức hưởng nếu mã thẻ thay đổi
+            if (!string.IsNullOrEmpty(model.SoTheBaoHiem))
+            {
+                var check = _bhytBus.CheckValidity(model.SoTheBaoHiem);
+                if (check.HopLe)
+                {
+                    model.MucHuong = check.MucHuong;
+                    model.HanTheBHYT = check.HanThe;
+                }
+            }
+            return _res.Update(model);
+        }
         
         public bool Delete(string id)
         {

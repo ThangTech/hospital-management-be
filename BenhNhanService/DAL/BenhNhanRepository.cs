@@ -46,7 +46,9 @@ namespace BenhNhanService.DAL
                 new SqlParameter("@NgaySinh", model.NgaySinh.ToDateTime(TimeOnly.MinValue)),
                 new SqlParameter("@GioiTinh", model.GioiTinh ?? (object)DBNull.Value),
                 new SqlParameter("@DiaChi", model.DiaChi ?? (object)DBNull.Value),
-                new SqlParameter("@SoTheBaoHiem", model.SoTheBaoHiem ?? (object)DBNull.Value)
+                new SqlParameter("@SoTheBaoHiem", model.SoTheBaoHiem ?? (object)DBNull.Value),
+                new SqlParameter("@MucHuong", model.MucHuong ?? (object)DBNull.Value),
+                new SqlParameter("@HanTheBHYT", model.HanTheBHYT ?? (object)DBNull.Value)
             };
             return _dbHelper.ExecuteNonQuery("sp_BenhNhan_Create", parameters, CommandType.StoredProcedure);
         }
@@ -60,7 +62,9 @@ namespace BenhNhanService.DAL
                 new SqlParameter("@NgaySinh", model.NgaySinh.ToDateTime(TimeOnly.MinValue)),
                 new SqlParameter("@GioiTinh", model.GioiTinh ?? (object)DBNull.Value),
                 new SqlParameter("@DiaChi", model.DiaChi ?? (object)DBNull.Value),
-                new SqlParameter("@SoTheBaoHiem", model.SoTheBaoHiem ?? (object)DBNull.Value)
+                new SqlParameter("@SoTheBaoHiem", model.SoTheBaoHiem ?? (object)DBNull.Value),
+                new SqlParameter("@MucHuong", model.MucHuong ?? (object)DBNull.Value),
+                new SqlParameter("@HanTheBHYT", model.HanTheBHYT ?? (object)DBNull.Value)
             };
             return _dbHelper.ExecuteNonQuery("sp_BenhNhan_Update", parameters, CommandType.StoredProcedure);
         }
@@ -95,7 +99,9 @@ namespace BenhNhanService.DAL
                 NgaySinh = DateOnly.FromDateTime(Convert.ToDateTime(row["NgaySinh"])),
                 GioiTinh = row["GioiTinh"] != DBNull.Value ? row["GioiTinh"].ToString() : null,
                 DiaChi = row["DiaChi"] != DBNull.Value ? row["DiaChi"].ToString() : null,
-                SoTheBaoHiem = row["SoTheBaoHiem"] != DBNull.Value ? row["SoTheBaoHiem"].ToString() : null
+                SoTheBaoHiem = row["SoTheBaoHiem"] != DBNull.Value ? row["SoTheBaoHiem"].ToString() : null,
+                MucHuong = row["MucHuong"] != DBNull.Value ? Convert.ToDecimal(row["MucHuong"]) : null,
+                HanTheBHYT = row["HanTheBHYT"] != DBNull.Value ? Convert.ToDateTime(row["HanTheBHYT"]) : null
             };
         }
 
@@ -109,7 +115,9 @@ namespace BenhNhanService.DAL
                 NgaySinh = DateOnly.FromDateTime(Convert.ToDateTime(reader["NgaySinh"])),
                 GioiTinh = reader["GioiTinh"] != DBNull.Value ? reader["GioiTinh"].ToString() : null,
                 DiaChi = reader["DiaChi"] != DBNull.Value ? reader["DiaChi"].ToString() : null,
-                SoTheBaoHiem = reader["SoTheBaoHiem"] != DBNull.Value ? reader["SoTheBaoHiem"].ToString() : null
+                SoTheBaoHiem = reader["SoTheBaoHiem"] != DBNull.Value ? reader["SoTheBaoHiem"].ToString() : null,
+                MucHuong = reader["MucHuong"] != DBNull.Value ? Convert.ToDecimal(reader["MucHuong"]) : null,
+                HanTheBHYT = reader["HanTheBHYT"] != DBNull.Value ? Convert.ToDateTime(reader["HanTheBHYT"]) : null
             };
         }
 

@@ -50,8 +50,10 @@ namespace YtaService.DAL.Helper
                     }
 
                     // Thực thi lệnh và trả về số dòng bị ảnh hưởng
+                    // Lưu ý: Stored Procedure với SET NOCOUNT ON sẽ trả về -1
+                    // Nên coi -1 cũng là thành công
                     int result = cmd.ExecuteNonQuery();
-                    return result > 0;
+                    return result > 0 || result == -1;
                 }
             }
         }

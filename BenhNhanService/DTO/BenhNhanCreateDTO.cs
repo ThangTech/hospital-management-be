@@ -9,6 +9,7 @@
         public string SoTheBaoHiem { get; set; }
         public decimal? MucHuong { get; set; }
         public DateTime? HanTheBHYT { get; set; }
+        public string TrangThai { get; set; }
     }
 
 

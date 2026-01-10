@@ -187,6 +187,9 @@ namespace YtaService.DAL
                                 TenGiuong = reader["TenGiuong"] != DBNull.Value ? reader["TenGiuong"].ToString() : "N/A",
                                 GiaGiuong = reader["GiaGiuong"] != DBNull.Value ? (decimal)reader["GiaGiuong"] : 0,
                                 SoNgayNam = reader["SoNgayNam"] != DBNull.Value ? Convert.ToDouble(reader["SoNgayNam"]) : 0,
+                                TienGiuong = reader["TienGiuong"] != DBNull.Value ? (decimal)reader["TienGiuong"] : 0,
+                                ChiPhiPhauThuat = reader["ChiPhiPhauThuat"] != DBNull.Value ? (decimal)reader["ChiPhiPhauThuat"] : 0,
+                                ChiPhiXetNghiem = reader["ChiPhiXetNghiem"] != DBNull.Value ? (decimal)reader["ChiPhiXetNghiem"] : 0,
                                 TongTienGoiY = reader["TongTienSuggested"] != DBNull.Value ? (decimal)reader["TongTienSuggested"] : 0
                             };
                         }

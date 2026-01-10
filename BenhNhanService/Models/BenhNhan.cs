@@ -13,6 +13,7 @@ public class BenhNhan
     public string SoTheBaoHiem { get; set; }
     public decimal? MucHuong { get; set; } // Mức hưởng (0.8, 0.95, 1.0)
     public DateTime? HanTheBHYT { get; set; } // Ngày hết hạn thẻ
+    public string TrangThai { get; set; } // Trạng thái (Đang điều trị, Đã xuất viện, ...)
 
     // [QUAN TRỌNG] Thêm dòng này trước các danh sách
     [JsonIgnore]

@@ -18,12 +18,23 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+// ===== CORS CONFIGURATION =====
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAll", policy =>
+    {
+        policy.AllowAnyOrigin()
+              .AllowAnyMethod()
+              .AllowAnyHeader();
+    });
+});
+
 builder.Services.AddSingleton<IConfiguration>(builder.Configuration); 
 builder.Services.AddScoped<IBenhNhanRepository, BenhNhanRepository>();
 builder.Services.AddScoped<IBenhNhanBusiness, BenhNhanBusiness>();
 builder.Services.AddScoped<IBHYTBusiness, BHYTBusiness>();
 
-builder.Services.AddDbContext<HospitalManageContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+builder.Services.AddDbContext<HospitalManageContext>(options =>options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 // ===== JWT AUTHENTICATION =====
 var jwtSettings = builder.Configuration.GetSection("JwtSettings");
@@ -80,7 +91,12 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseHttpsRedirection();
+// DISABLED: HTTPS redirection causes issues with Gateway routing
+// Gateway uses HTTP to communicate with downstream services
+// app.UseHttpsRedirection();
+
+// ===== USE CORS (before auth) =====
+app.UseCors("AllowAll");
 
 app.UseAuthentication();
 app.UseAuthorization();

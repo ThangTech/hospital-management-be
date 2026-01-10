@@ -16,5 +16,9 @@ namespace BacSiService.DTOs
         public string? TenBenhNhan { get; set; }
         public DateTime? NgaySinhBenhNhan { get; set; }
         public Guid? BenhNhanId { get; set; }
+        
+        // Thêm Chi phí và Tên bác sĩ
+        public decimal? ChiPhi { get; set; }
+        public string? TenBacSi { get; set; }
     }
 }

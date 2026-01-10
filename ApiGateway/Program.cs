@@ -3,8 +3,11 @@ using Ocelot.Middleware;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Load ocelot.json
-builder.Configuration.AddJsonFile("ocelot.json", optional: false, reloadOnChange: true);
+// Load ocelot configuration based on environment
+var ocelotConfigFile = builder.Environment.EnvironmentName == "Docker" 
+    ? "ocelot.docker.json" 
+    : "ocelot.json";
+builder.Configuration.AddJsonFile(ocelotConfigFile, optional: false, reloadOnChange: true);
 
 // Add CORS
 builder.Services.AddCors(options =>

@@ -30,7 +30,8 @@ namespace BenhNhanService.Controllers
                     DiaChi = modelDto.DiaChi,
                     SoTheBaoHiem = modelDto.SoTheBaoHiem,
                     MucHuong = modelDto.MucHuong,
-                    HanTheBHYT = modelDto.HanTheBHYT
+                    HanTheBHYT = modelDto.HanTheBHYT,
+                    TrangThai = modelDto.TrangThai ?? "Đang điều trị"
                 };
 
                 _benhNhanBusiness.Create(benhNhan);
@@ -64,7 +65,8 @@ namespace BenhNhanService.Controllers
                     DiaChi = modelDto.DiaChi,
                     SoTheBaoHiem = modelDto.SoTheBaoHiem,
                     MucHuong = modelDto.MucHuong,
-                    HanTheBHYT = modelDto.HanTheBHYT
+                    HanTheBHYT = modelDto.HanTheBHYT,
+                    TrangThai = modelDto.TrangThai ?? "Đang điều trị"
                 };
 
                 _benhNhanBusiness.Update(benhNhan);
@@ -166,7 +168,8 @@ namespace BenhNhanService.Controllers
                 DiaChi = entity.DiaChi,
                 SoTheBaoHiem = entity.SoTheBaoHiem,
                 MucHuong = entity.MucHuong,
-                HanTheBHYT = entity.HanTheBHYT
+                HanTheBHYT = entity.HanTheBHYT,
+                TrangThai = entity.TrangThai
             };
         }
     }

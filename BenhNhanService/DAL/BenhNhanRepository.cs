@@ -40,6 +40,13 @@ namespace BenhNhanService.DAL
         // --- 2. Hàm Create (Đã chuẩn) ---
         public bool Create(BenhNhan model)
         {
+            // Sanitize MucHuong (Ensure it is decimal 0-1)
+            decimal? safeMucHuong = model.MucHuong;
+            if (safeMucHuong.HasValue && safeMucHuong.Value > 1)
+            {
+                safeMucHuong = safeMucHuong.Value / 100m;
+            }
+
             SqlParameter[] parameters = new SqlParameter[] {
                 new SqlParameter("@Id", model.Id),
                 new SqlParameter("@HoTen", model.HoTen ?? (object)DBNull.Value),
@@ -47,8 +54,9 @@ namespace BenhNhanService.DAL
                 new SqlParameter("@GioiTinh", model.GioiTinh ?? (object)DBNull.Value),
                 new SqlParameter("@DiaChi", model.DiaChi ?? (object)DBNull.Value),
                 new SqlParameter("@SoTheBaoHiem", model.SoTheBaoHiem ?? (object)DBNull.Value),
-                new SqlParameter("@MucHuong", model.MucHuong ?? (object)DBNull.Value),
-                new SqlParameter("@HanTheBHYT", model.HanTheBHYT ?? (object)DBNull.Value)
+                new SqlParameter("@MucHuong", safeMucHuong ?? (object)DBNull.Value),
+                new SqlParameter("@HanTheBHYT", model.HanTheBHYT ?? (object)DBNull.Value),
+                new SqlParameter("@TrangThai", model.TrangThai ?? (object)DBNull.Value)
             };
             return _dbHelper.ExecuteNonQuery("sp_BenhNhan_Create", parameters, CommandType.StoredProcedure);
         }
@@ -56,6 +64,13 @@ namespace BenhNhanService.DAL
         // --- 3. Hàm Update (Tôi đã viết đầy đủ tham số cho bạn) ---
         public bool Update(BenhNhan model)
         {
+            // Sanitize MucHuong (Ensure it is decimal 0-1)
+            decimal? safeMucHuong = model.MucHuong;
+            if (safeMucHuong.HasValue && safeMucHuong.Value > 1)
+            {
+                safeMucHuong = safeMucHuong.Value / 100m;
+            }
+
             SqlParameter[] parameters = new SqlParameter[] {
                 new SqlParameter("@Id", model.Id),
                 new SqlParameter("@HoTen", model.HoTen ?? (object)DBNull.Value),
@@ -63,8 +78,9 @@ namespace BenhNhanService.DAL
                 new SqlParameter("@GioiTinh", model.GioiTinh ?? (object)DBNull.Value),
                 new SqlParameter("@DiaChi", model.DiaChi ?? (object)DBNull.Value),
                 new SqlParameter("@SoTheBaoHiem", model.SoTheBaoHiem ?? (object)DBNull.Value),
-                new SqlParameter("@MucHuong", model.MucHuong ?? (object)DBNull.Value),
-                new SqlParameter("@HanTheBHYT", model.HanTheBHYT ?? (object)DBNull.Value)
+                new SqlParameter("@MucHuong", safeMucHuong ?? (object)DBNull.Value),
+                new SqlParameter("@HanTheBHYT", model.HanTheBHYT ?? (object)DBNull.Value),
+                new SqlParameter("@TrangThai", model.TrangThai ?? (object)DBNull.Value)
             };
             return _dbHelper.ExecuteNonQuery("sp_BenhNhan_Update", parameters, CommandType.StoredProcedure);
         }
@@ -101,7 +117,8 @@ namespace BenhNhanService.DAL
                 DiaChi = row["DiaChi"] != DBNull.Value ? row["DiaChi"].ToString() : null,
                 SoTheBaoHiem = row["SoTheBaoHiem"] != DBNull.Value ? row["SoTheBaoHiem"].ToString() : null,
                 MucHuong = row["MucHuong"] != DBNull.Value ? Convert.ToDecimal(row["MucHuong"]) : null,
-                HanTheBHYT = row["HanTheBHYT"] != DBNull.Value ? Convert.ToDateTime(row["HanTheBHYT"]) : null
+                HanTheBHYT = row["HanTheBHYT"] != DBNull.Value ? Convert.ToDateTime(row["HanTheBHYT"]) : null,
+                TrangThai = row.Table.Columns.Contains("TrangThai") && row["TrangThai"] != DBNull.Value ? row["TrangThai"].ToString() : null
             };
         }
 
@@ -117,7 +134,8 @@ namespace BenhNhanService.DAL
                 DiaChi = reader["DiaChi"] != DBNull.Value ? reader["DiaChi"].ToString() : null,
                 SoTheBaoHiem = reader["SoTheBaoHiem"] != DBNull.Value ? reader["SoTheBaoHiem"].ToString() : null,
                 MucHuong = reader["MucHuong"] != DBNull.Value ? Convert.ToDecimal(reader["MucHuong"]) : null,
-                HanTheBHYT = reader["HanTheBHYT"] != DBNull.Value ? Convert.ToDateTime(reader["HanTheBHYT"]) : null
+                HanTheBHYT = reader["HanTheBHYT"] != DBNull.Value ? Convert.ToDateTime(reader["HanTheBHYT"]) : null,
+                TrangThai = Enumerable.Range(0, reader.FieldCount).Any(i => reader.GetName(i).Equals("TrangThai", StringComparison.OrdinalIgnoreCase)) && reader["TrangThai"] != DBNull.Value ? reader["TrangThai"].ToString() : null
             };
         }
 

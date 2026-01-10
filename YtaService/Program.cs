@@ -100,6 +100,17 @@ builder.Services.AddScoped<IHoaDonRepository, HoaDonRepository>();
 builder.Services.AddScoped<IHoaDonBusiness, HoaDonBusiness>();
 builder.Services.AddScoped<IHoaDonReportBusiness, HoaDonReportBusiness>();
 
+// ===== CORS CONFIGURATION =====
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAll", policy =>
+    {
+        policy.AllowAnyOrigin()
+              .AllowAnyMethod()
+              .AllowAnyHeader();
+    });
+});
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -109,7 +120,12 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseHttpsRedirection();
+// DISABLED: HTTPS redirection causes issues with Gateway routing
+// Gateway uses HTTP to communicate with downstream services
+// app.UseHttpsRedirection();
+
+// ===== USE CORS (before auth) =====
+app.UseCors("AllowAll");
 
 // Authentication PHẢI đặt trước Authorization
 app.UseAuthentication();

@@ -36,33 +36,55 @@ namespace KhoaPhongService.DAL
 
         public bool Create(KhoaPhong model)
         {
+            try
+            {
                 SqlParameter[] p = {
-            new SqlParameter("@Id", model.Id),
-            new SqlParameter("@TenKhoa", model.TenKhoa),
-            new SqlParameter("@LoaiKhoa", model.LoaiKhoa),
-            new SqlParameter("@SoGiuongTieuChuan", model.SoGiuongTieuChuan)
-        };
-
-            return _dbHelper.ExecuteNonQuery("sp_KhoaPhong_Create", p, CommandType.StoredProcedure);
+                    new SqlParameter("@Id", model.Id),
+                    new SqlParameter("@TenKhoa", model.TenKhoa),
+                    new SqlParameter("@LoaiKhoa", model.LoaiKhoa),
+                    new SqlParameter("@SoGiuongTieuChuan", model.SoGiuongTieuChuan)
+                };
+                _dbHelper.ExecuteNonQuery("sp_KhoaPhong_Create", p, CommandType.StoredProcedure);
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
         }
 
         public bool Update(KhoaPhong model)
         {
-            SqlParameter[] p = {
-            new SqlParameter("@Id", model.Id),
-            new SqlParameter("@TenKhoa", model.TenKhoa),
-            new SqlParameter("@LoaiKhoa", model.LoaiKhoa),
-            new SqlParameter("@SoGiuongTieuChuan", model.SoGiuongTieuChuan)
-            };
-            // Gọi SP Update
-            return _dbHelper.ExecuteNonQuery("sp_KhoaPhong_Update", p, CommandType.StoredProcedure);
+            try
+            {
+                SqlParameter[] p = {
+                    new SqlParameter("@Id", model.Id),
+                    new SqlParameter("@TenKhoa", model.TenKhoa),
+                    new SqlParameter("@LoaiKhoa", model.LoaiKhoa),
+                    new SqlParameter("@SoGiuongTieuChuan", model.SoGiuongTieuChuan)
+                };
+                _dbHelper.ExecuteNonQuery("sp_KhoaPhong_Update", p, CommandType.StoredProcedure);
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
         }
 
         public bool Delete(string id)
         {
-            return _dbHelper.ExecuteNonQuery("sp_KhoaPhong_Delete",
-                new SqlParameter[] { new SqlParameter("@Id", id) },
-                CommandType.StoredProcedure);
+            try
+            {
+                _dbHelper.ExecuteNonQuery("sp_KhoaPhong_Delete",
+                    new SqlParameter[] { new SqlParameter("@Id", id) },
+                    CommandType.StoredProcedure);
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
         }
 
         public List<KhoaPhong> Search(string keyword)

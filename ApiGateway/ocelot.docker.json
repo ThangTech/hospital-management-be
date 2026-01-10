@@ -6,7 +6,7 @@
       "DownstreamPathTemplate": "/api/auth/{everything}",
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
-        { "Host": "localhost", "Port": 5283 }
+        { "Host": "identity-service", "Port": 80 }
       ]
     },
     {
@@ -15,7 +15,7 @@
       "DownstreamPathTemplate": "/api/audit/{everything}",
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
-        { "Host": "localhost", "Port": 5270 }
+        { "Host": "admin-service", "Port": 80 }
       ]
     },
     {
@@ -24,7 +24,7 @@
       "DownstreamPathTemplate": "/api/usermanagement/{everything}",
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
-        { "Host": "localhost", "Port": 5270 }
+        { "Host": "admin-service", "Port": 80 }
       ]
     },
     {
@@ -33,7 +33,7 @@
       "DownstreamPathTemplate": "/api/report/{everything}",
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
-        { "Host": "localhost", "Port": 5270 }
+        { "Host": "admin-service", "Port": 80 }
       ]
     },
     {
@@ -42,7 +42,7 @@
       "DownstreamPathTemplate": "/api/usermanagement",
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
-        { "Host": "localhost", "Port": 5270 }
+        { "Host": "admin-service", "Port": 80 }
       ]
     },
     {
@@ -51,7 +51,7 @@
       "DownstreamPathTemplate": "/api/bacsi/{everything}",
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
-        { "Host": "localhost", "Port": 5163 }
+        { "Host": "bacsi-service", "Port": 80 }
       ]
     },
     {
@@ -60,7 +60,7 @@
       "DownstreamPathTemplate": "/api/bacsi",
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
-        { "Host": "localhost", "Port": 5163 }
+        { "Host": "bacsi-service", "Port": 80 }
       ]
     },
     {
@@ -69,7 +69,7 @@
       "DownstreamPathTemplate": "/api/labtest/{everything}",
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
-        { "Host": "localhost", "Port": 5163 }
+        { "Host": "bacsi-service", "Port": 80 }
       ]
     },
     {
@@ -78,7 +78,7 @@
       "DownstreamPathTemplate": "/api/medicalrecord/{everything}",
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
-        { "Host": "localhost", "Port": 5163 }
+        { "Host": "bacsi-service", "Port": 80 }
       ]
     },
     {
@@ -87,7 +87,7 @@
       "DownstreamPathTemplate": "/api/patient/{everything}",
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
-        { "Host": "localhost", "Port": 5163 }
+        { "Host": "bacsi-service", "Port": 80 }
       ]
     },
     {
@@ -96,131 +96,92 @@
       "DownstreamPathTemplate": "/api/surgery/{everything}",
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
-        { "Host": "localhost", "Port": 5163 }
+        { "Host": "bacsi-service", "Port": 80 }
       ]
     },
     {
       "UpstreamPathTemplate": "/gateway/api/benhnhan/{everything}",
       "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE" ],
       "DownstreamPathTemplate": "/api/benhnhan/{everything}",
-      "DownstreamScheme": "https",
+      "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
-        { "Host": "localhost", "Port": 7203 }
-      ],
-      "DangerousAcceptAnyServerCertificateValidator": true
+        { "Host": "benhnhan-service", "Port": 80 }
+      ]
     },
     {
       "UpstreamPathTemplate": "/gateway/api/benhnhan",
       "UpstreamHttpMethod": [ "GET", "POST" ],
       "DownstreamPathTemplate": "/api/benhnhan",
-      "DownstreamScheme": "https",
+      "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
-        { "Host": "localhost", "Port": 7203 }
-      ],
-      "DangerousAcceptAnyServerCertificateValidator": true
+        { "Host": "benhnhan-service", "Port": 80 }
+      ]
     },
     {
       "UpstreamPathTemplate": "/gateway/api/yta/{everything}",
       "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE" ],
       "DownstreamPathTemplate": "/api/yta/{everything}",
-      "DownstreamScheme": "https",
+      "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
-        { "Host": "localhost", "Port": 7244 }
-      ],
-      "DangerousAcceptAnyServerCertificateValidator": true
+        { "Host": "yta-service", "Port": 80 }
+      ]
     },
     {
       "UpstreamPathTemplate": "/gateway/api/yta",
       "UpstreamHttpMethod": [ "GET", "POST" ],
       "DownstreamPathTemplate": "/api/yta",
-      "DownstreamScheme": "https",
+      "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
-        { "Host": "localhost", "Port": 7244 }
-      ],
-      "DangerousAcceptAnyServerCertificateValidator": true
-    },
-    {
-      "UpstreamPathTemplate": "/gateway/api/nhapvien/{everything}",
-      "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE" ],
-      "DownstreamPathTemplate": "/api/nhapvien/{everything}",
-      "DownstreamScheme": "https",
-      "DownstreamHostAndPorts": [
-        { "Host": "localhost", "Port": 7244 }
-      ],
-      "DangerousAcceptAnyServerCertificateValidator": true
-    },
-    {
-      "UpstreamPathTemplate": "/gateway/api/nhapvien",
-      "UpstreamHttpMethod": [ "GET", "POST" ],
-      "DownstreamPathTemplate": "/api/nhapvien",
-      "DownstreamScheme": "https",
-      "DownstreamHostAndPorts": [
-        { "Host": "localhost", "Port": 7244 }
-      ],
-      "DangerousAcceptAnyServerCertificateValidator": true
-    },
-    {
-      "UpstreamPathTemplate": "/gateway/api/xuatvien/{everything}",
-      "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE" ],
-      "DownstreamPathTemplate": "/api/xuatvien/{everything}",
-      "DownstreamScheme": "https",
-      "DownstreamHostAndPorts": [
-        { "Host": "localhost", "Port": 7244 }
-      ],
-      "DangerousAcceptAnyServerCertificateValidator": true
+        { "Host": "yta-service", "Port": 80 }
+      ]
     },
     {
       "UpstreamPathTemplate": "/gateway/api/giuongbenh/{everything}",
       "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE" ],
       "DownstreamPathTemplate": "/api/giuongbenh/{everything}",
-      "DownstreamScheme": "https",
+      "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
-        { "Host": "localhost", "Port": 7244 }
-      ],
-      "DangerousAcceptAnyServerCertificateValidator": true
+        { "Host": "yta-service", "Port": 80 }
+      ]
     },
     {
       "UpstreamPathTemplate": "/gateway/api/khoaphong/{everything}",
       "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE" ],
       "DownstreamPathTemplate": "/api/khoaphong/{everything}",
-      "DownstreamScheme": "https",
+      "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
-        { "Host": "localhost", "Port": 7262 }
-      ],
-      "DangerousAcceptAnyServerCertificateValidator": true
+        { "Host": "khoaphong-service", "Port": 80 }
+      ]
     },
     {
       "UpstreamPathTemplate": "/gateway/api/khoaphong",
       "UpstreamHttpMethod": [ "GET", "POST" ],
       "DownstreamPathTemplate": "/api/khoaphong",
-      "DownstreamScheme": "https",
+      "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
-        { "Host": "localhost", "Port": 7262 }
-      ],
-      "DangerousAcceptAnyServerCertificateValidator": true
+        { "Host": "khoaphong-service", "Port": 80 }
+      ]
     },
     {
       "UpstreamPathTemplate": "/gateway/api/hoadon/{everything}",
       "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE" ],
       "DownstreamPathTemplate": "/api/hoadon/{everything}",
-      "DownstreamScheme": "https",
+      "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
-        { "Host": "localhost", "Port": 7244 }
-      ],
-      "DangerousAcceptAnyServerCertificateValidator": true
+        { "Host": "yta-service", "Port": 80 }
+      ]
     },
     {
       "UpstreamPathTemplate": "/gateway/api/hoadon",
       "UpstreamHttpMethod": [ "GET", "POST" ],
       "DownstreamPathTemplate": "/api/hoadon",
-      "DownstreamScheme": "https",
+      "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
-        { "Host": "localhost", "Port": 7244 }
-      ],
-      "DangerousAcceptAnyServerCertificateValidator": true
+        { "Host": "yta-service", "Port": 80 }
+      ]
     }
   ],
   "GlobalConfiguration": {
-    "BaseUrl": "http://localhost:5076"
+    "BaseUrl": "http://api-gateway:80"
   }
 }

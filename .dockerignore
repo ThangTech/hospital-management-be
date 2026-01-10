@@ -1,0 +1,29 @@
+# =====================================================
+# Hospital Management - Docker Ignore File
+# =====================================================
+
+# Build outputs
+**/bin/
+**/obj/
+**/out/
+
+# Visual Studio
+.vs/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# Logs
+**/logs/
+*.log
+
+# Local environment
+.env.local
+appsettings.Development.json
+
+# Test results
+**/TestResults/
+
+# NuGet
+**/packages/

@@ -203,21 +203,19 @@
       "UpstreamPathTemplate": "/gateway/api/hoadon/{everything}",
       "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE" ],
       "DownstreamPathTemplate": "/api/hoadon/{everything}",
-      "DownstreamScheme": "https",
+      "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
-        { "Host": "localhost", "Port": 7244 }
-      ],
-      "DangerousAcceptAnyServerCertificateValidator": true
+        { "Host": "localhost", "Port": 5231 }
+      ]
     },
     {
       "UpstreamPathTemplate": "/gateway/api/hoadon",
       "UpstreamHttpMethod": [ "GET", "POST" ],
       "DownstreamPathTemplate": "/api/hoadon",
-      "DownstreamScheme": "https",
+      "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
-        { "Host": "localhost", "Port": 7244 }
-      ],
-      "DangerousAcceptAnyServerCertificateValidator": true
+        { "Host": "localhost", "Port": 5231 }
+      ]
     }
   ],
   "GlobalConfiguration": {

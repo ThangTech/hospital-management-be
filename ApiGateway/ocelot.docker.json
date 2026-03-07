@@ -168,7 +168,7 @@
       "DownstreamPathTemplate": "/api/hoadon/{everything}",
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
-        { "Host": "yta-service", "Port": 80 }
+        { "Host": "hoadon-service", "Port": 80 }
       ]
     },
     {
@@ -177,7 +177,7 @@
       "DownstreamPathTemplate": "/api/hoadon",
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
-        { "Host": "yta-service", "Port": 80 }
+        { "Host": "hoadon-service", "Port": 80 }
       ]
     }
   ],

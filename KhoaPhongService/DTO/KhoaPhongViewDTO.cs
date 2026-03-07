@@ -1,4 +1,4 @@
-﻿namespace KhoaPhongService.DTO
+namespace KhoaPhongService.DTO
 {
     public class KhoaPhongViewDTO
     {

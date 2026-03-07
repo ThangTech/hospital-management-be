@@ -1,4 +1,4 @@
-﻿using YtaService.BLL;
+using YtaService.BLL;
 using YtaService.BLL.Interfaces;
 using YtaService.DAL;
 using YtaService.DAL.Interfaces;
@@ -94,11 +94,6 @@ builder.Services.AddScoped<INhapVienBusiness, NhapVienBusiness>();
 // Đăng ký cho module Xuất Viện
 builder.Services.AddScoped<IXuatVienRepository, XuatVienRepository>();
 builder.Services.AddScoped<IXuatVienBusiness, XuatVienBusiness>();
-
-// Đăng ký cho module Hóa Đơn
-builder.Services.AddScoped<IHoaDonRepository, HoaDonRepository>();
-builder.Services.AddScoped<IHoaDonBusiness, HoaDonBusiness>();
-builder.Services.AddScoped<IHoaDonReportBusiness, HoaDonReportBusiness>();
 
 // ===== CORS CONFIGURATION =====
 builder.Services.AddCors(options =>

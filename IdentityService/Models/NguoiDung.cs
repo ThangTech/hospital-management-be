@@ -1,6 +1,3 @@
-using System;
-using System.Collections.Generic;
-
 namespace IdentityService.Models;
 
 /// <summary>
@@ -15,4 +12,9 @@ public partial class NguoiDung
     public string? MatKhauHash { get; set; }
 
     public string? VaiTro { get; set; }
+
+    /// <summary>
+    /// Email dùng để nhận OTP khi quên mật khẩu (bắt buộc)
+    /// </summary>
+    public string? Email { get; set; }
 }

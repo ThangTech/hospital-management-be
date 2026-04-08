@@ -13,7 +13,7 @@ public class UserRepository : IUserRepository
 
     public UserRepository(IConfiguration configuration)
     {
-        _connectionString = configuration.GetConnectionString("DefaultConnection") 
+        _connectionString = configuration.GetConnectionString("DefaultConnection")
             ?? throw new ArgumentNullException("ConnectionString không được cấu hình");
     }
 
@@ -60,6 +60,27 @@ public class UserRepository : IUserRepository
     }
 
     /// <summary>
+    /// Lấy user theo email
+    /// </summary>
+    public async Task<NguoiDung?> GetByEmailAsync(string email)
+    {
+        using var connection = new SqlConnection(_connectionString);
+        using var command = new SqlCommand("sp_GetNguoiDungByEmailFull", connection);
+        command.CommandType = CommandType.StoredProcedure;
+        command.Parameters.AddWithValue("@Email", email);
+
+        await connection.OpenAsync();
+        using var reader = await command.ExecuteReaderAsync();
+
+        if (await reader.ReadAsync())
+        {
+            return MapToNguoiDung(reader);
+        }
+
+        return null;
+    }
+
+    /// <summary>
     /// Kiểm tra tên đăng nhập đã tồn tại chưa
     /// </summary>
     public async Task<bool> ExistsAsync(string tenDangNhap)
@@ -82,6 +103,24 @@ public class UserRepository : IUserRepository
     }
 
     /// <summary>
+    /// Kiểm tra email đã tồn tại chưa
+    /// </summary>
+    public async Task<bool> EmailExistsAsync(string email)
+    {
+        using var connection = new SqlConnection(_connectionString);
+
+        // Dùng inline query vì SP này chưa có, hoặc tái dụng GetByEmail
+        using var command = new SqlCommand(
+            "SELECT COUNT(1) FROM NguoiDung WHERE Email = @Email", connection);
+        command.Parameters.AddWithValue("@Email", email);
+
+        await connection.OpenAsync();
+        var result = await command.ExecuteScalarAsync();
+        var count  = result != null ? Convert.ToInt32(result) : 0;
+        return count > 0;
+    }
+
+    /// <summary>
     /// Thêm user mới
     /// </summary>
     public async Task<NguoiDung> CreateAsync(NguoiDung nguoiDung)
@@ -91,11 +130,12 @@ public class UserRepository : IUserRepository
         using var connection = new SqlConnection(_connectionString);
         using var command = new SqlCommand("sp_CreateNguoiDungFull", connection);
         command.CommandType = CommandType.StoredProcedure;
-        
+
         command.Parameters.AddWithValue("@Id", nguoiDung.Id);
         command.Parameters.AddWithValue("@TenDangNhap", nguoiDung.TenDangNhap ?? (object)DBNull.Value);
         command.Parameters.AddWithValue("@MatKhauHash", nguoiDung.MatKhauHash ?? (object)DBNull.Value);
         command.Parameters.AddWithValue("@VaiTro", nguoiDung.VaiTro ?? (object)DBNull.Value);
+        command.Parameters.AddWithValue("@Email", nguoiDung.Email ?? (object)DBNull.Value);
 
         await connection.OpenAsync();
         using var reader = await command.ExecuteReaderAsync();
@@ -116,11 +156,12 @@ public class UserRepository : IUserRepository
         using var connection = new SqlConnection(_connectionString);
         using var command = new SqlCommand("sp_UpdateNguoiDungFull", connection);
         command.CommandType = CommandType.StoredProcedure;
-        
+
         command.Parameters.AddWithValue("@Id", nguoiDung.Id);
         command.Parameters.AddWithValue("@TenDangNhap", nguoiDung.TenDangNhap ?? (object)DBNull.Value);
         command.Parameters.AddWithValue("@MatKhauHash", nguoiDung.MatKhauHash ?? (object)DBNull.Value);
         command.Parameters.AddWithValue("@VaiTro", nguoiDung.VaiTro ?? (object)DBNull.Value);
+        command.Parameters.AddWithValue("@Email", nguoiDung.Email ?? (object)DBNull.Value);
 
         await connection.OpenAsync();
         using var reader = await command.ExecuteReaderAsync();
@@ -131,6 +172,30 @@ public class UserRepository : IUserRepository
         }
 
         return nguoiDung;
+    }
+
+    /// <summary>
+    /// Admin reset mật khẩu cho user khác (không cần OTP)
+    /// </summary>
+    public async Task<bool> AdminResetPasswordAsync(Guid userId, string newPasswordHash)
+    {
+        using var connection = new SqlConnection(_connectionString);
+        using var command = new SqlCommand("sp_AdminResetPassword", connection);
+        command.CommandType = CommandType.StoredProcedure;
+
+        command.Parameters.AddWithValue("@UserId", userId);
+        command.Parameters.AddWithValue("@MatKhauHash", newPasswordHash);
+
+        await connection.OpenAsync();
+        using var reader = await command.ExecuteReaderAsync();
+
+        if (await reader.ReadAsync())
+        {
+            var affected = reader["AffectedRows"] == DBNull.Value ? 0 : (int)reader["AffectedRows"];
+            return affected > 0;
+        }
+
+        return false;
     }
 
     /// <summary>
@@ -164,10 +229,11 @@ public class UserRepository : IUserRepository
     {
         return new NguoiDung
         {
-            Id = reader["Id"] == DBNull.Value ? Guid.Empty : (Guid)reader["Id"],
-            TenDangNhap = reader["TenDangNhap"] as string,
-            MatKhauHash = reader["MatKhauHash"] as string,
-            VaiTro = reader["VaiTro"] as string
+            Id           = reader["Id"] == DBNull.Value ? Guid.Empty : (Guid)reader["Id"],
+            TenDangNhap  = reader["TenDangNhap"] as string,
+            MatKhauHash  = reader["MatKhauHash"] as string,
+            VaiTro       = reader["VaiTro"] as string,
+            Email        = reader["Email"] as string
         };
     }
 

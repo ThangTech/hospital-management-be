@@ -1,4 +1,4 @@
-﻿using BenhNhanService.BLL.Interfaces;
+using BenhNhanService.BLL.Interfaces;
 using QuanLyBenhNhan.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
@@ -31,7 +31,8 @@ namespace BenhNhanService.Controllers
                     SoTheBaoHiem = modelDto.SoTheBaoHiem,
                     MucHuong = modelDto.MucHuong,
                     HanTheBHYT = modelDto.HanTheBHYT,
-                    TrangThai = modelDto.TrangThai ?? "Đang điều trị"
+                    TrangThai = modelDto.TrangThai ?? "Đang điều trị",
+                    Avatar = modelDto.Avatar
                 };
 
                 _benhNhanBusiness.Create(benhNhan);
@@ -66,7 +67,8 @@ namespace BenhNhanService.Controllers
                     SoTheBaoHiem = modelDto.SoTheBaoHiem,
                     MucHuong = modelDto.MucHuong,
                     HanTheBHYT = modelDto.HanTheBHYT,
-                    TrangThai = modelDto.TrangThai ?? "Đang điều trị"
+                    TrangThai = modelDto.TrangThai ?? "Đang điều trị",
+                    Avatar = modelDto.Avatar
                 };
 
                 _benhNhanBusiness.Update(benhNhan);
@@ -169,7 +171,8 @@ namespace BenhNhanService.Controllers
                 SoTheBaoHiem = entity.SoTheBaoHiem,
                 MucHuong = entity.MucHuong,
                 HanTheBHYT = entity.HanTheBHYT,
-                TrangThai = entity.TrangThai
+                TrangThai = entity.TrangThai,
+                Avatar = entity.Avatar
             };
         }
     }

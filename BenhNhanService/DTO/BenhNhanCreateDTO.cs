@@ -1,4 +1,4 @@
-﻿namespace BenhNhanService.DTO
+namespace BenhNhanService.DTO
 {
     public class BenhNhanCreateDTO
     {
@@ -10,6 +10,7 @@
         public decimal? MucHuong { get; set; }
         public DateTime? HanTheBHYT { get; set; }
         public string TrangThai { get; set; }
+        public string? Avatar { get; set; }
     }
 
 

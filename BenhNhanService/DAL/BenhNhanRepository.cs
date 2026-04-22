@@ -1,4 +1,4 @@
-﻿using BenhNhanService.DAL.Helper;
+using BenhNhanService.DAL.Helper;
 using BenhNhanService.DAL.Interfaces;
 using QuanLyBenhNhan.Models;
 using System.Data;
@@ -56,7 +56,8 @@ namespace BenhNhanService.DAL
                 new SqlParameter("@SoTheBaoHiem", model.SoTheBaoHiem ?? (object)DBNull.Value),
                 new SqlParameter("@MucHuong", safeMucHuong ?? (object)DBNull.Value),
                 new SqlParameter("@HanTheBHYT", model.HanTheBHYT ?? (object)DBNull.Value),
-                new SqlParameter("@TrangThai", model.TrangThai ?? (object)DBNull.Value)
+                new SqlParameter("@TrangThai", model.TrangThai ?? (object)DBNull.Value),
+                new SqlParameter("@Avatar", model.Avatar ?? (object)DBNull.Value)
             };
             return _dbHelper.ExecuteNonQuery("sp_BenhNhan_Create", parameters, CommandType.StoredProcedure);
         }
@@ -80,7 +81,8 @@ namespace BenhNhanService.DAL
                 new SqlParameter("@SoTheBaoHiem", model.SoTheBaoHiem ?? (object)DBNull.Value),
                 new SqlParameter("@MucHuong", safeMucHuong ?? (object)DBNull.Value),
                 new SqlParameter("@HanTheBHYT", model.HanTheBHYT ?? (object)DBNull.Value),
-                new SqlParameter("@TrangThai", model.TrangThai ?? (object)DBNull.Value)
+                new SqlParameter("@TrangThai", model.TrangThai ?? (object)DBNull.Value),
+                new SqlParameter("@Avatar", model.Avatar ?? (object)DBNull.Value)
             };
             return _dbHelper.ExecuteNonQuery("sp_BenhNhan_Update", parameters, CommandType.StoredProcedure);
         }
@@ -118,7 +120,8 @@ namespace BenhNhanService.DAL
                 SoTheBaoHiem = row["SoTheBaoHiem"] != DBNull.Value ? row["SoTheBaoHiem"].ToString() : null,
                 MucHuong = row["MucHuong"] != DBNull.Value ? Convert.ToDecimal(row["MucHuong"]) : null,
                 HanTheBHYT = row["HanTheBHYT"] != DBNull.Value ? Convert.ToDateTime(row["HanTheBHYT"]) : null,
-                TrangThai = row.Table.Columns.Contains("TrangThai") && row["TrangThai"] != DBNull.Value ? row["TrangThai"].ToString() : null
+                TrangThai = row.Table.Columns.Contains("TrangThai") && row["TrangThai"] != DBNull.Value ? row["TrangThai"].ToString() : null,
+                Avatar = row.Table.Columns.Contains("Avatar") && row["Avatar"] != DBNull.Value ? row["Avatar"].ToString() : null
             };
         }
 
@@ -135,7 +138,8 @@ namespace BenhNhanService.DAL
                 SoTheBaoHiem = reader["SoTheBaoHiem"] != DBNull.Value ? reader["SoTheBaoHiem"].ToString() : null,
                 MucHuong = reader["MucHuong"] != DBNull.Value ? Convert.ToDecimal(reader["MucHuong"]) : null,
                 HanTheBHYT = reader["HanTheBHYT"] != DBNull.Value ? Convert.ToDateTime(reader["HanTheBHYT"]) : null,
-                TrangThai = Enumerable.Range(0, reader.FieldCount).Any(i => reader.GetName(i).Equals("TrangThai", StringComparison.OrdinalIgnoreCase)) && reader["TrangThai"] != DBNull.Value ? reader["TrangThai"].ToString() : null
+                TrangThai = Enumerable.Range(0, reader.FieldCount).Any(i => reader.GetName(i).Equals("TrangThai", StringComparison.OrdinalIgnoreCase)) && reader["TrangThai"] != DBNull.Value ? reader["TrangThai"].ToString() : null,
+                Avatar = Enumerable.Range(0, reader.FieldCount).Any(i => reader.GetName(i).Equals("Avatar", StringComparison.OrdinalIgnoreCase)) && reader["Avatar"] != DBNull.Value ? reader["Avatar"].ToString() : null
             };
         }
 

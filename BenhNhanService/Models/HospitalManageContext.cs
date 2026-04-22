@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 
@@ -72,6 +72,7 @@ public partial class HospitalManageContext : DbContext
             entity.Property(e => e.GioiTinh).HasMaxLength(50);
             entity.Property(e => e.HoTen).HasMaxLength(255);
             entity.Property(e => e.SoTheBaoHiem).HasMaxLength(50);
+            entity.Property(e => e.Avatar).HasMaxLength(500);
         });
 
         modelBuilder.Entity<DichVuDieuTri>(entity =>

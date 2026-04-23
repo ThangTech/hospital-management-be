@@ -172,7 +172,8 @@ namespace BenhNhanService.Controllers
                 MucHuong = entity.MucHuong,
                 HanTheBHYT = entity.HanTheBHYT,
                 TrangThai = entity.TrangThai,
-                Avatar = entity.Avatar
+                Avatar = entity.Avatar,
+                DaXoa = entity.DaXoa
             };
         }
     }

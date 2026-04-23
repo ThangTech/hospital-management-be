@@ -121,7 +121,8 @@ namespace BenhNhanService.DAL
                 MucHuong = row["MucHuong"] != DBNull.Value ? Convert.ToDecimal(row["MucHuong"]) : null,
                 HanTheBHYT = row["HanTheBHYT"] != DBNull.Value ? Convert.ToDateTime(row["HanTheBHYT"]) : null,
                 TrangThai = row.Table.Columns.Contains("TrangThai") && row["TrangThai"] != DBNull.Value ? row["TrangThai"].ToString() : null,
-                Avatar = row.Table.Columns.Contains("Avatar") && row["Avatar"] != DBNull.Value ? row["Avatar"].ToString() : null
+                Avatar = row.Table.Columns.Contains("Avatar") && row["Avatar"] != DBNull.Value ? row["Avatar"].ToString() : null,
+                DaXoa = row.Table.Columns.Contains("DaXoa") && row["DaXoa"] != DBNull.Value ? Convert.ToBoolean(row["DaXoa"]) : false
             };
         }
 
@@ -139,7 +140,8 @@ namespace BenhNhanService.DAL
                 MucHuong = reader["MucHuong"] != DBNull.Value ? Convert.ToDecimal(reader["MucHuong"]) : null,
                 HanTheBHYT = reader["HanTheBHYT"] != DBNull.Value ? Convert.ToDateTime(reader["HanTheBHYT"]) : null,
                 TrangThai = Enumerable.Range(0, reader.FieldCount).Any(i => reader.GetName(i).Equals("TrangThai", StringComparison.OrdinalIgnoreCase)) && reader["TrangThai"] != DBNull.Value ? reader["TrangThai"].ToString() : null,
-                Avatar = Enumerable.Range(0, reader.FieldCount).Any(i => reader.GetName(i).Equals("Avatar", StringComparison.OrdinalIgnoreCase)) && reader["Avatar"] != DBNull.Value ? reader["Avatar"].ToString() : null
+                Avatar = Enumerable.Range(0, reader.FieldCount).Any(i => reader.GetName(i).Equals("Avatar", StringComparison.OrdinalIgnoreCase)) && reader["Avatar"] != DBNull.Value ? reader["Avatar"].ToString() : null,
+                DaXoa = Enumerable.Range(0, reader.FieldCount).Any(i => reader.GetName(i).Equals("DaXoa", StringComparison.OrdinalIgnoreCase)) && reader["DaXoa"] != DBNull.Value ? Convert.ToBoolean(reader["DaXoa"]) : false
             };
         }
 

@@ -1,4 +1,5 @@
 using BenhNhanService.BLL.Interfaces;
+using BenhNhanService.Helpers;
 using QuanLyBenhNhan.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
@@ -14,13 +15,20 @@ namespace BenhNhanService.Controllers
         private IBenhNhanBusiness _benhNhanBusiness;
         public BenhNhanController(IBenhNhanBusiness bus) { _benhNhanBusiness = bus; }
 
-        // --- 1. CREATE: Thêm bệnh nhân mới ---
+        // --- 1. CREATE: Thêm bệnh nhân mới (nhận FormData + File) ---
         [HttpPost("create")]
         [Authorize(Roles = "Admin,YTa")]
-        public IActionResult CreateItem([FromBody] BenhNhanCreateDTO modelDto)
+        public async Task<IActionResult> CreateItem([FromForm] BenhNhanCreateDTO modelDto, IFormFile? avatar)
         {
             try
             {
+                // Xử lý upload avatar nếu có
+                string? avatarPath = null;
+                if (avatar != null && avatar.Length > 0)
+                {
+                    avatarPath = await FileHelper.SaveFileAsync(avatar, "avatars");
+                }
+
                 var benhNhan = new BenhNhan
                 {
                     Id = Guid.NewGuid(),
@@ -32,7 +40,7 @@ namespace BenhNhanService.Controllers
                     MucHuong = modelDto.MucHuong,
                     HanTheBHYT = modelDto.HanTheBHYT,
                     TrangThai = modelDto.TrangThai ?? "Đang điều trị",
-                    Avatar = modelDto.Avatar
+                    Avatar = avatarPath ?? modelDto.Avatar
                 };
 
                 _benhNhanBusiness.Create(benhNhan);
@@ -45,16 +53,29 @@ namespace BenhNhanService.Controllers
             catch (Exception ex) { return BadRequest(ex.Message); }
         }
 
-        // --- 2. UPDATE: Cập nhật thông tin bệnh nhân ---
+        // --- 2. UPDATE: Cập nhật thông tin bệnh nhân (nhận FormData + File) ---
         [HttpPut("update")]
         [Authorize(Roles = "Admin,YTa")]
-        public IActionResult UpdateItem([FromBody] BenhNhanUpdateDTO modelDto)
+        public async Task<IActionResult> UpdateItem([FromForm] BenhNhanUpdateDTO modelDto, IFormFile? avatar)
         {
             try
             {
                 // Bước 1: Kiểm tra tồn tại
                 var existingItem = _benhNhanBusiness.GetDatabyID(modelDto.Id.ToString());
                 if (existingItem == null) return NotFound("Không tìm thấy bệnh nhân để sửa");
+
+                // Xử lý upload avatar mới nếu có
+                string? avatarPath = existingItem.Avatar; // Giữ avatar cũ mặc định
+                if (avatar != null && avatar.Length > 0)
+                {
+                    // Xóa avatar cũ nếu tồn tại
+                    if (!string.IsNullOrEmpty(existingItem.Avatar))
+                    {
+                        FileHelper.DeleteFile(existingItem.Avatar);
+                    }
+                    // Lưu avatar mới
+                    avatarPath = await FileHelper.SaveFileAsync(avatar, "avatars");
+                }
 
                 // Bước 2: Cập nhật dữ liệu vào Entity
                 var benhNhan = new BenhNhan
@@ -68,7 +89,7 @@ namespace BenhNhanService.Controllers
                     MucHuong = modelDto.MucHuong,
                     HanTheBHYT = modelDto.HanTheBHYT,
                     TrangThai = modelDto.TrangThai ?? "Đang điều trị",
-                    Avatar = modelDto.Avatar
+                    Avatar = avatarPath ?? modelDto.Avatar
                 };
 
                 _benhNhanBusiness.Update(benhNhan);

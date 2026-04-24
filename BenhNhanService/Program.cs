@@ -96,6 +96,7 @@ if (app.Environment.IsDevelopment())
 // app.UseHttpsRedirection();
 
 // ===== USE CORS (before auth) =====
+app.UseStaticFiles();
 app.UseCors("AllowAll");
 
 app.UseAuthentication();

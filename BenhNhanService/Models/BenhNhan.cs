@@ -15,6 +15,7 @@ public class BenhNhan
     public DateTime? HanTheBHYT { get; set; } // Ngày hết hạn thẻ
     public string TrangThai { get; set; } // Trạng thái (Đang điều trị, Đã xuất viện, ...)
     public string? Avatar { get; set; } // URL/path ảnh đại diện bệnh nhân
+    public string? SoDienThoai { get; set; } // Số điện thoại liên hệ
     public bool DaXoa { get; set; } // Soft delete flag
 
     // [QUAN TRỌNG] Thêm dòng này trước các danh sách

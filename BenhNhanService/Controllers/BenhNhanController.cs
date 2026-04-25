@@ -40,7 +40,8 @@ namespace BenhNhanService.Controllers
                     MucHuong = modelDto.MucHuong,
                     HanTheBHYT = modelDto.HanTheBHYT,
                     TrangThai = modelDto.TrangThai ?? "Đang điều trị",
-                    Avatar = avatarPath ?? modelDto.Avatar
+                    Avatar = avatarPath ?? modelDto.Avatar,
+                    SoDienThoai = modelDto.SoDienThoai
                 };
 
                 _benhNhanBusiness.Create(benhNhan);
@@ -80,7 +81,7 @@ namespace BenhNhanService.Controllers
                 // Bước 2: Cập nhật dữ liệu vào Entity
                 var benhNhan = new BenhNhan
                 {
-                    Id = modelDto.Id, // Giữ nguyên ID cũ
+                    Id = modelDto.Id,
                     HoTen = modelDto.HoTen,
                     NgaySinh = modelDto.NgaySinh,
                     GioiTinh = modelDto.GioiTinh,
@@ -89,7 +90,8 @@ namespace BenhNhanService.Controllers
                     MucHuong = modelDto.MucHuong,
                     HanTheBHYT = modelDto.HanTheBHYT,
                     TrangThai = modelDto.TrangThai ?? "Đang điều trị",
-                    Avatar = avatarPath ?? modelDto.Avatar
+                    Avatar = avatarPath ?? modelDto.Avatar,
+                    SoDienThoai = modelDto.SoDienThoai
                 };
 
                 _benhNhanBusiness.Update(benhNhan);
@@ -194,6 +196,7 @@ namespace BenhNhanService.Controllers
                 HanTheBHYT = entity.HanTheBHYT,
                 TrangThai = entity.TrangThai,
                 Avatar = entity.Avatar,
+                SoDienThoai = entity.SoDienThoai,
                 DaXoa = entity.DaXoa
             };
         }

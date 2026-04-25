@@ -122,6 +122,7 @@ namespace BenhNhanService.DAL
                 HanTheBHYT = row["HanTheBHYT"] != DBNull.Value ? Convert.ToDateTime(row["HanTheBHYT"]) : null,
                 TrangThai = row.Table.Columns.Contains("TrangThai") && row["TrangThai"] != DBNull.Value ? row["TrangThai"].ToString() : null,
                 Avatar = row.Table.Columns.Contains("Avatar") && row["Avatar"] != DBNull.Value ? row["Avatar"].ToString() : null,
+                SoDienThoai = row.Table.Columns.Contains("SoDienThoai") && row["SoDienThoai"] != DBNull.Value ? row["SoDienThoai"].ToString() : null,
                 DaXoa = row.Table.Columns.Contains("DaXoa") && row["DaXoa"] != DBNull.Value ? Convert.ToBoolean(row["DaXoa"]) : false
             };
         }
@@ -141,6 +142,7 @@ namespace BenhNhanService.DAL
                 HanTheBHYT = reader["HanTheBHYT"] != DBNull.Value ? Convert.ToDateTime(reader["HanTheBHYT"]) : null,
                 TrangThai = Enumerable.Range(0, reader.FieldCount).Any(i => reader.GetName(i).Equals("TrangThai", StringComparison.OrdinalIgnoreCase)) && reader["TrangThai"] != DBNull.Value ? reader["TrangThai"].ToString() : null,
                 Avatar = Enumerable.Range(0, reader.FieldCount).Any(i => reader.GetName(i).Equals("Avatar", StringComparison.OrdinalIgnoreCase)) && reader["Avatar"] != DBNull.Value ? reader["Avatar"].ToString() : null,
+                SoDienThoai = Enumerable.Range(0, reader.FieldCount).Any(i => reader.GetName(i).Equals("SoDienThoai", StringComparison.OrdinalIgnoreCase)) && reader["SoDienThoai"] != DBNull.Value ? reader["SoDienThoai"].ToString() : null,
                 DaXoa = Enumerable.Range(0, reader.FieldCount).Any(i => reader.GetName(i).Equals("DaXoa", StringComparison.OrdinalIgnoreCase)) && reader["DaXoa"] != DBNull.Value ? Convert.ToBoolean(reader["DaXoa"]) : false
             };
         }
@@ -163,10 +165,12 @@ namespace BenhNhanService.DAL
                         cmd.Parameters.AddWithValue("@PageIndex", model.PageIndex);
                         cmd.Parameters.AddWithValue("@PageSize", model.PageSize);
 
-                        // Xử lý null an toàn cho 3 tiêu chí
+                        // Xử lý null an toàn cho các tiêu chí
+                        cmd.Parameters.AddWithValue("@Id", string.IsNullOrEmpty(model.Id) ? (object)DBNull.Value : new Guid(model.Id));
                         cmd.Parameters.AddWithValue("@HoTen", (object)model.HoTen ?? DBNull.Value);
                         cmd.Parameters.AddWithValue("@DiaChi", (object)model.DiaChi ?? DBNull.Value);
                         cmd.Parameters.AddWithValue("@SoTheBaoHiem", (object)model.SoTheBaoHiem ?? DBNull.Value);
+                        cmd.Parameters.AddWithValue("@NamSinh", model.NamSinh ?? (object)DBNull.Value);
 
                         // Tham số đầu ra (Output) lấy tổng số dòng
                         var pTotal = new SqlParameter("@TotalRecord", SqlDbType.Int);

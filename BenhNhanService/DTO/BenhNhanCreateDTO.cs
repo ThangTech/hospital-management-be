@@ -11,6 +11,7 @@ namespace BenhNhanService.DTO
         public DateTime? HanTheBHYT { get; set; }
         public string TrangThai { get; set; }
         public string? Avatar { get; set; }
+        public string? SoDienThoai { get; set; }
     }
 
 

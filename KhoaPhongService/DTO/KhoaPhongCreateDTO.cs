@@ -1,15 +1,15 @@
-﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations;
 
 namespace KhoaPhongService.DTO
 {
     public class KhoaPhongCreateDTO
     {
-        [Required(ErrorMessage = "Tên khoa không được để trống")]
+        [Required(ErrorMessage = "T�n khoa kh�ng du?c d? tr?ng")]
         public string TenKhoa { get; set; }
 
         public string LoaiKhoa { get; set; }
 
-        [Range(1, 1000, ErrorMessage = "Số giường phải lớn hơn 0")]
+        [Range(1, 1000, ErrorMessage = "S? giu?ng ph?i l?n hon 0")]
         public int SoGiuongTieuChuan { get; set; }
     }
 }

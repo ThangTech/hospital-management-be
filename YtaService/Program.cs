@@ -1,4 +1,4 @@
-﻿using YtaService.BLL;
+using YtaService.BLL;
 using YtaService.BLL.Interfaces;
 using YtaService.DAL;
 using YtaService.DAL.Interfaces;
@@ -95,10 +95,16 @@ builder.Services.AddScoped<INhapVienBusiness, NhapVienBusiness>();
 builder.Services.AddScoped<IXuatVienRepository, XuatVienRepository>();
 builder.Services.AddScoped<IXuatVienBusiness, XuatVienBusiness>();
 
-// Đăng ký cho module Hóa Đơn
-builder.Services.AddScoped<IHoaDonRepository, HoaDonRepository>();
-builder.Services.AddScoped<IHoaDonBusiness, HoaDonBusiness>();
-builder.Services.AddScoped<IHoaDonReportBusiness, HoaDonReportBusiness>();
+// ===== CORS CONFIGURATION =====
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAll", policy =>
+    {
+        policy.AllowAnyOrigin()
+              .AllowAnyMethod()
+              .AllowAnyHeader();
+    });
+});
 
 var app = builder.Build();
 
@@ -109,7 +115,12 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseHttpsRedirection();
+// DISABLED: HTTPS redirection causes issues with Gateway routing
+// Gateway uses HTTP to communicate with downstream services
+// app.UseHttpsRedirection();
+
+// ===== USE CORS (before auth) =====
+app.UseCors("AllowAll");
 
 // Authentication PHẢI đặt trước Authorization
 app.UseAuthentication();

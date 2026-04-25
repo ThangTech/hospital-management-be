@@ -1,4 +1,5 @@
-﻿using BenhNhanService.BLL.Interfaces;
+using BenhNhanService.BLL.Interfaces;
+using BenhNhanService.Helpers;
 using QuanLyBenhNhan.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
@@ -12,15 +13,28 @@ namespace BenhNhanService.Controllers
     public class BenhNhanController : ControllerBase
     {
         private IBenhNhanBusiness _benhNhanBusiness;
-        public BenhNhanController(IBenhNhanBusiness bus) { _benhNhanBusiness = bus; }
+        private IExportBenhNhanService _exportService;
 
-        // --- 1. CREATE: Thêm bệnh nhân mới ---
+        public BenhNhanController(IBenhNhanBusiness bus, IExportBenhNhanService exportService)
+        {
+            _benhNhanBusiness = bus;
+            _exportService = exportService;
+        }
+
+        // --- 1. CREATE: Thêm bệnh nhân mới (nhận FormData + File) ---
         [HttpPost("create")]
         [Authorize(Roles = "Admin,YTa")]
-        public IActionResult CreateItem([FromBody] BenhNhanCreateDTO modelDto)
+        public async Task<IActionResult> CreateItem([FromForm] BenhNhanCreateDTO modelDto, IFormFile? avatar)
         {
             try
             {
+                // Xử lý upload avatar nếu có
+                string? avatarPath = null;
+                if (avatar != null && avatar.Length > 0)
+                {
+                    avatarPath = await FileHelper.SaveFileAsync(avatar, "avatars");
+                }
+
                 var benhNhan = new BenhNhan
                 {
                     Id = Guid.NewGuid(),
@@ -30,7 +44,10 @@ namespace BenhNhanService.Controllers
                     DiaChi = modelDto.DiaChi,
                     SoTheBaoHiem = modelDto.SoTheBaoHiem,
                     MucHuong = modelDto.MucHuong,
-                    HanTheBHYT = modelDto.HanTheBHYT
+                    HanTheBHYT = modelDto.HanTheBHYT,
+                    TrangThai = modelDto.TrangThai ?? "Đang điều trị",
+                    Avatar = avatarPath ?? modelDto.Avatar,
+                    SoDienThoai = modelDto.SoDienThoai
                 };
 
                 _benhNhanBusiness.Create(benhNhan);
@@ -43,10 +60,10 @@ namespace BenhNhanService.Controllers
             catch (Exception ex) { return BadRequest(ex.Message); }
         }
 
-        // --- 2. UPDATE: Cập nhật thông tin bệnh nhân ---
+        // --- 2. UPDATE: Cập nhật thông tin bệnh nhân (nhận FormData + File) ---
         [HttpPut("update")]
         [Authorize(Roles = "Admin,YTa")]
-        public IActionResult UpdateItem([FromBody] BenhNhanUpdateDTO modelDto)
+        public async Task<IActionResult> UpdateItem([FromForm] BenhNhanUpdateDTO modelDto, IFormFile? avatar)
         {
             try
             {
@@ -54,17 +71,33 @@ namespace BenhNhanService.Controllers
                 var existingItem = _benhNhanBusiness.GetDatabyID(modelDto.Id.ToString());
                 if (existingItem == null) return NotFound("Không tìm thấy bệnh nhân để sửa");
 
+                // Xử lý upload avatar mới nếu có
+                string? avatarPath = existingItem.Avatar; // Giữ avatar cũ mặc định
+                if (avatar != null && avatar.Length > 0)
+                {
+                    // Xóa avatar cũ nếu tồn tại
+                    if (!string.IsNullOrEmpty(existingItem.Avatar))
+                    {
+                        FileHelper.DeleteFile(existingItem.Avatar);
+                    }
+                    // Lưu avatar mới
+                    avatarPath = await FileHelper.SaveFileAsync(avatar, "avatars");
+                }
+
                 // Bước 2: Cập nhật dữ liệu vào Entity
                 var benhNhan = new BenhNhan
                 {
-                    Id = modelDto.Id, // Giữ nguyên ID cũ
+                    Id = modelDto.Id,
                     HoTen = modelDto.HoTen,
                     NgaySinh = modelDto.NgaySinh,
                     GioiTinh = modelDto.GioiTinh,
                     DiaChi = modelDto.DiaChi,
                     SoTheBaoHiem = modelDto.SoTheBaoHiem,
                     MucHuong = modelDto.MucHuong,
-                    HanTheBHYT = modelDto.HanTheBHYT
+                    HanTheBHYT = modelDto.HanTheBHYT,
+                    TrangThai = modelDto.TrangThai ?? "Đang điều trị",
+                    Avatar = avatarPath ?? modelDto.Avatar,
+                    SoDienThoai = modelDto.SoDienThoai
                 };
 
                 _benhNhanBusiness.Update(benhNhan);
@@ -155,8 +188,29 @@ namespace BenhNhanService.Controllers
 
         // --- HÀM PHỤ TRỢ (PRIVATE) ĐỂ CHUYỂN ĐỔI DỮ LIỆU ---
         // Viết 1 lần dùng cho tất cả các hàm trên cho gọn code
-        private BenhNhanViewDTO MapToViewDTO(BenhNhan entity)
+
+        // --- 6. EXPORT EXCEL: Xuất danh sách bệnh nhân ra file Excel ---
+        [HttpGet("export-excel")]
+        [Authorize(Roles = "Admin,YTa,BacSi,KeToan")]
+        public IActionResult ExportExcel()
         {
+            try
+            {
+                var fileBytes = _exportService.ExportBenhNhanToExcel();
+                var fileName = $"DanhSachBenhNhan_{DateTime.Now:yyyyMMdd_HHmmss}.xlsx";
+                return File(
+                    fileContents: fileBytes,
+                    contentType: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                    fileDownloadName: fileName
+                );
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        private BenhNhanViewDTO MapToViewDTO(BenhNhan entity)        {
             return new BenhNhanViewDTO
             {
                 Id = entity.Id,
@@ -166,7 +220,11 @@ namespace BenhNhanService.Controllers
                 DiaChi = entity.DiaChi,
                 SoTheBaoHiem = entity.SoTheBaoHiem,
                 MucHuong = entity.MucHuong,
-                HanTheBHYT = entity.HanTheBHYT
+                HanTheBHYT = entity.HanTheBHYT,
+                TrangThai = entity.TrangThai,
+                Avatar = entity.Avatar,
+                SoDienThoai = entity.SoDienThoai,
+                DaXoa = entity.DaXoa
             };
         }
     }

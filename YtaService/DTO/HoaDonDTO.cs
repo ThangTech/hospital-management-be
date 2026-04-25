@@ -42,7 +42,13 @@ namespace YtaService.DTO
         public string TenGiuong { get; set; }
         public decimal GiaGiuong { get; set; }
         public double SoNgayNam { get; set; }
-        public decimal TongTienGoiY { get; set; }
+        
+        // Chi tiết chi phí
+        public decimal TienGiuong { get; set; }           // Số ngày × Giá giường
+        public decimal ChiPhiPhauThuat { get; set; }      // Tổng chi phí phẫu thuật (đã hoàn thành)
+        public decimal ChiPhiXetNghiem { get; set; }      // Tổng chi phí xét nghiệm
+        
+        public decimal TongTienGoiY { get; set; }         // Tổng = Giường + Phẫu thuật + Xét nghiệm
         public decimal BaoHiemChiTraGoiY => TongTienGoiY * MucHuong;
         public decimal BenhNhanPhaiTraGoiY => TongTienGoiY - BaoHiemChiTraGoiY;
     }

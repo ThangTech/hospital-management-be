@@ -92,6 +92,7 @@ namespace BacSiService.DAL.Repositories
                 cmd.Parameters.AddWithValue("@Ngay", dto.Ngay ?? (object)DBNull.Value);
                 cmd.Parameters.AddWithValue("@PhongMo", dto.PhongMo ?? (object)DBNull.Value);
                 cmd.Parameters.AddWithValue("@TrangThai", dto.TrangThai ?? (object)DBNull.Value);
+                cmd.Parameters.AddWithValue("@ChiPhi", dto.ChiPhi ?? (object)DBNull.Value);
                 cmd.Parameters.AddWithValue("@NguoiDungId", nguoiDungId ?? (object)DBNull.Value);
                 cmd.Parameters.AddWithValue("@AuditUser", auditUser ?? (object)DBNull.Value);
 
@@ -116,11 +117,13 @@ namespace BacSiService.DAL.Repositories
             {
                 cmd.CommandType = CommandType.StoredProcedure;
                 cmd.Parameters.AddWithValue("@Id", id);
+                cmd.Parameters.AddWithValue("@BacSiChinhId", dto.BacSiChinhId ?? (object)DBNull.Value);
                 cmd.Parameters.AddWithValue("@LoaiPhauThuat", dto.LoaiPhauThuat ?? (object)DBNull.Value);
                 cmd.Parameters.AddWithValue("@Ekip", dto.Ekip ?? (object)DBNull.Value);
                 cmd.Parameters.AddWithValue("@Ngay", dto.Ngay ?? (object)DBNull.Value);
                 cmd.Parameters.AddWithValue("@PhongMo", dto.PhongMo ?? (object)DBNull.Value);
                 cmd.Parameters.AddWithValue("@TrangThai", dto.TrangThai ?? (object)DBNull.Value);
+                cmd.Parameters.AddWithValue("@ChiPhi", dto.ChiPhi ?? (object)DBNull.Value);
                 cmd.Parameters.AddWithValue("@NguoiDungId", nguoiDungId ?? (object)DBNull.Value);
                 cmd.Parameters.AddWithValue("@AuditUser", auditUser ?? (object)DBNull.Value);
 
@@ -155,7 +158,7 @@ namespace BacSiService.DAL.Repositories
 
         private static SurgeryScheduleDto MapToDto(SqlDataReader reader)
         {
-            return new SurgeryScheduleDto
+            var dto = new SurgeryScheduleDto
             {
                 Id = reader["Id"] == DBNull.Value ? Guid.Empty : (Guid)reader["Id"],
                 NhapVienId = reader["NhapVienId"] == DBNull.Value ? (Guid?)null : (Guid)reader["NhapVienId"],
@@ -166,6 +169,34 @@ namespace BacSiService.DAL.Repositories
                 PhongMo = reader["PhongMo"] as string,
                 TrangThai = reader["TrangThai"] as string
             };
+            
+            // Safely try to get patient info (requires SP to JOIN with NhapVien->BenhNhan)
+            try
+            {
+                if (HasColumn(reader, "TenBenhNhan"))
+                    dto.TenBenhNhan = reader["TenBenhNhan"] as string;
+                if (HasColumn(reader, "BenhNhanId"))
+                    dto.BenhNhanId = reader["BenhNhanId"] == DBNull.Value ? (Guid?)null : (Guid)reader["BenhNhanId"];
+                if (HasColumn(reader, "NgaySinhBenhNhan"))
+                    dto.NgaySinhBenhNhan = reader["NgaySinhBenhNhan"] == DBNull.Value ? (DateTime?)null : (DateTime)reader["NgaySinhBenhNhan"];
+                if (HasColumn(reader, "ChiPhi"))
+                    dto.ChiPhi = reader["ChiPhi"] == DBNull.Value ? (decimal?)null : Convert.ToDecimal(reader["ChiPhi"]);
+                if (HasColumn(reader, "TenBacSi"))
+                    dto.TenBacSi = reader["TenBacSi"] as string;
+            }
+            catch { /* Columns not found - SP needs update */ }
+            
+            return dto;
+        }
+        
+        private static bool HasColumn(SqlDataReader reader, string columnName)
+        {
+            for (int i = 0; i < reader.FieldCount; i++)
+            {
+                if (reader.GetName(i).Equals(columnName, StringComparison.OrdinalIgnoreCase))
+                    return true;
+            }
+            return false;
         }
     }
 }

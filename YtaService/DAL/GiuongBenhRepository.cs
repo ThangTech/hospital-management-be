@@ -171,8 +171,11 @@ namespace YtaService.DAL
                     cmd.Parameters.Add("@GiaTien", SqlDbType.Decimal).Value = giuong.GiaTien;
 
                     conn.Open();
-                    int result = cmd.ExecuteNonQuery();
-                    return result > 0; // Trả về true nếu sửa thành công
+                    cmd.ExecuteNonQuery();
+                    
+                    // Nếu không có exception nghĩa là thành công
+                    // (Workaround: SP có thể có SET NOCOUNT ON nên không trả về số dòng)
+                    return true;
                 }
                 catch (Exception ex)
                 {

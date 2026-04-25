@@ -47,9 +47,30 @@ BEGIN
             SET @FinBaoHiem = 0 -- Hết hạn hoặc không có thẻ
     END
 
-    -- 4. Chèn hóa đơn
+    -- 4. Tính số tiền bệnh nhân phải trả
+    DECLARE @BenhNhanPhaiTra DECIMAL(18,2) = @TongTien - @FinBaoHiem
+    
+    -- 5. Xác định trạng thái: nếu BHYT cover hết thì đã thanh toán
+    DECLARE @TrangThai NVARCHAR(50) = N'Chưa thanh toán'
+    DECLARE @BenhNhanDaTra DECIMAL(18,2) = 0
+    
+    -- Nếu bệnh nhân không cần trả thêm (BHYT cover 100%) thì mark as paid
+    IF @BenhNhanPhaiTra <= 0 
+    BEGIN
+        SET @TrangThai = N'Đã thanh toán'
+        SET @BenhNhanDaTra = 0
+    END
+    ELSE
+    BEGIN
+        -- Với trường hợp xuất viện, giả định bệnh nhân đã trả hết số tiền còn lại
+        -- (vì modal thanh toán chỉ được bấm sau khi họ "thanh toán")
+        SET @TrangThai = N'Đã thanh toán'
+        SET @BenhNhanDaTra = @BenhNhanPhaiTra
+    END
+    
+    -- 6. Chèn hóa đơn
     INSERT INTO HoaDon (Id, BenhNhanId, NhapVienId, TongTien, BaoHiemChiTra, BenhNhanThanhToan, Ngay, TrangThai)
-    VALUES (@Id, @BenhNhanId, @NhapVienId, @TongTien, @FinBaoHiem, 0, GETDATE(), N'Chưa thanh toán')
+    VALUES (@Id, @BenhNhanId, @NhapVienId, @TongTien, @FinBaoHiem, @BenhNhanDaTra, GETDATE(), @TrangThai)
     
     RETURN 1 -- Thành công
 END

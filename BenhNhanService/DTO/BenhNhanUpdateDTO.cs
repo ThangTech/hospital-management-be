@@ -1,4 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations;
 
 namespace BenhNhanService.DTO
 {
@@ -12,6 +12,10 @@ namespace BenhNhanService.DTO
         public string SoTheBaoHiem { get; set; }
         public decimal? MucHuong { get; set; }
         public DateTime? HanTheBHYT { get; set; }
+        public string TrangThai { get; set; }
+        public string? Avatar { get; set; }
+        public string? SoDienThoai { get; set; }
+        public bool DaXoa { get; set; }
     }
     public class BenhNhanUpdateDTO
     {
@@ -24,5 +28,8 @@ namespace BenhNhanService.DTO
         public string SoTheBaoHiem { get; set; }
         public decimal? MucHuong { get; set; }
         public DateTime? HanTheBHYT { get; set; }
+        public string TrangThai { get; set; }
+        public string? Avatar { get; set; }
+        public string? SoDienThoai { get; set; }
     }
 }

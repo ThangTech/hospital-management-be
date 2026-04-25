@@ -33,6 +33,7 @@ builder.Services.AddSingleton<IConfiguration>(builder.Configuration);
 builder.Services.AddScoped<IBenhNhanRepository, BenhNhanRepository>();
 builder.Services.AddScoped<IBenhNhanBusiness, BenhNhanBusiness>();
 builder.Services.AddScoped<IBHYTBusiness, BHYTBusiness>();
+builder.Services.AddScoped<IExportBenhNhanService, ExportBenhNhanService>();
 
 builder.Services.AddDbContext<HospitalManageContext>(options =>options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 

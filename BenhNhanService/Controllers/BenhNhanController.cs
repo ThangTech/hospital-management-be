@@ -13,7 +13,13 @@ namespace BenhNhanService.Controllers
     public class BenhNhanController : ControllerBase
     {
         private IBenhNhanBusiness _benhNhanBusiness;
-        public BenhNhanController(IBenhNhanBusiness bus) { _benhNhanBusiness = bus; }
+        private IExportBenhNhanService _exportService;
+
+        public BenhNhanController(IBenhNhanBusiness bus, IExportBenhNhanService exportService)
+        {
+            _benhNhanBusiness = bus;
+            _exportService = exportService;
+        }
 
         // --- 1. CREATE: Thêm bệnh nhân mới (nhận FormData + File) ---
         [HttpPost("create")]
@@ -182,8 +188,29 @@ namespace BenhNhanService.Controllers
 
         // --- HÀM PHỤ TRỢ (PRIVATE) ĐỂ CHUYỂN ĐỔI DỮ LIỆU ---
         // Viết 1 lần dùng cho tất cả các hàm trên cho gọn code
-        private BenhNhanViewDTO MapToViewDTO(BenhNhan entity)
+
+        // --- 6. EXPORT EXCEL: Xuất danh sách bệnh nhân ra file Excel ---
+        [HttpGet("export-excel")]
+        [Authorize(Roles = "Admin,YTa,BacSi,KeToan")]
+        public IActionResult ExportExcel()
         {
+            try
+            {
+                var fileBytes = _exportService.ExportBenhNhanToExcel();
+                var fileName = $"DanhSachBenhNhan_{DateTime.Now:yyyyMMdd_HHmmss}.xlsx";
+                return File(
+                    fileContents: fileBytes,
+                    contentType: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                    fileDownloadName: fileName
+                );
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        private BenhNhanViewDTO MapToViewDTO(BenhNhan entity)        {
             return new BenhNhanViewDTO
             {
                 Id = entity.Id,

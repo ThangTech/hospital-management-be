@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Microsoft.OpenApi.Models;
+using Microsoft.Extensions.FileProviders;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -98,6 +99,18 @@ if (app.Environment.IsDevelopment())
 
 // ===== USE CORS (before auth) =====
 app.UseStaticFiles();
+
+var uploadsPath = Path.Combine(builder.Environment.WebRootPath ?? string.Empty, "uploads");
+if (!Directory.Exists(uploadsPath))
+{
+    Directory.CreateDirectory(uploadsPath);
+}
+
+app.UseStaticFiles(new StaticFileOptions
+{
+    FileProvider = new PhysicalFileProvider(uploadsPath),
+    RequestPath = "/uploads"
+});
 app.UseCors("AllowAll");
 
 app.UseAuthentication();

@@ -6,5 +6,6 @@ namespace KhoaPhongService.DTO
         public string TenKhoa { get; set; }
         public string LoaiKhoa { get; set; }
         public int SoGiuongTieuChuan { get; set; }
+        public int SoGiuongHienCo { get; set; }
     }
 }

@@ -137,7 +137,10 @@ namespace KhoaPhongService.DAL
                 Id = Guid.Parse(row["Id"].ToString()),
                 TenKhoa = row["TenKhoa"].ToString(),
                 LoaiKhoa = row["LoaiKhoa"].ToString(),
-                SoGiuongTieuChuan = Convert.ToInt32(row["SoGiuongTieuChuan"])
+                SoGiuongTieuChuan = Convert.ToInt32(row["SoGiuongTieuChuan"]),
+                SoGiuongHienCo = row.Table.Columns.Contains("SoGiuongHienCo") && row["SoGiuongHienCo"] != DBNull.Value
+                    ? Convert.ToInt32(row["SoGiuongHienCo"])
+                    : 0
             };
         }
     }

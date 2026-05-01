@@ -133,17 +133,15 @@ namespace YtaService.DAL
             using (var conn = _dbHelper.GetConnection())
             {
                 conn.Open();
-                string query = @"INSERT INTO GiuongBenh (Id, KhoaId, TenGiuong, LoaiGiuong, GiaTien, TrangThai) 
-                                 VALUES (@Id, @KhoaId, @TenGiuong, @LoaiGiuong, @GiaTien, @TrangThai)";
-
-                using (var cmd = new SqlCommand(query, conn))
+                using (var cmd = new SqlCommand("sp_Giuong_Create", conn))
                 {
-                    cmd.Parameters.AddWithValue("@Id", giuong.Id);
-                    cmd.Parameters.AddWithValue("@KhoaId", giuong.KhoaId); // Chú ý: Nếu KhoaId null thì phải truyền DBNull.Value
-                    cmd.Parameters.AddWithValue("@TenGiuong", giuong.TenGiuong ?? (object)DBNull.Value);
-                    cmd.Parameters.AddWithValue("@LoaiGiuong", giuong.LoaiGiuong ?? (object)DBNull.Value);
-                    cmd.Parameters.AddWithValue("@GiaTien", giuong.GiaTien);
-                    cmd.Parameters.AddWithValue("@TrangThai", giuong.TrangThai ?? (object)DBNull.Value);
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Parameters.Add("@Id", SqlDbType.UniqueIdentifier).Value = giuong.Id;
+                    cmd.Parameters.Add("@KhoaId", SqlDbType.UniqueIdentifier).Value = giuong.KhoaId;
+                    cmd.Parameters.Add("@TenGiuong", SqlDbType.NVarChar).Value = giuong.TenGiuong ?? (object)DBNull.Value;
+                    cmd.Parameters.Add("@LoaiGiuong", SqlDbType.NVarChar).Value = giuong.LoaiGiuong ?? (object)DBNull.Value;
+                    cmd.Parameters.Add("@GiaTien", SqlDbType.Decimal).Value = giuong.GiaTien;
+                    cmd.Parameters.Add("@TrangThai", SqlDbType.NVarChar).Value = giuong.TrangThai ?? (object)DBNull.Value;
                     cmd.ExecuteNonQuery();
                 }
             }

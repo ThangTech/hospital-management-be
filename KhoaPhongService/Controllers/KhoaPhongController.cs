@@ -34,7 +34,8 @@ namespace KhoaPhongService.Controllers
                 Id = x.Id,
                 TenKhoa = x.TenKhoa,
                 LoaiKhoa = x.LoaiKhoa,
-                SoGiuongTieuChuan = x.SoGiuongTieuChuan ?? 0
+                SoGiuongTieuChuan = x.SoGiuongTieuChuan ?? 0,
+                SoGiuongHienCo = x.SoGiuongHienCo ?? 0
             }).ToList();
 
             return Ok(viewData);
@@ -56,7 +57,8 @@ namespace KhoaPhongService.Controllers
                 Id = x.Id,
                 TenKhoa = x.TenKhoa,
                 LoaiKhoa = x.LoaiKhoa,
-                SoGiuongTieuChuan = x.SoGiuongTieuChuan ?? 0
+                SoGiuongTieuChuan = x.SoGiuongTieuChuan ?? 0,
+                SoGiuongHienCo = x.SoGiuongHienCo ?? 0
             };
             return Ok(viewDto);
         }

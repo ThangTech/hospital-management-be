@@ -1,4 +1,4 @@
-using BacSiService.BLL.Interfaces;
+﻿using BacSiService.BLL.Interfaces;
 using BacSiService.DTOs;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -9,8 +9,8 @@ using System.Security.Claims;
 namespace BacSiService.Controllers
 {
     /// <summary>
-    /// Controller quản lý Hồ sơ bệnh án
-    /// Quyền: Admin, BacSi
+    /// Controller quáº£n lÃ½ Há»“ sÆ¡ bá»‡nh Ã¡n
+    /// Quyá»n: Admin, BacSi
     /// </summary>
     [Route("api/[controller]")]
     [ApiController]
@@ -24,7 +24,7 @@ namespace BacSiService.Controllers
             _service = service;
         }
 
-        // Helper: Lấy user info từ JWT claims
+        // Helper: Láº¥y user info tá»« JWT claims
         private (Guid? userId, string? userName) GetCurrentUser()
         {
             var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value
@@ -40,7 +40,7 @@ namespace BacSiService.Controllers
         }
 
         /// <summary>
-        /// Lấy tất cả hồ sơ bệnh án
+        /// Láº¥y táº¥t cáº£ há»“ sÆ¡ bá»‡nh Ã¡n
         /// </summary>
         [HttpGet("get-all-medical")]
         [Authorize(Roles = "Admin,BacSi")]
@@ -53,12 +53,12 @@ namespace BacSiService.Controllers
             }
             catch (Exception ex)
             {
-                return StatusCode(500, new ApiResponse { Success = false, Message = "Lỗi tải danh sách: " + ex.Message });
+                return StatusCode(500, new ApiResponse { Success = false, Message = "Lá»—i táº£i danh sÃ¡ch: " + ex.Message });
             }
         }
 
         /// <summary>
-        /// Tìm kiếm hồ sơ bệnh án (theo tên bệnh nhân, tên bác sĩ, chẩn đoán...)
+        /// TÃ¬m kiáº¿m há»“ sÆ¡ bá»‡nh Ã¡n (theo tÃªn bá»‡nh nhÃ¢n, tÃªn bÃ¡c sÄ©, cháº©n Ä‘oÃ¡n...)
         /// </summary>
         [HttpPost("search")]
         [Authorize(Roles = "Admin,BacSi")]
@@ -67,7 +67,7 @@ namespace BacSiService.Controllers
             try
             {
                 var res = _service.GetByAdmission(
-                    Guid.TryParse(request.SearchTerm, out var pid) ? pid : (Guid?)null,
+                    null,
                     request.PageNumber, request.PageSize, request.SearchTerm);
 
                 return Ok(new ApiResponse<PagedResult<MedicalRecordDto>>
@@ -79,17 +79,17 @@ namespace BacSiService.Controllers
             }
             catch (SqlException ex)
             {
-                return StatusCode(500, new ApiResponse { Success = false, Message = "Lỗi tìm kiếm: " + ex.Message });
+                return StatusCode(500, new ApiResponse { Success = false, Message = "Lá»—i tÃ¬m kiáº¿m: " + ex.Message });
             }
             catch (Exception ex)
             {
-                return StatusCode(500, new ApiResponse { Success = false, Message = "Lỗi hệ thống: " + ex.Message });
+                return StatusCode(500, new ApiResponse { Success = false, Message = "Lá»—i há»‡ thá»‘ng: " + ex.Message });
             }
         }
 
         /// <summary>
-        /// Thêm hồ sơ bệnh án mới
-        /// Nghiệp vụ: 1 phiếu nhập viện chỉ được 1 hồ sơ, phiếu phải đang điều trị
+        /// ThÃªm há»“ sÆ¡ bá»‡nh Ã¡n má»›i
+        /// Nghiá»‡p vá»¥: 1 phiáº¿u nháº­p viá»‡n chá»‰ Ä‘Æ°á»£c 1 há»“ sÆ¡, phiáº¿u pháº£i Ä‘ang Ä‘iá»u trá»‹
         /// </summary>
         [HttpPost]
         [Authorize(Roles = "Admin,BacSi")]
@@ -101,24 +101,24 @@ namespace BacSiService.Controllers
                 var created = _service.Create(dto, userId, userName);
 
                 if (created == null)
-                    return BadRequest(new ApiResponse { Success = false, Message = "Tạo hồ sơ thất bại" });
+                    return BadRequest(new ApiResponse { Success = false, Message = "Táº¡o há»“ sÆ¡ tháº¥t báº¡i" });
 
-                return Ok(new ApiResponse<MedicalRecordDto> { Success = true, Data = created, Message = "Tạo hồ sơ bệnh án thành công" });
+                return Ok(new ApiResponse<MedicalRecordDto> { Success = true, Data = created, Message = "Táº¡o há»“ sÆ¡ bá»‡nh Ã¡n thÃ nh cÃ´ng" });
             }
             catch (SqlException ex)
             {
-                // SP dùng RAISERROR → SqlException.Message chứa thông báo nghiệp vụ
+                // SP dÃ¹ng RAISERROR â†’ SqlException.Message chá»©a thÃ´ng bÃ¡o nghiá»‡p vá»¥
                 return BadRequest(new ApiResponse { Success = false, Message = ex.Message });
             }
             catch (Exception ex)
             {
-                return StatusCode(500, new ApiResponse { Success = false, Message = "Lỗi hệ thống: " + ex.Message });
+                return StatusCode(500, new ApiResponse { Success = false, Message = "Lá»—i há»‡ thá»‘ng: " + ex.Message });
             }
         }
 
         /// <summary>
-        /// Cập nhật hồ sơ bệnh án
-        /// Nghiệp vụ: KetQuaDieuTri chỉ được cập nhật khi trạng thái "Chờ xuất viện"
+        /// Cáº­p nháº­t há»“ sÆ¡ bá»‡nh Ã¡n
+        /// Nghiá»‡p vá»¥: KetQuaDieuTri chá»‰ Ä‘Æ°á»£c cáº­p nháº­t khi tráº¡ng thÃ¡i "Chá» xuáº¥t viá»‡n"
         /// </summary>
         [HttpPut("{id:guid}")]
         [Authorize(Roles = "Admin,BacSi")]
@@ -130,25 +130,196 @@ namespace BacSiService.Controllers
                 var updated = _service.Update(id, dto, userId, userName);
 
                 if (updated == null)
-                    return BadRequest(new ApiResponse { Success = false, Message = "Cập nhật thất bại" });
+                    return BadRequest(new ApiResponse { Success = false, Message = "Cáº­p nháº­t tháº¥t báº¡i" });
 
-                return Ok(new ApiResponse<MedicalRecordDto> { Success = true, Data = updated, Message = "Cập nhật hồ sơ thành công" });
+                return Ok(new ApiResponse<MedicalRecordDto> { Success = true, Data = updated, Message = "Cáº­p nháº­t há»“ sÆ¡ thÃ nh cÃ´ng" });
             }
             catch (SqlException ex)
             {
-                // SP dùng RAISERROR → SqlException.Message chứa thông báo nghiệp vụ
+                // SP dÃ¹ng RAISERROR â†’ SqlException.Message chá»©a thÃ´ng bÃ¡o nghiá»‡p vá»¥
                 return BadRequest(new ApiResponse { Success = false, Message = ex.Message });
             }
             catch (Exception ex)
             {
-                return StatusCode(500, new ApiResponse { Success = false, Message = "Lỗi hệ thống: " + ex.Message });
+                return StatusCode(500, new ApiResponse { Success = false, Message = "Lá»—i há»‡ thá»‘ng: " + ex.Message });
             }
         }
+        using BacSiService.BLL.Interfaces;
+using BacSiService.DTOs;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Data.SqlClient;
+using System;
+using System.Security.Claims;
 
+namespace BacSiService.Controllers
+    {
         /// <summary>
-        /// Xóa hồ sơ bệnh án
+        /// Controller quản lý Hồ sơ bệnh án
+        /// Quyền: Admin, BacSi
         /// </summary>
-        [HttpDelete("{id:guid}")]
+        [Route("api/[controller]")]
+        [ApiController]
+        [Authorize]
+        public class MedicalRecordController : ControllerBase
+        {
+            private readonly IMedicalRecordService _service;
+
+            public MedicalRecordController(IMedicalRecordService service)
+            {
+                _service = service;
+            }
+
+            // Helper: Lấy user info từ JWT claims
+            private (Guid? userId, string? userName) GetCurrentUser()
+            {
+                var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value
+                               ?? User.FindFirst("sub")?.Value;
+                var userName = User.FindFirst(ClaimTypes.Name)?.Value
+                            ?? User.FindFirst("unique_name")?.Value;
+
+                Guid? userId = null;
+                if (Guid.TryParse(userIdClaim, out var parsedId))
+                    userId = parsedId;
+
+                return (userId, userName);
+            }
+
+            /// <summary>
+            /// Lấy tất cả hồ sơ bệnh án
+            /// </summary>
+            [HttpGet("get-all-medical")]
+            [Authorize(Roles = "Admin,BacSi")]
+            public IActionResult GetAll()
+            {
+                try
+                {
+                    var result = _service.GetAll();
+                    return Ok(result);
+                }
+                catch (Exception ex)
+                {
+                    return StatusCode(500, new ApiResponse { Success = false, Message = "Lỗi tải danh sách: " + ex.Message });
+                }
+            }
+
+            /// <summary>
+            /// Tìm kiếm hồ sơ bệnh án (theo tên bệnh nhân, tên bác sĩ, chẩn đoán...)
+            /// </summary>
+            [HttpPost("search")]
+            [Authorize(Roles = "Admin,BacSi")]
+            public ActionResult<ApiResponse<PagedResult<MedicalRecordDto>>> Search([FromBody] SearchRequestDTO request)
+            {
+                try
+                {
+                    var res = _service.GetByAdmission(
+                        null,
+                        request.PageNumber, request.PageSize, request.SearchTerm);
+
+                    return Ok(new ApiResponse<PagedResult<MedicalRecordDto>>
+                    {
+                        Success = true,
+                        Data = res,
+                        Message = "OK"
+                    });
+                }
+                catch (SqlException ex)
+                {
+                    return StatusCode(500, new ApiResponse { Success = false, Message = "Lỗi tìm kiếm: " + ex.Message });
+                }
+                catch (Exception ex)
+                {
+                    return StatusCode(500, new ApiResponse { Success = false, Message = "Lỗi hệ thống: " + ex.Message });
+                }
+            }
+
+            /// <summary>
+            /// Thêm hồ sơ bệnh án mới
+            /// Nghiệp vụ: 1 phiếu nhập viện chỉ được 1 hồ sơ, phiếu phải đang điều trị
+            /// </summary>
+            [HttpPost]
+            [Authorize(Roles = "Admin,BacSi")]
+            public ActionResult<ApiResponse<MedicalRecordDto>> Create(MedicalRecordDto dto)
+            {
+                try
+                {
+                    var (userId, userName) = GetCurrentUser();
+                    var created = _service.Create(dto, userId, userName);
+
+                    if (created == null)
+                        return BadRequest(new ApiResponse { Success = false, Message = "Tạo hồ sơ thất bại" });
+
+                    return Ok(new ApiResponse<MedicalRecordDto> { Success = true, Data = created, Message = "Tạo hồ sơ bệnh án thành công" });
+                }
+                catch (SqlException ex)
+                {
+                    // SP dùng RAISERROR → SqlException.Message chứa thông báo nghiệp vụ
+                    return BadRequest(new ApiResponse { Success = false, Message = ex.Message });
+                }
+                catch (Exception ex)
+                {
+                    return StatusCode(500, new ApiResponse { Success = false, Message = "Lỗi hệ thống: " + ex.Message });
+                }
+            }
+
+            /// <summary>
+            /// Cập nhật hồ sơ bệnh án
+            /// Nghiệp vụ: KetQuaDieuTri chỉ được cập nhật khi trạng thái "Chờ xuất viện"
+            /// </summary>
+            [HttpPut("{id:guid}")]
+            [Authorize(Roles = "Admin,BacSi")]
+            public ActionResult<ApiResponse<MedicalRecordDto>> Update(Guid id, MedicalRecordDto dto)
+            {
+                try
+                {
+                    var (userId, userName) = GetCurrentUser();
+                    var updated = _service.Update(id, dto, userId, userName);
+
+                    if (updated == null)
+                        return BadRequest(new ApiResponse { Success = false, Message = "Cập nhật thất bại" });
+
+                    return Ok(new ApiResponse<MedicalRecordDto> { Success = true, Data = updated, Message = "Cập nhật hồ sơ thành công" });
+                }
+                catch (SqlException ex)
+                {
+                    // SP dùng RAISERROR → SqlException.Message chứa thông báo nghiệp vụ
+                    return BadRequest(new ApiResponse { Success = false, Message = ex.Message });
+                }
+                catch (Exception ex)
+                {
+                    return StatusCode(500, new ApiResponse { Success = false, Message = "Lỗi hệ thống: " + ex.Message });
+                }
+            }
+
+            /// <summary>
+            /// Xóa hồ sơ bệnh án
+            /// </summary>
+            [HttpDelete("{id:guid}")]
+            [Authorize(Roles = "Admin")]
+            public ActionResult<ApiResponse> Delete(Guid id)
+            {
+                try
+                {
+                    var (userId, userName) = GetCurrentUser();
+                    var ok = _service.Delete(id, userId, userName);
+                    return Ok(new ApiResponse { Success = ok, Message = ok ? "Đã xóa hồ sơ bệnh án" : "Xóa thất bại" });
+                }
+                catch (SqlException ex)
+                {
+                    return BadRequest(new ApiResponse { Success = false, Message = ex.Message });
+                }
+                catch (Exception ex)
+                {
+                    return StatusCode(500, new ApiResponse { Success = false, Message = "Lỗi hệ thống: " + ex.Message });
+                }
+            }
+        }
+    }
+
+    /// <summary>
+    /// XÃ³a há»“ sÆ¡ bá»‡nh Ã¡n
+    /// </summary>
+    [HttpDelete("{id:guid}")]
         [Authorize(Roles = "Admin")]
         public ActionResult<ApiResponse> Delete(Guid id)
         {
@@ -156,7 +327,7 @@ namespace BacSiService.Controllers
             {
                 var (userId, userName) = GetCurrentUser();
                 var ok = _service.Delete(id, userId, userName);
-                return Ok(new ApiResponse { Success = ok, Message = ok ? "Đã xóa hồ sơ bệnh án" : "Xóa thất bại" });
+                return Ok(new ApiResponse { Success = ok, Message = ok ? "ÄÃ£ xÃ³a há»“ sÆ¡ bá»‡nh Ã¡n" : "XÃ³a tháº¥t báº¡i" });
             }
             catch (SqlException ex)
             {
@@ -164,8 +335,9 @@ namespace BacSiService.Controllers
             }
             catch (Exception ex)
             {
-                return StatusCode(500, new ApiResponse { Success = false, Message = "Lỗi hệ thống: " + ex.Message });
+                return StatusCode(500, new ApiResponse { Success = false, Message = "Lá»—i há»‡ thá»‘ng: " + ex.Message });
             }
         }
     }
 }
+

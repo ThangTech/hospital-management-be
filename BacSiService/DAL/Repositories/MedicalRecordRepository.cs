@@ -89,7 +89,7 @@ namespace BacSiService.DAL.Repositories
                 cmd.Parameters.AddWithValue("@TienSuBenh", dto.TienSuBenh ?? (object)DBNull.Value);
                 cmd.Parameters.AddWithValue("@ChanDoanBanDau", dto.ChanDoanBanDau ?? (object)DBNull.Value);
                 cmd.Parameters.AddWithValue("@PhuongAnDieuTri", dto.PhuongAnDieuTri ?? (object)DBNull.Value);
-                cmd.Parameters.AddWithValue("@KetQuaDieuTri", dto.KetQuaDieuTri ?? (object)DBNull.Value);
+                // @KetQuaDieuTri đã bị xóa khỏi SP - chỉ được cập nhật qua Update khi trạng thái "Chờ xuất viện"
                 cmd.Parameters.AddWithValue("@ChanDoanRaVien", dto.ChanDoanRaVien ?? (object)DBNull.Value);
                 cmd.Parameters.AddWithValue("@BacSiPhuTrachId", dto.BacSiPhuTrachId ?? (object)DBNull.Value);
                 cmd.Parameters.AddWithValue("@NguoiDungId", nguoiDungId ?? (object)DBNull.Value);
@@ -193,7 +193,7 @@ namespace BacSiService.DAL.Repositories
                     dto.NgayXuat = reader["NgayXuat"] == DBNull.Value ? null : (DateTime?)reader["NgayXuat"];
                 if (HasColumn(reader, "LyDoNhap"))
                     dto.LyDoNhap = reader["LyDoNhap"] as string;
-                if (HasColumn(reader, "TrangThaiNhapVien"))
+                if (HasColumn(reader, "TrangThaiNhapVien"))  // cột mới từ SP search
                     dto.TrangThaiNhapVien = reader["TrangThaiNhapVien"] as string;
                 if (HasColumn(reader, "TenKhoa"))
                     dto.TenKhoa = reader["TenKhoa"] as string;

@@ -485,10 +485,16 @@ BEGIN
     SET NOCOUNT ON;
     SELECT hs.Id, hs.NhapVienId, hs.TienSuBenh, hs.ChanDoanBanDau, hs.ChanDoanRaVien,
         hs.PhuongAnDieuTri, hs.KetQuaDieuTri, hs.NgayLap, hs.BacSiPhuTrachId,
-        bn.HoTen AS TenBenhNhan, bn.NgaySinh AS NgaySinhBenhNhan, bn.Id AS BenhNhanId
+        bn.HoTen AS TenBenhNhan, bn.NgaySinh AS NgaySinhBenhNhan, bn.Id AS BenhNhanId,
+        bs.HoTen AS TenBacSi,
+        nv.NgayNhap, nv.NgayXuat, nv.LyDoNhap, nv.TrangThai AS TrangThaiNhapVien,
+        kp.TenKhoa, gb.TenGiuong
     FROM HoSoBenhAn hs
     INNER JOIN NhapVien nv ON hs.NhapVienId = nv.Id
     INNER JOIN BenhNhan bn ON nv.BenhNhanId = bn.Id
+    LEFT JOIN BacSi bs ON hs.BacSiPhuTrachId = bs.Id
+    LEFT JOIN KhoaPhong kp ON nv.KhoaId = kp.Id
+    LEFT JOIN GiuongBenh gb ON nv.GiuongId = gb.Id
     ORDER BY hs.NgayLap DESC;
 END
 ')
@@ -1145,10 +1151,20 @@ BEGIN
         hs.BacSiPhuTrachId,
         bn.HoTen AS TenBenhNhan,
         bn.NgaySinh AS NgaySinhBenhNhan,
-        bn.Id AS BenhNhanId
+        bn.Id AS BenhNhanId,
+        bs.HoTen AS TenBacSi,
+        nv.NgayNhap,
+        nv.NgayXuat,
+        nv.LyDoNhap,
+        nv.TrangThai AS TrangThaiNhapVien,
+        kp.TenKhoa,
+        gb.TenGiuong
     FROM HoSoBenhAn hs
     INNER JOIN NhapVien nv ON hs.NhapVienId = nv.Id
     INNER JOIN BenhNhan bn ON nv.BenhNhanId = bn.Id
+    LEFT JOIN BacSi bs ON hs.BacSiPhuTrachId = bs.Id
+    LEFT JOIN KhoaPhong kp ON nv.KhoaId = kp.Id
+    LEFT JOIN GiuongBenh gb ON nv.GiuongId = gb.Id
     ORDER BY hs.NgayLap DESC;
 END
 GO
@@ -1316,6 +1332,9 @@ BEGIN
     FROM HoSoBenhAn hs
     INNER JOIN NhapVien nv ON hs.NhapVienId = nv.Id
     INNER JOIN BenhNhan bn ON nv.BenhNhanId = bn.Id
+    LEFT JOIN BacSi bs ON hs.BacSiPhuTrachId = bs.Id
+    LEFT JOIN KhoaPhong kp ON nv.KhoaId = kp.Id
+    LEFT JOIN GiuongBenh gb ON nv.GiuongId = gb.Id
     WHERE (@NhapVienId IS NULL OR hs.NhapVienId = @NhapVienId)
       AND (
             @SearchTerm IS NULL
@@ -1323,6 +1342,9 @@ BEGIN
             OR hs.ChanDoanBanDau LIKE N'%' + @SearchTerm + '%'
             OR hs.ChanDoanRaVien LIKE N'%' + @SearchTerm + '%'
             OR bn.HoTen LIKE N'%' + @SearchTerm + '%'
+            OR bs.HoTen LIKE N'%' + @SearchTerm + '%'
+            OR kp.TenKhoa LIKE N'%' + @SearchTerm + '%'
+            OR gb.TenGiuong LIKE N'%' + @SearchTerm + '%'
           );
     
     -- Phân trang với thông tin bệnh nhân
@@ -1338,10 +1360,20 @@ BEGIN
         hs.BacSiPhuTrachId,
         bn.HoTen AS TenBenhNhan,
         bn.NgaySinh AS NgaySinhBenhNhan,
-        bn.Id AS BenhNhanId
+        bn.Id AS BenhNhanId,
+        bs.HoTen AS TenBacSi,
+        nv.NgayNhap,
+        nv.NgayXuat,
+        nv.LyDoNhap,
+        nv.TrangThai AS TrangThaiNhapVien,
+        kp.TenKhoa,
+        gb.TenGiuong
     FROM HoSoBenhAn hs
     INNER JOIN NhapVien nv ON hs.NhapVienId = nv.Id
     INNER JOIN BenhNhan bn ON nv.BenhNhanId = bn.Id
+    LEFT JOIN BacSi bs ON hs.BacSiPhuTrachId = bs.Id
+    LEFT JOIN KhoaPhong kp ON nv.KhoaId = kp.Id
+    LEFT JOIN GiuongBenh gb ON nv.GiuongId = gb.Id
     WHERE (@NhapVienId IS NULL OR hs.NhapVienId = @NhapVienId)
       AND (
             @SearchTerm IS NULL
@@ -1349,6 +1381,9 @@ BEGIN
             OR hs.ChanDoanBanDau LIKE N'%' + @SearchTerm + '%'
             OR hs.ChanDoanRaVien LIKE N'%' + @SearchTerm + '%'
             OR bn.HoTen LIKE N'%' + @SearchTerm + '%'
+            OR bs.HoTen LIKE N'%' + @SearchTerm + '%'
+            OR kp.TenKhoa LIKE N'%' + @SearchTerm + '%'
+            OR gb.TenGiuong LIKE N'%' + @SearchTerm + '%'
           )
     ORDER BY hs.NgayLap DESC
     OFFSET (@PageNumber - 1) * @PageSize ROWS

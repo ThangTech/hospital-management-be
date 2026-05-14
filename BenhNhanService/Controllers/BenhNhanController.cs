@@ -45,7 +45,7 @@ namespace BenhNhanService.Controllers
                     SoTheBaoHiem = modelDto.SoTheBaoHiem,
                     MucHuong = modelDto.MucHuong,
                     HanTheBHYT = modelDto.HanTheBHYT,
-                    TrangThai = modelDto.TrangThai ?? "Đang điều trị",
+                    TrangThai = modelDto.TrangThai ?? "Chưa nhập viện",
                     Avatar = avatarPath ?? modelDto.Avatar,
                     SoDienThoai = modelDto.SoDienThoai
                 };
@@ -95,7 +95,7 @@ namespace BenhNhanService.Controllers
                     SoTheBaoHiem = modelDto.SoTheBaoHiem,
                     MucHuong = modelDto.MucHuong,
                     HanTheBHYT = modelDto.HanTheBHYT,
-                    TrangThai = modelDto.TrangThai ?? "Đang điều trị",
+                    TrangThai = existingItem.TrangThai,
                     Avatar = avatarPath ?? modelDto.Avatar,
                     SoDienThoai = modelDto.SoDienThoai
                 };

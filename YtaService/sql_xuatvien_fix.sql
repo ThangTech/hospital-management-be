@@ -32,7 +32,13 @@ BEGIN
             RETURN -3; -- Đã xuất viện rồi
         END
 
-        -- 3. Kiểm tra nợ hóa đơn
+        -- 3. Kiểm tra hóa đơn
+        IF NOT EXISTS (SELECT 1 FROM HoaDon WHERE NhapVienId = @Id)
+        BEGIN
+            ROLLBACK;
+            RETURN -2; -- Chưa có hóa đơn
+        END
+
         IF EXISTS (SELECT 1 FROM HoaDon WHERE NhapVienId = @Id AND TrangThai != N'Đã thanh toán')
         BEGIN
             ROLLBACK;

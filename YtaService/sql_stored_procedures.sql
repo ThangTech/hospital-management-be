@@ -61,7 +61,7 @@ BEGIN
     LEFT JOIN GiuongBenh gb ON nv.GiuongId = gb.Id
     LEFT JOIN KhoaPhong kp ON nv.KhoaId = kp.Id
     LEFT JOIN HoaDon hd ON nv.Id = hd.NhapVienId
-    WHERE nv.TrangThai = N'Đang điều trị'
+    WHERE nv.TrangThai IN (N'Đang điều trị', N'Chờ xuất viện')
       AND NOT EXISTS (
           SELECT 1
           FROM HoaDon

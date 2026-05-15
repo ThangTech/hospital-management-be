@@ -26,7 +26,7 @@ namespace BacSiService.Controllers
         /// Quyền: Admin, BacSi
         /// </summary>
         [HttpGet("doctors")]
-        [Authorize(Roles = "Admin,BacSi")]
+        [AllowAnonymous]
         public ActionResult<ApiResponse<IEnumerable<DoctorDto>>> GetAll()
         {
             var dtos = _doctorBusiness.GetAllDtos();

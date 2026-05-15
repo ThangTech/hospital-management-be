@@ -135,7 +135,7 @@ namespace BenhNhanService.Controllers
 
         // --- 4. GET BY ID: Trả về ViewDTO ---
         [HttpGet("get-by-id/{id}")]
-        [Authorize(Roles = "Admin,YTa,BacSi,KeToan")]
+        [Authorize(Roles = "Admin,YTa,BacSi,KeToan,BenhNhan")]
         public IActionResult GetDatabyID(string id)
         {
             var data = _benhNhanBusiness.GetDatabyID(id);
@@ -146,7 +146,7 @@ namespace BenhNhanService.Controllers
 
         // --- 5. GET ALL: Trả về List<ViewDTO> ---
         [HttpGet("get-all")]
-        [Authorize(Roles = "Admin,YTa,BacSi,KeToan")]
+        [Authorize(Roles = "Admin,YTa,BacSi,KeToan,BenhNhan")]
         public IActionResult GetAll()
         {
             var listEntity = _benhNhanBusiness.GetAll();

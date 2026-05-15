@@ -45,7 +45,7 @@ namespace BacSiService.Controllers
             /// Lấy tất cả hồ sơ bệnh án
             /// </summary>
             [HttpGet("get-all-medical")]
-            [Authorize(Roles = "Admin,BacSi")]
+            [Authorize(Roles = "Admin,BacSi,BenhNhan")]
             public IActionResult GetAll()
             {
                 try
@@ -148,7 +148,7 @@ namespace BacSiService.Controllers
             }
 
             [HttpGet("export-pdf/{id:guid}")]
-            [Authorize(Roles = "Admin,BacSi")]
+            [Authorize(Roles = "Admin,BacSi,BenhNhan")]
             [Produces("application/pdf")]
             public IActionResult ExportPdf(Guid id)
             {

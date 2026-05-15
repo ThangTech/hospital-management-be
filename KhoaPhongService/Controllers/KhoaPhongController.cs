@@ -24,7 +24,7 @@ namespace KhoaPhongService.Controllers
         /// Quyền: Admin, BacSi, YTa
         /// </summary>
         [HttpGet("get-all")]
-        [Authorize(Roles = "Admin,BacSi,YTa")]
+        [AllowAnonymous]
         public IActionResult GetAll()
         {
             var data = _bus.GetAll();

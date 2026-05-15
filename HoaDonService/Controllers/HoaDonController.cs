@@ -8,7 +8,7 @@ namespace HoaDonService.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize(Roles = "Admin,KeToan")]
+    [Authorize(Roles = "Admin,KeToan,BenhNhan")]
     public class HoaDonController : ControllerBase
     {
         private readonly IHoaDonBusiness _bus;

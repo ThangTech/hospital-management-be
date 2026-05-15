@@ -35,6 +35,8 @@ public class UserDTO
     /// </summary>
     public string? Email { get; set; }
 
+    public Guid? BenhNhanId { get; set; }
+
     /// <summary>
     /// Danh sách quyền của user dựa trên vai trò
     /// </summary>

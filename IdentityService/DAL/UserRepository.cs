@@ -136,6 +136,7 @@ public class UserRepository : IUserRepository
         command.Parameters.AddWithValue("@MatKhauHash", nguoiDung.MatKhauHash ?? (object)DBNull.Value);
         command.Parameters.AddWithValue("@VaiTro", nguoiDung.VaiTro ?? (object)DBNull.Value);
         command.Parameters.AddWithValue("@Email", nguoiDung.Email ?? (object)DBNull.Value);
+        command.Parameters.AddWithValue("@BenhNhanId", nguoiDung.BenhNhanId ?? (object)DBNull.Value);
 
         await connection.OpenAsync();
         using var reader = await command.ExecuteReaderAsync();
@@ -162,6 +163,7 @@ public class UserRepository : IUserRepository
         command.Parameters.AddWithValue("@MatKhauHash", nguoiDung.MatKhauHash ?? (object)DBNull.Value);
         command.Parameters.AddWithValue("@VaiTro", nguoiDung.VaiTro ?? (object)DBNull.Value);
         command.Parameters.AddWithValue("@Email", nguoiDung.Email ?? (object)DBNull.Value);
+        command.Parameters.AddWithValue("@BenhNhanId", nguoiDung.BenhNhanId ?? (object)DBNull.Value);
 
         await connection.OpenAsync();
         using var reader = await command.ExecuteReaderAsync();
@@ -225,6 +227,15 @@ public class UserRepository : IUserRepository
     /// <summary>
     /// Map SqlDataReader sang NguoiDung object
     /// </summary>
+    private static bool HasColumn(SqlDataReader reader, string columnName)
+    {
+        for (var i = 0; i < reader.FieldCount; i++)
+        {
+            if (reader.GetName(i).Equals(columnName, StringComparison.OrdinalIgnoreCase)) return true;
+        }
+        return false;
+    }
+
     private static NguoiDung MapToNguoiDung(SqlDataReader reader)
     {
         return new NguoiDung
@@ -233,7 +244,8 @@ public class UserRepository : IUserRepository
             TenDangNhap  = reader["TenDangNhap"] as string,
             MatKhauHash  = reader["MatKhauHash"] as string,
             VaiTro       = reader["VaiTro"] as string,
-            Email        = reader["Email"] as string
+            Email        = reader["Email"] as string,
+            BenhNhanId   = HasColumn(reader, "BenhNhanId") && reader["BenhNhanId"] != DBNull.Value ? (Guid?)reader["BenhNhanId"] : null
         };
     }
 

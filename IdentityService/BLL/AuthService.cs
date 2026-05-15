@@ -68,13 +68,24 @@ public class AuthService : IAuthService
             return (false, "Mật khẩu phải có ít nhất 6 ký tự", null);
         }
 
+        if (dto.VaiTro == Roles.BenhNhan && dto.BenhNhanId == null)
+        {
+            return (false, "Vui lòng nhập mã bệnh nhân", null);
+        }
+
+        if (dto.VaiTro != Roles.BenhNhan && dto.BenhNhanId != null)
+        {
+            return (false, "Mã bệnh nhân chỉ dùng cho vai trò Bệnh nhân", null);
+        }
+
         // Tạo user mới
         var nguoiDung = new NguoiDung
         {
             TenDangNhap = dto.TenDangNhap,
             MatKhauHash = HashPassword(dto.MatKhau),
             VaiTro      = dto.VaiTro,
-            Email       = dto.Email.ToLowerInvariant().Trim()
+            Email       = dto.Email.ToLowerInvariant().Trim(),
+            BenhNhanId  = dto.BenhNhanId
         };
 
         var created = await _userRepository.CreateAsync(nguoiDung);
@@ -414,6 +425,7 @@ public class AuthService : IAuthService
             TenDangNhap = user.TenDangNhap,
             VaiTro      = user.VaiTro,
             Email       = user.Email,
+            BenhNhanId  = user.BenhNhanId,
             Permissions = RolePermissions.GetPermissions(user.VaiTro ?? "")
         };
     }

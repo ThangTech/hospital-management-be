@@ -24,4 +24,6 @@ public class RegisterDTO
     /// Vai trò: Admin, BacSi, YTa, KeToan, BenhNhan
     /// </summary>
     public required string VaiTro { get; set; }
+
+    public Guid? BenhNhanId { get; set; }
 }

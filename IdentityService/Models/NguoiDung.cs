@@ -17,4 +17,6 @@ public partial class NguoiDung
     /// Email dùng để nhận OTP khi quên mật khẩu (bắt buộc)
     /// </summary>
     public string? Email { get; set; }
+
+    public Guid? BenhNhanId { get; set; }
 }

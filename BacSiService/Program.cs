@@ -80,6 +80,7 @@ builder.Services.AddScoped<IDoctorBusiness, DoctorBusiness>();
 // Medical record
 builder.Services.AddScoped<IMedicalRecordRepository, MedicalRecordRepository>();
 builder.Services.AddScoped<IMedicalRecordService, MedicalRecordService>();
+builder.Services.AddScoped<IMedicalRecordReportService, MedicalRecordReportService>();
 
 // Surgery
 builder.Services.AddScoped<ISurgeryRepository, SurgeryRepository>();

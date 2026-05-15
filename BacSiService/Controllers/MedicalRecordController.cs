@@ -18,10 +18,12 @@ namespace BacSiService.Controllers
         public class MedicalRecordController : ControllerBase
         {
             private readonly IMedicalRecordService _service;
+            private readonly IMedicalRecordReportService _reportService;
 
-            public MedicalRecordController(IMedicalRecordService service)
+            public MedicalRecordController(IMedicalRecordService service, IMedicalRecordReportService reportService)
             {
                 _service = service;
+                _reportService = reportService;
             }
 
             // Helper: Lấy user info từ JWT claims
@@ -143,6 +145,16 @@ namespace BacSiService.Controllers
                 {
                     return StatusCode(500, new ApiResponse { Success = false, Message = "Lỗi hệ thống: " + ex.Message });
                 }
+            }
+
+            [HttpGet("export-pdf/{id:guid}")]
+            [Authorize(Roles = "Admin,BacSi")]
+            [Produces("application/pdf")]
+            public IActionResult ExportPdf(Guid id)
+            {
+                var pdf = _reportService.ExportMedicalRecordPdf(id);
+                if (pdf == null) return NotFound(new ApiResponse { Success = false, Message = "Không tìm thấy hồ sơ bệnh án" });
+                return File(pdf, "application/pdf", $"HoSoBenhAn_{id}.pdf");
             }
 
             /// <summary>

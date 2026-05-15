@@ -24,7 +24,7 @@ namespace KhoaPhongService.Controllers
         /// Quyền: Admin, BacSi, YTa
         /// </summary>
         [HttpGet("get-all")]
-        [Authorize(Roles = "Admin,BacSi,YTa")]
+        [AllowAnonymous]
         public IActionResult GetAll()
         {
             var data = _bus.GetAll();
@@ -34,7 +34,8 @@ namespace KhoaPhongService.Controllers
                 Id = x.Id,
                 TenKhoa = x.TenKhoa,
                 LoaiKhoa = x.LoaiKhoa,
-                SoGiuongTieuChuan = x.SoGiuongTieuChuan ?? 0
+                SoGiuongTieuChuan = x.SoGiuongTieuChuan ?? 0,
+                SoGiuongHienCo = x.SoGiuongHienCo ?? 0
             }).ToList();
 
             return Ok(viewData);
@@ -56,7 +57,8 @@ namespace KhoaPhongService.Controllers
                 Id = x.Id,
                 TenKhoa = x.TenKhoa,
                 LoaiKhoa = x.LoaiKhoa,
-                SoGiuongTieuChuan = x.SoGiuongTieuChuan ?? 0
+                SoGiuongTieuChuan = x.SoGiuongTieuChuan ?? 0,
+                SoGiuongHienCo = x.SoGiuongHienCo ?? 0
             };
             return Ok(viewDto);
         }

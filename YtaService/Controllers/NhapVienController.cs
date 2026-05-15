@@ -19,7 +19,7 @@ namespace YtaService.Controllers
         }
 
         [HttpGet("danh-sach")]
-        [Authorize(Roles = "Admin,YTa,BacSi,KeToan")]
+        [Authorize(Roles = "Admin,YTa,BacSi,KeToan,BenhNhan")]
         public IActionResult GetAll()
         {
             try
@@ -143,7 +143,7 @@ namespace YtaService.Controllers
 
         // 6. TÌM KIẾM NHẬP VIỆN
         [HttpPost("tim-kiem")]
-        [Authorize(Roles = "Admin,YTa,BacSi,KeToan")]
+        [Authorize(Roles = "Admin,YTa,BacSi,KeToan,BenhNhan")]
         public IActionResult Search([FromBody] NhapVienSearchDTO model)
         {
             try
@@ -156,5 +156,6 @@ namespace YtaService.Controllers
                 return StatusCode(500, new { message = ex.Message });
             }
         }
+        
     }
 }

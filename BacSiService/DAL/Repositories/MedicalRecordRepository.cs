@@ -89,7 +89,7 @@ namespace BacSiService.DAL.Repositories
                 cmd.Parameters.AddWithValue("@TienSuBenh", dto.TienSuBenh ?? (object)DBNull.Value);
                 cmd.Parameters.AddWithValue("@ChanDoanBanDau", dto.ChanDoanBanDau ?? (object)DBNull.Value);
                 cmd.Parameters.AddWithValue("@PhuongAnDieuTri", dto.PhuongAnDieuTri ?? (object)DBNull.Value);
-                cmd.Parameters.AddWithValue("@KetQuaDieuTri", dto.KetQuaDieuTri ?? (object)DBNull.Value);
+                // @KetQuaDieuTri đã bị xóa khỏi SP - chỉ được cập nhật qua Update khi trạng thái "Chờ xuất viện"
                 cmd.Parameters.AddWithValue("@ChanDoanRaVien", dto.ChanDoanRaVien ?? (object)DBNull.Value);
                 cmd.Parameters.AddWithValue("@BacSiPhuTrachId", dto.BacSiPhuTrachId ?? (object)DBNull.Value);
                 cmd.Parameters.AddWithValue("@NguoiDungId", nguoiDungId ?? (object)DBNull.Value);
@@ -157,7 +157,7 @@ namespace BacSiService.DAL.Repositories
 
         private static MedicalRecordDto MapToDto(SqlDataReader reader)
         {
-            return new MedicalRecordDto
+            var dto = new MedicalRecordDto
             {
                 Id = reader["Id"] == DBNull.Value ? Guid.Empty : (Guid)reader["Id"],
                 NhapVienId = reader["NhapVienId"] == DBNull.Value ? (Guid?)null : (Guid)reader["NhapVienId"],
@@ -167,11 +167,52 @@ namespace BacSiService.DAL.Repositories
                 KetQuaDieuTri = reader["KetQuaDieuTri"] as string,
                 ChanDoanRaVien = reader["ChanDoanRaVien"] as string,
                 NgayLap = reader["NgayLap"] == DBNull.Value ? (DateTime?)null : (DateTime)reader["NgayLap"],
-                BacSiPhuTrachId = reader["BacSiPhuTrachId"] == DBNull.Value ? (Guid?)null : (Guid)reader["BacSiPhuTrachId"],
-                TenBenhNhan = reader["TenBenhNhan"] as string,
-                NgaySinhBenhNhan = reader["NgaySinhBenhNhan"] == DBNull.Value ? (DateTime?)null : (DateTime)reader["NgaySinhBenhNhan"],
-                BenhNhanId = reader["BenhNhanId"] == DBNull.Value ? (Guid?)null : (Guid)reader["BenhNhanId"]
+                BacSiPhuTrachId = reader["BacSiPhuTrachId"] == DBNull.Value ? (Guid?)null : (Guid)reader["BacSiPhuTrachId"]
             };
+            
+            // Safely map additional fields from JOIN (may not exist in all SPs)
+            try
+            {
+                if (HasColumn(reader, "TenBenhNhan"))
+                    dto.TenBenhNhan = reader["TenBenhNhan"] as string;
+                if (HasColumn(reader, "NgaySinhBenhNhan"))
+                    dto.NgaySinhBenhNhan = reader["NgaySinhBenhNhan"] == DBNull.Value ? null : (DateTime?)reader["NgaySinhBenhNhan"];
+                if (HasColumn(reader, "BenhNhanId"))
+                    dto.BenhNhanId = reader["BenhNhanId"] == DBNull.Value ? null : (Guid?)reader["BenhNhanId"];
+                if (HasColumn(reader, "GioiTinh"))
+                    dto.GioiTinh = reader["GioiTinh"] as string;
+                if (HasColumn(reader, "DiaChi"))
+                    dto.DiaChi = reader["DiaChi"] as string;
+                if (HasColumn(reader, "SoTheBaoHiem"))
+                    dto.SoTheBaoHiem = reader["SoTheBaoHiem"] as string;
+                if (HasColumn(reader, "TenBacSi"))
+                    dto.TenBacSi = reader["TenBacSi"] as string;
+                if (HasColumn(reader, "NgayNhap"))
+                    dto.NgayNhap = reader["NgayNhap"] == DBNull.Value ? null : (DateTime?)reader["NgayNhap"];
+                if (HasColumn(reader, "NgayXuat"))
+                    dto.NgayXuat = reader["NgayXuat"] == DBNull.Value ? null : (DateTime?)reader["NgayXuat"];
+                if (HasColumn(reader, "LyDoNhap"))
+                    dto.LyDoNhap = reader["LyDoNhap"] as string;
+                if (HasColumn(reader, "TrangThaiNhapVien"))  // cột mới từ SP search
+                    dto.TrangThaiNhapVien = reader["TrangThaiNhapVien"] as string;
+                if (HasColumn(reader, "TenKhoa"))
+                    dto.TenKhoa = reader["TenKhoa"] as string;
+                if (HasColumn(reader, "TenGiuong"))
+                    dto.TenGiuong = reader["TenGiuong"] as string;
+            }
+            catch { /* Additional columns not found */ }
+            
+            return dto;
+        }
+        
+        private static bool HasColumn(SqlDataReader reader, string columnName)
+        {
+            for (int i = 0; i < reader.FieldCount; i++)
+            {
+                if (reader.GetName(i).Equals(columnName, StringComparison.OrdinalIgnoreCase))
+                    return true;
+            }
+            return false;
         }
     }
 }

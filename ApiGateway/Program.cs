@@ -3,8 +3,11 @@ using Ocelot.Middleware;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Load ocelot.json
-builder.Configuration.AddJsonFile("ocelot.json", optional: false, reloadOnChange: true);
+// Load ocelot configuration based on environment
+var ocelotConfigFile = builder.Environment.EnvironmentName == "Docker" 
+    ? "ocelot.docker.json" 
+    : "ocelot.json";
+builder.Configuration.AddJsonFile(ocelotConfigFile, optional: false, reloadOnChange: true);
 
 // Add CORS
 builder.Services.AddCors(options =>
@@ -27,10 +30,6 @@ builder.Services.AddSwaggerGen(c =>
 // Add Ocelot
 builder.Services.AddOcelot(builder.Configuration);
 
-// Thêm cấu hình Ocelot
-builder.Configuration.AddJsonFile("ocelot.json", optional: false, reloadOnChange: true);
-builder.Services.AddOcelot(builder.Configuration);
-
 var app = builder.Build();
 
 // Swagger UI
@@ -47,9 +46,6 @@ if (app.Environment.IsDevelopment())
 app.UseCors("AllowAll");
 
 // Use Ocelot
-await app.UseOcelot();
-
-// Sử dụng Ocelot Middleware
 await app.UseOcelot();
 
 app.Run();

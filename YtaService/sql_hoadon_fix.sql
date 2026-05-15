@@ -47,7 +47,7 @@ BEGIN
             SET @FinBaoHiem = 0 -- Hết hạn hoặc không có thẻ
     END
 
-    -- 4. Chèn hóa đơn
+    -- 4. Chèn hóa đơn ở trạng thái chưa thanh toán
     INSERT INTO HoaDon (Id, BenhNhanId, NhapVienId, TongTien, BaoHiemChiTra, BenhNhanThanhToan, Ngay, TrangThai)
     VALUES (@Id, @BenhNhanId, @NhapVienId, @TongTien, @FinBaoHiem, 0, GETDATE(), N'Chưa thanh toán')
     
@@ -87,6 +87,11 @@ BEGIN
     IF (SELECT BenhNhanThanhToan FROM HoaDon WHERE Id = @Id) >= @CanThanhToan
     BEGIN
         UPDATE HoaDon SET TrangThai = N'Đã thanh toán' WHERE Id = @Id
+
+        UPDATE NhapVien
+        SET TrangThai = N'Chờ xuất viện'
+        WHERE Id = (SELECT NhapVienId FROM HoaDon WHERE Id = @Id)
+          AND TrangThai = N'Đang điều trị'
     END
     
     RETURN 1 -- Thanh toán thành công

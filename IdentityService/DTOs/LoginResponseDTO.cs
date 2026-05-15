@@ -29,7 +29,14 @@ public class UserDTO
     public Guid Id { get; set; }
     public string? TenDangNhap { get; set; }
     public string? VaiTro { get; set; }
-    
+
+    /// <summary>
+    /// Email của user
+    /// </summary>
+    public string? Email { get; set; }
+
+    public Guid? BenhNhanId { get; set; }
+
     /// <summary>
     /// Danh sách quyền của user dựa trên vai trò
     /// </summary>

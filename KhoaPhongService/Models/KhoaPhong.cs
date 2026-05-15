@@ -13,6 +13,8 @@ public partial class KhoaPhong
 
     public int? SoGiuongTieuChuan { get; set; }
 
+    public int? SoGiuongHienCo { get; set; }
+
     public virtual ICollection<DieuDuong> DieuDuongs { get; set; } = new List<DieuDuong>();
 
     public virtual ICollection<GiuongBenh> GiuongBenhs { get; set; } = new List<GiuongBenh>();

@@ -9,14 +9,21 @@ public class RegisterDTO
     /// Tên đăng nhập (bắt buộc, unique)
     /// </summary>
     public required string TenDangNhap { get; set; }
-    
+
     /// <summary>
     /// Mật khẩu (bắt buộc, tối thiểu 6 ký tự)
     /// </summary>
     public required string MatKhau { get; set; }
-    
+
+    /// <summary>
+    /// Email (bắt buộc, dùng để nhận OTP khi quên mật khẩu)
+    /// </summary>
+    public required string Email { get; set; }
+
     /// <summary>
     /// Vai trò: Admin, BacSi, YTa, KeToan, BenhNhan
     /// </summary>
     public required string VaiTro { get; set; }
+
+    public Guid? BenhNhanId { get; set; }
 }

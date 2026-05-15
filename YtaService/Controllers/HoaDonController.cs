@@ -8,7 +8,7 @@ namespace YtaService.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize(Roles = "Admin,KeToan")]
+    [Authorize(Roles = "Admin,KeToan,BenhNhan")]
     public class HoaDonController : ControllerBase
     {
         private readonly IHoaDonBusiness _bus;
@@ -24,7 +24,7 @@ namespace YtaService.Controllers
         public IActionResult GetPreview(Guid nhapVienId)
         {
             var data = _bus.LayPreviewGoiY(nhapVienId);
-            if (data == null) return NotFound(new { message = "Không tìm thấy thông tin nhập viện để gợi ý." });
+            if (data == null) return NotFound(new { message = "Kh�ng t�m th?y th�ng tin nh?p vi?n d? g?i �." });
             return Ok(data);
         }
 
@@ -32,7 +32,7 @@ namespace YtaService.Controllers
         public IActionResult Create([FromBody] HoaDonCreateDTO model)
         {
             var result = _bus.TaoHoaDonMoi(model);
-            if (result == "Tạo hóa đơn thành công.") return Ok(new { message = result });
+            if (result == "T?o h�a don th�nh c�ng.") return Ok(new { message = result });
             return BadRequest(new { message = result });
         }
 
@@ -54,7 +54,7 @@ namespace YtaService.Controllers
         public IActionResult GetById(Guid id)
         {
             var data = _bus.LayChiTietHoaDon(id);
-            if (data == null) return NotFound(new { message = "Không tìm thấy hóa đơn." });
+            if (data == null) return NotFound(new { message = "Kh�ng t�m th?y h�a don." });
             return Ok(data);
         }
 
@@ -62,7 +62,7 @@ namespace YtaService.Controllers
         public IActionResult Payment([FromBody] HoaDonThanhToanDTO model)
         {
             var result = _bus.ThanhToanHoaDon(model);
-            if (result == "Thanh toán thành công.") return Ok(new { message = result });
+            if (result == "Thanh to�n th�nh c�ng.") return Ok(new { message = result });
             return BadRequest(new { message = result });
         }
 
@@ -70,7 +70,7 @@ namespace YtaService.Controllers
         public IActionResult Delete(Guid id)
         {
             var result = _bus.XoaHoaDon(id);
-            if (result == "Xóa hóa đơn thành công.") return Ok(new { message = result });
+            if (result == "X�a h�a don th�nh c�ng.") return Ok(new { message = result });
             return BadRequest(new { message = result });
         }
 
@@ -81,9 +81,9 @@ namespace YtaService.Controllers
         public IActionResult ExportPdf(Guid id)
         {
             var pdf = _reportBus.ExportHoaDonPdf(id);
-            if (pdf == null) return NotFound(new { message = "Không tìm thấy hóa đơn để xuất PDF." });
+            if (pdf == null) return NotFound(new { message = "Kh�ng t�m th?y h�a don d? xu?t PDF." });
             
-            // Đảm bảo trình duyệt nhận diện là file tải về
+            // �?m b?o tr�nh duy?t nh?n di?n l� file t?i v?
             return File(pdf, "application/pdf", $"HoaDon_{id}.pdf");
         }
 
@@ -103,16 +103,16 @@ namespace YtaService.Controllers
         public IActionResult ExportExcel(Guid id)
         {
             var excel = _reportBus.ExportHoaDonExcel(id);
-            if (excel == null) return NotFound(new { message = "Không tìm thấy hóa đơn để xuất Excel." });
+            if (excel == null) return NotFound(new { message = "Kh�ng t�m th?y h�a don d? xu?t Excel." });
             
-            // Đảm bảo trình duyệt nhận diện là file tải về với Content-Type chuẩn
+            // �?m b?o tr�nh duy?t nh?n di?n l� file t?i v? v?i Content-Type chu?n
             return File(excel, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", $"HoaDon_{id}.xlsx");
         }
 
         [HttpPost("import-excel")]
         public async Task<IActionResult> ImportExcel(Microsoft.AspNetCore.Http.IFormFile file)
         {
-            if (file == null || file.Length == 0) return BadRequest(new { message = "Vui lòng chọn file Excel." });
+            if (file == null || file.Length == 0) return BadRequest(new { message = "Vui l�ng ch?n file Excel." });
             
             using (var ms = new System.IO.MemoryStream())
             {

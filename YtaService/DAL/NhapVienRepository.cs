@@ -22,7 +22,6 @@ namespace YtaService.DAL
             using (SqlConnection conn = new SqlConnection(_connectionString))
             {
                 conn.Open();
-                // GỌI STORED PROCEDURE: sp_NhapVien_TaoMoi
                 using (SqlCommand cmd = new SqlCommand("sp_NhapVien_TaoMoi", conn))
                 {
                     cmd.CommandType = CommandType.StoredProcedure;
@@ -33,7 +32,6 @@ namespace YtaService.DAL
                     cmd.Parameters.AddWithValue("@KhoaId", dto.KhoaId);
                     cmd.Parameters.AddWithValue("@LyDoNhap", dto.LyDoNhap ?? (object)DBNull.Value);
 
-                    // Hứng giá trị Return (0 hoặc 1)
                     var returnVal = cmd.Parameters.Add("RetVal", SqlDbType.Int);
                     returnVal.Direction = ParameterDirection.ReturnValue;
 

@@ -90,6 +90,7 @@ namespace BacSiService.DAL.Repositories
                 cmd.Parameters.AddWithValue("@LoaiXetNghiem", dto.LoaiXetNghiem ?? (object)DBNull.Value);
                 cmd.Parameters.AddWithValue("@KetQua", dto.KetQua ?? (object)DBNull.Value);
                 cmd.Parameters.AddWithValue("@Ngay", dto.Ngay ?? (object)DBNull.Value);
+                cmd.Parameters.AddWithValue("@DonGia", dto.DonGia ?? (object)DBNull.Value);
                 cmd.Parameters.AddWithValue("@NguoiDungId", nguoiDungId ?? (object)DBNull.Value);
                 cmd.Parameters.AddWithValue("@AuditUser", auditUser ?? (object)DBNull.Value);
 
@@ -117,6 +118,7 @@ namespace BacSiService.DAL.Repositories
                 cmd.Parameters.AddWithValue("@LoaiXetNghiem", dto.LoaiXetNghiem ?? (object)DBNull.Value);
                 cmd.Parameters.AddWithValue("@KetQua", dto.KetQua ?? (object)DBNull.Value);
                 cmd.Parameters.AddWithValue("@Ngay", dto.Ngay ?? (object)DBNull.Value);
+                cmd.Parameters.AddWithValue("@DonGia", dto.DonGia ?? (object)DBNull.Value);
                 cmd.Parameters.AddWithValue("@NguoiDungId", nguoiDungId ?? (object)DBNull.Value);
                 cmd.Parameters.AddWithValue("@AuditUser", auditUser ?? (object)DBNull.Value);
 
@@ -151,15 +153,31 @@ namespace BacSiService.DAL.Repositories
 
         private static LabTestDto MapToDto(SqlDataReader reader)
         {
-            return new LabTestDto
+            var dto = new LabTestDto
             {
                 Id = reader["Id"] == DBNull.Value ? Guid.Empty : (Guid)reader["Id"],
                 NhapVienId = reader["NhapVienId"] == DBNull.Value ? (Guid?)null : (Guid)reader["NhapVienId"],
                 BacSiId = reader["BacSiId"] == DBNull.Value ? (Guid?)null : (Guid)reader["BacSiId"],
                 LoaiXetNghiem = reader["LoaiXetNghiem"] as string,
                 KetQua = reader["KetQua"] as string,
-                Ngay = reader["Ngay"] == DBNull.Value ? (DateTime?)null : (DateTime)reader["Ngay"]
+                Ngay = reader["Ngay"] == DBNull.Value ? (DateTime?)null : (DateTime)reader["Ngay"],
+                DonGia = HasColumn(reader, "DonGia") && reader["DonGia"] != DBNull.Value ? (decimal)reader["DonGia"] : (decimal?)null,
+                TenBenhNhan = HasColumn(reader, "TenBenhNhan") ? reader["TenBenhNhan"] as string : null,
+                // Map other potential fields if the SP returns them
             };
+            return dto;
+        }
+
+        private static bool HasColumn(SqlDataReader r, string columnName)
+        {
+            try
+            {
+                return r.GetOrdinal(columnName) >= 0;
+            }
+            catch (IndexOutOfRangeException)
+            {
+                return false;
+            }
         }
     }
 }

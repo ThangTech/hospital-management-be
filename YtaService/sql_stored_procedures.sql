@@ -45,13 +45,15 @@ CREATE OR ALTER PROCEDURE sp_XuatVien_LayDanhSachSanSang
 AS
 BEGIN
     SET NOCOUNT ON;
-    
-    SELECT 
+
+    SELECT
         nv.Id AS NhapVienId,
         bn.HoTen AS TenBenhNhan,
         gb.TenGiuong,
         kp.TenKhoa,
+        nv.LyDoNhap,
         nv.NgayNhap,
+        nv.TrangThai AS TrangThai,
         DATEDIFF(DAY, nv.NgayNhap, GETDATE()) AS SoNgayNam,
         ISNULL(SUM(hd.TongTien), 0) AS TongTien
     FROM NhapVien nv
@@ -59,13 +61,22 @@ BEGIN
     LEFT JOIN GiuongBenh gb ON nv.GiuongId = gb.Id
     LEFT JOIN KhoaPhong kp ON nv.KhoaId = kp.Id
     LEFT JOIN HoaDon hd ON nv.Id = hd.NhapVienId
-    WHERE nv.TrangThai = N'Đang điều trị'
+    WHERE nv.TrangThai IN (N'Đang điều trị', N'Chờ xuất viện')
       AND NOT EXISTS (
-          SELECT 1 FROM HoaDon 
-          WHERE NhapVienId = nv.Id AND TrangThai != N'Đã thanh toán'
+          SELECT 1
+          FROM HoaDon
+          WHERE NhapVienId = nv.Id
+            AND TrangThai != N'Đã thanh toán'
       )
-    GROUP BY nv.Id, bn.HoTen, gb.TenGiuong, kp.TenKhoa, nv.NgayNhap
-    ORDER BY nv.NgayNhap
+    GROUP BY
+        nv.Id,
+        bn.HoTen,
+        gb.TenGiuong,
+        kp.TenKhoa,
+        nv.LyDoNhap,
+        nv.NgayNhap,
+        nv.TrangThai
+    ORDER BY nv.NgayNhap;
 END
 GO
 

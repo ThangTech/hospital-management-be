@@ -27,7 +27,7 @@ namespace YtaService.BLL
             var hoaDon = _repo.GetById(hoaDonId);
             if (hoaDon == null) return null;
 
-            // Sử dụng QuestPDF để tạo file PDF
+            // S? d?ng QuestPDF d? t?o file PDF
             var document = Document.Create(container =>
             {
                 container.Page(page =>
@@ -37,17 +37,17 @@ namespace YtaService.BLL
                     page.PageColor(Colors.White);
                     page.DefaultTextStyle(x => x.FontSize(10).FontFamily("Arial"));
 
-                    page.Header().Text("HÓA ĐƠN VIỆN PHÍ")
+                    page.Header().Text("H�A �ON VI?N PH�")
                         .SemiBold().FontSize(18).FontColor(Colors.Blue.Medium).AlignCenter();
 
                     page.Content().PaddingVertical(10).Column(column =>
                     {
                         column.Spacing(5);
-                        column.Item().Text($"Mã hóa đơn: {hoaDon.Id}");
-                        column.Item().Text($"Bệnh nhân: {hoaDon.TenBenhNhan}");
-                        column.Item().Text($"Ngày nhập viện: {hoaDon.NgayNhapVien?.ToString("dd/MM/yyyy HH:mm") ?? "N/A"}");
-                        column.Item().Text($"Ngày xuất viện: {hoaDon.NgayXuatVien?.ToString("dd/MM/yyyy HH:mm") ?? "N/A"}");
-                        column.Item().Text($"Ngày xuất hóa đơn: {hoaDon.Ngay?.ToString("dd/MM/yyyy HH:mm")}");
+                        column.Item().Text($"M� h�a don: {hoaDon.Id}");
+                        column.Item().Text($"B?nh nh�n: {hoaDon.TenBenhNhan}");
+                        column.Item().Text($"Ng�y nh?p vi?n: {hoaDon.NgayNhapVien?.ToString("dd/MM/yyyy HH:mm") ?? "N/A"}");
+                        column.Item().Text($"Ng�y xu?t vi?n: {hoaDon.NgayXuatVien?.ToString("dd/MM/yyyy HH:mm") ?? "N/A"}");
+                        column.Item().Text($"Ng�y xu?t h�a don: {hoaDon.Ngay?.ToString("dd/MM/yyyy HH:mm")}");
                         
                         column.Item().LineHorizontal(1);
 
@@ -61,21 +61,21 @@ namespace YtaService.BLL
 
                             table.Header(header =>
                             {
-                                header.Cell().Text("Nội dung");
-                                header.Cell().AlignRight().Text("Số tiền (VNĐ)");
+                                header.Cell().Text("N?i dung");
+                                header.Cell().AlignRight().Text("S? ti?n (VN�)");
                             });
 
-                            table.Cell().Text("Tổng chi phí dịch vụ & giường bệnh");
+                            table.Cell().Text("T?ng chi ph� d?ch v? & giu?ng b?nh");
                             table.Cell().AlignRight().Text(hoaDon.TongTien.ToString("N0"));
 
-                            table.Cell().Text("Bảo hiểm chi trả");
+                            table.Cell().Text("B?o hi?m chi tr?");
                             table.Cell().AlignRight().Text($"- {hoaDon.BaoHiemChiTra.ToString("N0")}");
 
-                            table.Cell().Text("Bệnh nhân thực trả").SemiBold();
+                            table.Cell().Text("B?nh nh�n th?c tr?").SemiBold();
                             table.Cell().AlignRight().Text(hoaDon.BenhNhanThanhToan.ToString("N0")).SemiBold();
                         });
 
-                        column.Item().PaddingTop(20).Text("Trạng thái: " + hoaDon.TrangThai)
+                        column.Item().PaddingTop(20).Text("Tr?ng th�i: " + hoaDon.TrangThai)
                             .Italic().AlignCenter();
                     });
 
@@ -98,23 +98,23 @@ namespace YtaService.BLL
             {
                 var worksheet = workbook.Worksheets.Add("DanhSachHoaDon");
                 
-                // Tiêu đề cột
-                worksheet.Cell(1, 1).Value = "Mã Hóa Đơn";
-                worksheet.Cell(1, 2).Value = "Tên Bệnh Nhân";
-                worksheet.Cell(1, 3).Value = "Ngày Nhập";
-                worksheet.Cell(1, 4).Value = "Ngày Xuất";
-                worksheet.Cell(1, 5).Value = "Tổng Tiền";
-                worksheet.Cell(1, 6).Value = "Bảo Hiểm";
-                worksheet.Cell(1, 7).Value = "Thực Trả";
-                worksheet.Cell(1, 8).Value = "Ngày Lập HĐ";
-                worksheet.Cell(1, 9).Value = "Trạng Thái";
+                // Ti�u d? c?t
+                worksheet.Cell(1, 1).Value = "M� H�a �on";
+                worksheet.Cell(1, 2).Value = "T�n B?nh Nh�n";
+                worksheet.Cell(1, 3).Value = "Ng�y Nh?p";
+                worksheet.Cell(1, 4).Value = "Ng�y Xu?t";
+                worksheet.Cell(1, 5).Value = "T?ng Ti?n";
+                worksheet.Cell(1, 6).Value = "B?o Hi?m";
+                worksheet.Cell(1, 7).Value = "Th?c Tr?";
+                worksheet.Cell(1, 8).Value = "Ng�y L?p H�";
+                worksheet.Cell(1, 9).Value = "Tr?ng Th�i";
 
-                // Định dạng header
+                // �?nh d?ng header
                 var headerRange = worksheet.Range(1, 1, 1, 9);
                 headerRange.Style.Font.Bold = true;
                 headerRange.Style.Fill.BackgroundColor = XLColor.LightBlue;
 
-                // Dữ liệu
+                // D? li?u
                 for (int i = 0; i < list.Count; i++)
                 {
                     var item = list[i];
@@ -129,7 +129,7 @@ namespace YtaService.BLL
                     worksheet.Cell(row, 8).Value = item.Ngay?.ToString("dd/MM/yyyy");
                     worksheet.Cell(row, 9).Value = item.TrangThai;
 
-                    // Định dạng số
+                    // �?nh d?ng s?
                     worksheet.Cell(row, 5).Style.NumberFormat.Format = "#,##0";
                     worksheet.Cell(row, 6).Style.NumberFormat.Format = "#,##0";
                     worksheet.Cell(row, 7).Style.NumberFormat.Format = "#,##0";
@@ -155,39 +155,39 @@ namespace YtaService.BLL
             {
                 var worksheet = workbook.Worksheets.Add("HoaDonChiTiet");
 
-                // Tiêu đề
-                worksheet.Cell(1, 1).Value = "Mã Hóa Đơn";
+                // Ti�u d?
+                worksheet.Cell(1, 1).Value = "M� H�a �on";
                 worksheet.Cell(1, 2).Value = item.Id.ToString();
                 
-                worksheet.Cell(2, 1).Value = "Tên Bệnh Nhân";
+                worksheet.Cell(2, 1).Value = "T�n B?nh Nh�n";
                 worksheet.Cell(2, 2).Value = item.TenBenhNhan;
 
-                worksheet.Cell(3, 1).Value = "Ngày Nhập Viện";
+                worksheet.Cell(3, 1).Value = "Ng�y Nh?p Vi?n";
                 worksheet.Cell(3, 2).Value = item.NgayNhapVien?.ToString("dd/MM/yyyy HH:mm") ?? "N/A";
 
-                worksheet.Cell(4, 1).Value = "Ngày Xuất Viện";
+                worksheet.Cell(4, 1).Value = "Ng�y Xu?t Vi?n";
                 worksheet.Cell(4, 2).Value = item.NgayXuatVien?.ToString("dd/MM/yyyy HH:mm") ?? "N/A";
 
-                worksheet.Cell(5, 1).Value = "Tổng Chi Phí";
+                worksheet.Cell(5, 1).Value = "T?ng Chi Ph�";
                 worksheet.Cell(5, 2).Value = item.TongTien;
                 worksheet.Cell(5, 2).Style.NumberFormat.Format = "#,##0";
 
-                worksheet.Cell(6, 1).Value = "Bảo Hiểm Chi Trả";
+                worksheet.Cell(6, 1).Value = "B?o Hi?m Chi Tr?";
                 worksheet.Cell(6, 2).Value = item.BaoHiemChiTra;
                 worksheet.Cell(6, 2).Style.NumberFormat.Format = "#,##0";
 
-                worksheet.Cell(7, 1).Value = "Bệnh Nhân Thực Trả";
+                worksheet.Cell(7, 1).Value = "B?nh Nh�n Th?c Tr?";
                 worksheet.Cell(7, 2).Value = item.BenhNhanThanhToan;
                 worksheet.Cell(7, 2).Style.NumberFormat.Format = "#,##0";
                 worksheet.Cell(7, 2).Style.Font.Bold = true;
 
-                worksheet.Cell(8, 1).Value = "Ngày Lập HĐ";
+                worksheet.Cell(8, 1).Value = "Ng�y L?p H�";
                 worksheet.Cell(8, 2).Value = item.Ngay?.ToString("dd/MM/yyyy HH:mm");
 
-                worksheet.Cell(9, 1).Value = "Trạng Thái";
+                worksheet.Cell(9, 1).Value = "Tr?ng Th�i";
                 worksheet.Cell(9, 2).Value = item.TrangThai;
 
-                // Format cột tiêu đề bên trái
+                // Format c?t ti�u d? b�n tr�i
                 var titleRange = worksheet.Range(1, 1, 9, 1);
                 titleRange.Style.Font.Bold = true;
                 titleRange.Style.Fill.BackgroundColor = XLColor.LightGray;
@@ -211,7 +211,7 @@ namespace YtaService.BLL
                     using (var workbook = new XLWorkbook(stream))
                     {
                         var worksheet = workbook.Worksheet(1);
-                        var rows = worksheet.RowsUsed().Skip(1); // Bỏ qua tiêu đề
+                        var rows = worksheet.RowsUsed().Skip(1); // B? qua ti�u d?
                         int count = 0;
 
                         foreach (var row in rows)
@@ -232,16 +232,16 @@ namespace YtaService.BLL
                             }
                             catch (Exception)
                             {
-                                // Bỏ qua dòng lỗi hoặc log lại
+                                // B? qua d�ng l?i ho?c log l?i
                             }
                         }
-                        return $"Đã nhập thành công {count} hóa đơn từ file Excel.";
+                        return $"�� nh?p th�nh c�ng {count} h�a don t? file Excel.";
                     }
                 }
             }
             catch (Exception ex)
             {
-                return $"Lỗi khi nhập Excel: {ex.Message}";
+                return $"L?i khi nh?p Excel: {ex.Message}";
             }
         }
     }

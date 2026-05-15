@@ -12,6 +12,7 @@ var builder = WebApplication.CreateBuilder(args);
 // ===== 1. DEPENDENCY INJECTION =====
 // Repository (ADO.NET - đọc connection string từ IConfiguration)
 builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<IPasswordResetRepository, PasswordResetRepository>();
 
 // Service
 builder.Services.AddScoped<IAuthService, AuthService>();
@@ -154,7 +155,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseHttpsRedirection();
+// app.UseHttpsRedirection();
 app.UseCors("AllowAll");
 
 // Authentication PHẢI đặt trước Authorization

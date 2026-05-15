@@ -8,11 +8,21 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Microsoft.OpenApi.Models;
+using System.Text.Json;
+using QuestPDF.Infrastructure;
+
+QuestPDF.Settings.License = LicenseType.Community;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-builder.Services.AddControllers();
+// Explicit camelCase JSON: fix search response field casing (data, pageNumber, etc.)
+builder.Services.AddControllers()
+    .AddJsonOptions(options =>
+    {
+        options.JsonSerializerOptions.PropertyNamingPolicy = JsonNamingPolicy.CamelCase;
+        options.JsonSerializerOptions.PropertyNameCaseInsensitive = true;
+    });
 builder.Services.AddEndpointsApiExplorer();
 
 // Swagger với hỗ trợ JWT
@@ -73,6 +83,7 @@ builder.Services.AddScoped<IDoctorBusiness, DoctorBusiness>();
 // Medical record
 builder.Services.AddScoped<IMedicalRecordRepository, MedicalRecordRepository>();
 builder.Services.AddScoped<IMedicalRecordService, MedicalRecordService>();
+builder.Services.AddScoped<IMedicalRecordReportService, MedicalRecordReportService>();
 
 // Surgery
 builder.Services.AddScoped<ISurgeryRepository, SurgeryRepository>();
@@ -94,7 +105,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseHttpsRedirection();
+    // app.UseHttpsRedirection(); // Disable for local dev with HTTP Gateway
 
 // Authentication PHẢI đặt trước Authorization
 app.UseAuthentication();

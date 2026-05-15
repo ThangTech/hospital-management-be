@@ -72,6 +72,7 @@ namespace YtaService.DAL
                                 TenKhoa = reader["TenKhoa"].ToString(),
                                 LyDoNhap = reader["LyDoNhap"] != DBNull.Value ? reader["LyDoNhap"].ToString() : null,
                                 NgayNhap = Convert.ToDateTime(reader["NgayNhap"]),
+                                TrangThai = reader["TrangThai"].ToString(),
                                 SoNgayNam = Convert.ToInt32(reader["SoNgayNam"]),
                                 TongTien = reader["TongTien"] != DBNull.Value ? Convert.ToDecimal(reader["TongTien"]) : 0
                             });

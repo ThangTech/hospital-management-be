@@ -21,6 +21,7 @@ namespace YtaService.DTO
         public string TenKhoa { get; set; }
         public string LyDoNhap { get; set; }
         public DateTime NgayNhap { get; set; }
+        public string TrangThai { get; set; }
         public int SoNgayNam { get; set; }
         public decimal TongTien { get; set; }
     }
